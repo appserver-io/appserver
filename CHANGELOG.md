@@ -1,3 +1,14 @@
+Version 1.1.5-beta7
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to appserver-io/console 3.0 to add command to load Doctrine Fixtures
+* Temporary persist entity manager names in PersistenceManager instance to allow loading an applications default entity manager by name
+
 Version 1.1.5-beta6
 
 ## Bugfixes

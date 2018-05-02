@@ -21,6 +21,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Storage\StackableStorage;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
@@ -49,6 +50,9 @@ class PersistenceManagerFactory implements ManagerFactoryInterface
     public static function visit(ApplicationInterface $application, ManagerNodeInterface $managerConfiguration)
     {
 
+        // initialize the stackable for the entity manager names
+        $entityManagerNames = new StackableStorage();
+
         // initialize the default settings for the persistence units
         $persistenceManagerSettings = new PersistenceManagerSettings();
         $persistenceManagerSettings->mergeWithParams($managerConfiguration->getParamsAsArray());
@@ -56,6 +60,7 @@ class PersistenceManagerFactory implements ManagerFactoryInterface
         // initialize the persistence manager instance
         $persistenceManager = new PersistenceManager();
         $persistenceManager->injectApplication($application);
+        $persistenceManager->injectEntityManagerNames($entityManagerNames);
         $persistenceManager->injectManagerSettings($persistenceManagerSettings);
 
         // create the naming context and add it the manager
