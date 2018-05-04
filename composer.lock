@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "67f196ebbb86c300b8533881a1ae6723",
+    "content-hash": "bf80e05c5c440980e9f752a749abf4cf",
     "packages": [
         {
             "name": "appserver-io-psr/application",
@@ -890,16 +890,16 @@
         },
         {
             "name": "appserver-io/console",
-            "version": "3.0.0",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/console.git",
-                "reference": "b1a7d55c93231587e723598dd3ed0fa216903c31"
+                "reference": "7d59177284468e2ada034d7b86d01d266464479f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/console/zipball/b1a7d55c93231587e723598dd3ed0fa216903c31",
-                "reference": "b1a7d55c93231587e723598dd3ed0fa216903c31",
+                "url": "https://api.github.com/repos/appserver-io/console/zipball/7d59177284468e2ada034d7b86d01d266464479f",
+                "reference": "7d59177284468e2ada034d7b86d01d266464479f",
                 "shasum": ""
             },
             "require": {
@@ -955,7 +955,7 @@
             "keywords": [
                 "console php application server"
             ],
-            "time": "2018-05-02T15:42:43+00:00"
+            "time": "2018-05-04T21:25:02+00:00"
         },
         {
             "name": "appserver-io/description",

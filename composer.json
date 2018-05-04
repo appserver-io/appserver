@@ -30,7 +30,7 @@
         "appserver-io/logger": "1.0.*",
         "appserver-io/fastcgi" : "2.0.*",
         "appserver-io/routlt": "2.2.0-beta9",
-        "appserver-io/console": "3.0.*",
+        "appserver-io/console": "4.0.*",
         "appserver-io/storage": "2.0.*",
         "appserver-io/messaging": "3.0.*",
         "appserver-io/microcron": "1.0.*",

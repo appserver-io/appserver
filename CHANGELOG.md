@@ -1,3 +1,13 @@
+Version 1.1.5-beta8
+
+## Bugfixes
+
+* Switch to appserver-io/console 4.0 to to fix some fixture issues
+
+## Features
+
+* None
+
 Version 1.1.5-beta7
 
 ## Bugfixes
