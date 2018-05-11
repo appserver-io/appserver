@@ -32,7 +32,6 @@ use AppserverIo\Psr\Security\Auth\Login\LoginContextInterface;
 use AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
-use AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface;
 use AppserverIo\Appserver\ServletEngine\Security\Auth\Callback\SecurityAssociationHandler;
 use AppserverIo\Psr\Security\Auth\Login\SecurityDomainConfigurationInterface;
 

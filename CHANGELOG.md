@@ -1,3 +1,13 @@
+Version 1.1.5-beta9
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Refactor StandardSecurityManager to make configuration of security constraints simpler
+
 Version 1.1.5-beta8
 
 ## Bugfixes
