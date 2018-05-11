@@ -216,7 +216,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                     // this resource has to be omitted
                     $authenticated = false;
 
-                } elseif (in_array($servletRequest->getMethod(), $mapping->getHttpMethods())) {
+                } elseif (in_array($servletRequest->getMethod(), $mapping->getHttpMethods()) || sizeof($mapping->getHttpMethods()) === 0) {
                     // load the authentication method and authenticate the request
                     $authenticator = $this->getAuthenticator($mapping);
 
@@ -244,19 +244,18 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
                             throw new SecurityException(sprintf('User doesn\'t have necessary privileges for resource %s', $servletRequest->getUri()), 403);
                         }
                     }
+                }
 
-                } else {
-                    // load the session
-                    if ($session = $servletRequest->getSession(true)) {
-                        //  start it, if not already done
-                        if ($session->isStarted() === false) {
-                            $session->start();
-                        }
+                // load the session
+                if ($session = $servletRequest->getSession(true)) {
+                    //  start it, if not already done
+                    if ($session->isStarted() === false) {
+                        $session->start();
+                    }
 
-                        // and query whether or not the session contains a user principal
-                        if ($session->hasKey(Constants::PRINCIPAL)) {
-                            $servletRequest->setUserPrincipal($session->getData(Constants::PRINCIPAL));
-                        }
+                    // and query whether or not the session contains a user principal
+                    if ($session->hasKey(Constants::PRINCIPAL)) {
+                        $servletRequest->setUserPrincipal($session->getData(Constants::PRINCIPAL));
                     }
                 }
 
