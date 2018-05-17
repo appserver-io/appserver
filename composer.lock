@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "bf80e05c5c440980e9f752a749abf4cf",
+    "content-hash": "7eea215c29020cf22cdbfc29c6ae1825",
     "packages": [
         {
             "name": "appserver-io-psr/application",
@@ -54,6 +54,60 @@
                 "persistence container protocol doctrine"
             ],
             "time": "2017-12-09T14:28:20+00:00"
+        },
+        {
+            "name": "appserver-io-psr/application-server",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "../../appserver-io-psr/application-server",
+                "reference": "6b67a1c75d9d66b3fc1ab61d3100a6fb34cba3b5",
+                "shasum": null
+            },
+            "require": {
+                "appserver-io-psr/naming": "1.1.*",
+                "appserver-io/configuration": "3.0.*",
+                "php": ">=5.4.0",
+                "react/dns": "0.4.4",
+                "react/socket": "0.4.*",
+                "react/socket-client": "0.5.0"
+            },
+            "require-dev": {
+                "appserver-io/build": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "AppserverIo\\Psr\\ApplicationServer": [
+                        "src/",
+                        "tests/"
+                    ]
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Tim Wagner",
+                    "email": "tw@appserver.io",
+                    "homepage": "http://www.appserver.io",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PSR, for the appserver.io application server",
+            "homepage": "https://github.com/appserver-io-psr/cli",
+            "keywords": [
+                "application",
+                "interface",
+                "php",
+                "server"
+            ],
+            "support": {
+                "email": "tw@appserver.io",
+                "issues": "https://github.com/appserver-io-psr/application-server/issues",
+                "source": "https://github.com/appserver-io-psr/application-server"
+            }
         },
         {
             "name": "appserver-io-psr/auth",
@@ -110,6 +164,56 @@
                 "php"
             ],
             "time": "2016-12-03T14:05:30+00:00"
+        },
+        {
+            "name": "appserver-io-psr/cli",
+            "version": "dev-master",
+            "dist": {
+                "type": "path",
+                "url": "../../appserver-io-psr/cli",
+                "reference": "09c345487fed07319f5927f40ed01371618178f5",
+                "shasum": null
+            },
+            "require": {
+                "appserver-io-psr/application": "~1.0",
+                "php": ">=5.4.0"
+            },
+            "require-dev": {
+                "appserver-io/build": "~1.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "AppserverIo\\Psr\\Cli": [
+                        "src/",
+                        "tests/"
+                    ]
+                }
+            },
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Tim Wagner",
+                    "email": "tw@appserver.io",
+                    "homepage": "http://www.appserver.io",
+                    "role": "Developer"
+                }
+            ],
+            "description": "PSR, for the appserver.io CLI",
+            "homepage": "https://github.com/appserver-io-psr/cli",
+            "keywords": [
+                "cli",
+                "console",
+                "interface",
+                "php"
+            ],
+            "support": {
+                "email": "tw@appserver.io",
+                "issues": "https://github.com/appserver-io-psr/cli/issues",
+                "source": "https://github.com/appserver-io-psr/cli"
+            }
         },
         {
             "name": "appserver-io-psr/context",
@@ -9668,16 +9772,16 @@
         },
         {
             "name": "zendframework/zend-serializer",
-            "version": "2.8.1",
+            "version": "2.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-serializer.git",
-                "reference": "7ac42b9a47e9cb23895173a3096bc3b3fb7ac580"
+                "reference": "0172690db48d8935edaf625c4cba38b79719892c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-serializer/zipball/7ac42b9a47e9cb23895173a3096bc3b3fb7ac580",
-                "reference": "7ac42b9a47e9cb23895173a3096bc3b3fb7ac580",
+                "url": "https://api.github.com/repos/zendframework/zend-serializer/zipball/0172690db48d8935edaf625c4cba38b79719892c",
+                "reference": "0172690db48d8935edaf625c4cba38b79719892c",
                 "shasum": ""
             },
             "require": {
@@ -9686,10 +9790,9 @@
                 "zendframework/zend-stdlib": "^2.7 || ^3.0"
             },
             "require-dev": {
-                "doctrine/instantiator": "1.0.*",
-                "phpunit/phpunit": "^5.5",
+                "phpunit/phpunit": "^5.7.25 || ^6.4.4",
                 "zendframework/zend-coding-standard": "~1.0.0",
-                "zendframework/zend-math": "^2.6",
+                "zendframework/zend-math": "^2.6 || ^3.0",
                 "zendframework/zend-servicemanager": "^2.7.5 || ^3.0.3"
             },
             "suggest": {
@@ -9699,8 +9802,8 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.8-dev",
-                    "dev-develop": "2.9-dev"
+                    "dev-master": "2.9.x-dev",
+                    "dev-develop": "2.10.x-dev"
                 },
                 "zf": {
                     "component": "Zend\\Serializer",
@@ -9717,12 +9820,12 @@
                 "BSD-3-Clause"
             ],
             "description": "provides an adapter based interface to simply generate storable representation of PHP types by different facilities, and recover",
-            "homepage": "https://github.com/zendframework/zend-serializer",
             "keywords": [
+                "ZendFramework",
                 "serializer",
-                "zf2"
+                "zf"
             ],
-            "time": "2017-11-20T22:21:04+00:00"
+            "time": "2018-05-14T18:45:18+00:00"
         },
         {
             "name": "zendframework/zend-servicemanager",
@@ -9954,6 +10057,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "appserver-io-psr/cli": 20,
+        "appserver-io-psr/application-server": 20,
         "appserver-io/routlt": 10
     },
     "prefer-stable": false,

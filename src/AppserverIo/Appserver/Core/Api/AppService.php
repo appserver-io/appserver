@@ -23,9 +23,9 @@ namespace AppserverIo\Appserver\Core\Api;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\AppNode;
-use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\Extractors\PharExtractor;
+use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
 /**
  * This services provides access to the deployed application
@@ -76,7 +76,7 @@ class AppService extends AbstractFileOperationService
      * Returns all deployed applications.
      *
      * @return array All deployed applications
-     * @see ServiceInterface::findAll()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::findAll()
      */
     public function findAll()
     {
@@ -149,7 +149,7 @@ class AppService extends AbstractFileOperationService
      * @param string $uuid UUID of the application to return
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\AppNode|null The application with the UUID passed as parameter
-     * @see ServiceInterface::load()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::load()
      */
     public function load($uuid)
     {
@@ -195,12 +195,12 @@ class AppService extends AbstractFileOperationService
      * Soaks the passed archive into from a location in the filesystem
      * to the deploy directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive is bound to
-     * @param \SplFileInfo                                                $archive       The archive to soak
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container the archive is bound to
+     * @param \SplFileInfo                                                                     $archive       The archive to soak
      *
      * @return void
      */
-    public function soak(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
+    public function soak(ContainerConfigurationInterface $containerNode, \SplFileInfo $archive)
     {
         $extractor = $this->getExtractor();
         $extractor->soakArchive($containerNode, $archive);
@@ -210,12 +210,12 @@ class AppService extends AbstractFileOperationService
      * Adds the .dodeploy flag file in the deploy folder, therefore the
      * app will be deployed with the next restart.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the app is bound to
-     * @param \AppserverIo\Configuration\Interfaces\NodeInterface         $appNode       The application node object
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container the app is bound to
+     * @param \AppserverIo\Configuration\Interfaces\NodeInterface                              $appNode       The application node object
      *
      * @return void
      */
-    public function deploy(ContainerNodeInterface $containerNode, NodeInterface $appNode)
+    public function deploy(ContainerConfigurationInterface $containerNode, NodeInterface $appNode)
     {
         // prepare file name
         $extractor = $this->getExtractor();
@@ -232,13 +232,13 @@ class AppService extends AbstractFileOperationService
      * Removes the .deployed flag file from the deploy folder, therefore the
      * app will be undeployed with the next restart.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the app is bound to
-     * @param string                                                      $uuid          UUID of the application to delete
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container the app is bound to
+     * @param string                                                                           $uuid          UUID of the application to delete
      *
      * @return void
      * @todo Add functionality to delete the deployed app
      */
-    public function undeploy(ContainerNodeInterface $containerNode, $uuid)
+    public function undeploy(ContainerConfigurationInterface $containerNode, $uuid)
     {
 
         // try to load the app node with the passe UUID

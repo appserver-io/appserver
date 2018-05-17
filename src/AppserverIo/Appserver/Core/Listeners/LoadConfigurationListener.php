@@ -52,7 +52,7 @@ class LoadConfigurationListener extends AbstractSystemListener
 
         try {
             // load the application server and the naming directory instance
-            /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
+            /** @var \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
             /** @var \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory */
             $namingDirectory = $applicationServer->getNamingDirectory();

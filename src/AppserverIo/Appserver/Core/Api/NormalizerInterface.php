@@ -47,14 +47,14 @@ interface NormalizerInterface
     /**
      * Returns the initial context instance.
      *
-     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial Context
+     * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The initial Context
      */
     public function getInitialContext();
 
     /**
      * Return the service to normalize for.
      *
-     * @return ServiceInterface The service instance
+     * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface The service instance
      */
     public function getService();
 }

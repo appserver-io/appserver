@@ -25,11 +25,10 @@ use AppserverIo\Properties\PropertiesInterface;
 use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\ContainersNode;
-use AppserverIo\Appserver\Core\Api\Node\DeploymentNode;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
-use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
 /**
  * A service that handles deployment configuration data.
@@ -47,7 +46,7 @@ class DeploymentService extends AbstractFileOperationService
      * Returns all deployment configurations.
      *
      * @return array An array with all deployment configurations
-     * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::findAll()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::findAll()
      */
     public function findAll()
     {
@@ -64,8 +63,8 @@ class DeploymentService extends AbstractFileOperationService
      *
      * @param integer $uuid UUID of the deployment to return
      *
-     * @return DeploymentNode The deployment with the UUID passed as parameter
-     * @see ServiceInterface::load()
+     * @return \AppserverIo\Appserver\Core\Api\Node\\DeploymentNode The deployment with the UUID passed as parameter
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::load()
      */
     public function load($uuid)
     {
@@ -78,12 +77,12 @@ class DeploymentService extends AbstractFileOperationService
     /**
      * Initializes the context instance for the passed webapp path.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container to load the context for
-     * @param string                                                      $webappPath    The path to the web application
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container to load the context for
+     * @param string                                                                           $webappPath    The path to the web application
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\ContextNode The initialized context instance
      */
-    public function loadContextInstance(ContainerNodeInterface $containerNode, $webappPath)
+    public function loadContextInstance(ContainerConfigurationInterface $containerNode, $webappPath)
     {
 
         // prepare the context path
@@ -191,14 +190,14 @@ class DeploymentService extends AbstractFileOperationService
      * Loads the container instances from the META-INF/containers.xml configuration file of the
      * passed web application path and add/merge them to/with the system configuration.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface         $containerNode       The container node used for property replacement
-     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration to add/merge the found containers to/with
-     * @param string                                                              $webappPath          The path to the web application to search for a META-INF/containers.xml file
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode       The container node used for property replacement
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface    $systemConfiguration The system configuration to add/merge the found containers to/with
+     * @param string                                                                           $webappPath          The path to the web application to search for a META-INF/containers.xml file
      *
      * @return void
      */
     public function loadContainerInstance(
-        ContainerNodeInterface $containerNode,
+        ContainerConfigurationInterface $containerNode,
         SystemConfigurationInterface $systemConfiguration,
         $webappPath
     ) {
@@ -223,7 +222,7 @@ class DeploymentService extends AbstractFileOperationService
                 // prepare the sytsem properties
                 $this->prepareSystemProperties($properties, $webappPath);
 
-                /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
+                /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNodeInstance */
                 foreach ($containersNodeInstance->getContainers() as $containerNodeInstance) {
                     // replace the properties for the found container node instance
                     $containerNodeInstance->replaceProperties($properties);
@@ -255,13 +254,13 @@ class DeploymentService extends AbstractFileOperationService
      * Loads the containers, defined by the applications, merges them into
      * the system configuration and returns the merged system configuration.
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface The merged system configuration
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface The merged system configuration
      */
     public function loadContainerInstances()
     {
 
         // load the system configuration
-        /** @var \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration */
+        /** @var \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface $systemConfiguration */
         $systemConfiguration = $this->getSystemConfiguration();
 
         // if applications are NOT allowed to override the system configuration
@@ -269,7 +268,7 @@ class DeploymentService extends AbstractFileOperationService
             return $systemConfiguration;
         }
 
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNodeInstance */
+        /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNodeInstance */
         foreach ($systemConfiguration->getContainers() as $containerNode) {
             // load the containers application base directory
             $containerAppBase = $this->getBaseDirectory($containerNode->getHost()->getAppBase());

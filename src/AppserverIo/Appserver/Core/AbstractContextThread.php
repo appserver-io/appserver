@@ -36,7 +36,7 @@ abstract class AbstractContextThread extends AbstractThread
     /**
      * The initial context instance containing the system configuration.
      *
-     * @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface
+     * @var \AppserverIo\Psr\ApplicationServer\ContextInterface
      */
     protected $initialContext;
 
@@ -44,7 +44,7 @@ abstract class AbstractContextThread extends AbstractThread
      * Constructor sets initialContext object per default and calls
      * init function to pass other args.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
+     * @param \AppserverIo\Psr\ApplicationServer\ContextInterface $initialContext The initial context instance
      */
     public function __construct($initialContext)
     {
@@ -74,7 +74,7 @@ abstract class AbstractContextThread extends AbstractThread
     /**
      * Returns the initialContext object
      *
-     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface
+     * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The initial context instance
      */
     public function getInitialContext()
     {

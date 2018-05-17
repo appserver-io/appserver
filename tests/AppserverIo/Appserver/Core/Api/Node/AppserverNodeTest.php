@@ -36,7 +36,7 @@ class AppserverNodeTest extends AbstractTest
     /**
      * The abstract service instance to test.
      *
-     * @var AppserverIo\Appserver\Core\Api\Node\AppserverNodeTest
+     * @var \AppserverIo\Appserver\Core\Api\Node\AppserverNodeTest
      */
     protected $appserverNode;
 

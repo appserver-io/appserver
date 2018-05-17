@@ -70,7 +70,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Returns the system configuration.
      *
-     * @return \AppserverIo\Configuration\Configuration The system configuration
+     * @return  \AppserverIo\Configuration\Interfaces\ConfigurationInterface The system configuration
      */
     public function getAppserverConfiguration()
     {
@@ -82,7 +82,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Returns a dummy container configuration.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node The dummy configuration
+     * @return \AppserverIo\Configuration\Interfaces\ConfigurationInterface The dummy configuration
      */
     public function getContainerConfiguration()
     {
@@ -94,7 +94,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Returns a dummy deployment configuration.
      *
-     * @return \AppserverIo\Configuration\Configuration A dummy deployment configuration
+     * @return  \AppserverIo\Configuration\Interfaces\ConfigurationInterface A dummy deployment configuration
      */
     public function getDeploymentConfiguration()
     {
@@ -144,7 +144,7 @@ abstract class AbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * Returns a deployment node initialized with a mock deployment configuration.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DeplyomentNode The requested deployment node
+     * @return \AppserverIo\Appserver\Core\Api\Node\DeploymentNode The requested deployment node
      */
     public function getDeploymentNode()
     {

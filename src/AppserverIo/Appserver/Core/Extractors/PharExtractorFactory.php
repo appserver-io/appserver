@@ -20,7 +20,7 @@
 namespace AppserverIo\Appserver\Core\Extractors;
 
 use AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * A factory for the PHAR extractor instances.
@@ -37,8 +37,8 @@ class PharExtractorFactory implements ExtractorFactoryInterface
     /**
      * Factory method to create a new PHAR extractor instance.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface       $configuration     The extractor configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer The application server instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface   $configuration     The extractor configuration
      *
      * @return void
      */

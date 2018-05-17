@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface;
 
 /**
  * DTO to transfer a datasource.
@@ -31,7 +32,7 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DatasourceNode extends AbstractNode implements DatasourceNodeInterface
+class DatasourceNode extends AbstractNode implements DatasourceConfigurationInterface
 {
 
     /**

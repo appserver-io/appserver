@@ -23,7 +23,7 @@ namespace AppserverIo\Appserver\Doctrine\Utils;
 use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Core\Api\Node\DatabaseNodeInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\DatabaseConfigurationInterface;
 
 /**
  * Utility class that helps to prepare the Doctrine DBAL connections.
@@ -89,11 +89,11 @@ class ConnectionUtil
      * Creates an array with the connection parameters for a Doctrine DBAL connection from
      * the passed database node.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\DatabaseNodeInterface $databaseNode The database node to create the connection parameters from
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\DatabaseConfigurationInterface $databaseNode The database node to create the connection parameters from
      *
      * @return array The DBAL connection parameters
      */
-    public function fromDatabaseNode(DatabaseNodeInterface $databaseNode)
+    public function fromDatabaseNode(DatabaseConfigurationInterface $databaseNode)
     {
 
         // initialize the connection parameters with the mandatory driver

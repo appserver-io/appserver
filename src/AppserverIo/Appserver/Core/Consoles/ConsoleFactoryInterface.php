@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Core\Consoles;
 
 use AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * Factory to create new console instances.
@@ -38,8 +38,8 @@ interface ConsoleFactoryInterface
     /**
      * Factory method to create new console instances.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface         $consoleNode       The console configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer The application server instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface     $consoleNode       The console configuration
      *
      * @return \AppserverIo\Appserver\Core\Consoles\ConsoleInterface The telnet console instance
      */

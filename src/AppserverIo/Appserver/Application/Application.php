@@ -34,13 +34,12 @@ use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
-use AppserverIo\Psr\Context\ContextInterface as Context;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ProvisionerInterface;
 use AppserverIo\Psr\Application\DirectoryAwareInterface;
 use AppserverIo\Psr\Application\FilesystemAwareInterface;
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
 
 /**
  * The application instance holds all information about the deployed application
@@ -66,7 +65,7 @@ use AppserverIo\Psr\Application\FilesystemAwareInterface;
  * @property string                                                         $containerRunlevel Runlevel of the container the application is bound to
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory   The naming directory instance
  */
-class Application extends \Thread implements ApplicationInterface, DirectoryAwareInterface, FilesystemAwareInterface, Context
+class Application extends \Thread implements ApplicationInterface, DirectoryAwareInterface, FilesystemAwareInterface, \AppserverIo\Psr\Context\ContextInterface
 {
 
     /**
@@ -171,7 +170,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     /**
      * The initial context instance.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
+     * @param \AppserverIo\Psr\ApplicationServer\ContextInterface $initialContext The initial context instance
      *
      * @return void
      */
@@ -409,7 +408,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      * @param string $className The API service class name to return the instance for
      *
      * @return object The service instance
-     * @see \AppserverIo\Appserver\Application\Interfaces\ContextInterface::newService()
+     * @see \AppserverIo\Psr\ApplicationServer\ContextInterface::newService()
      */
     public function newService($className)
     {
@@ -419,7 +418,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     /**
      * Returns the initial context instance.
      *
-     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial Context
+     * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The initial Context
      */
     public function getInitialContext()
     {

@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * Listener that initializes and binds the containers found in the system configuration.
@@ -49,7 +49,7 @@ class StartContainersListener extends AbstractSystemListener
 
         try {
             // load the application server instance
-            /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
+            /** @var \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
 
             // write a log message that the event has been invoked
@@ -79,7 +79,7 @@ class StartContainersListener extends AbstractSystemListener
             $namingDirectory->bind('php:env/group', $applicationServer->getSystemConfiguration()->getGroup());
 
             // and initialize a container thread for each container
-            /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+            /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
             foreach ($applicationServer->getSystemConfiguration()->getContainers() as $containerNode) {
                 // load the factory class name
                 /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerFactoryInterface $containerFactory */

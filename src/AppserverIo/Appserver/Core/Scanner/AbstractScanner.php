@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\Core\Scanner;
 
 use AppserverIo\Appserver\Core\AbstractContextThread;
 use AppserverIo\Appserver\Core\Interfaces\ScannerInterface;
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
 
 /**
  * Abstract scanner which provides basic functionality to its children.
@@ -99,10 +100,10 @@ abstract class AbstractScanner extends AbstractContextThread implements ScannerI
      * Constructor sets initialContext object per default and calls
      * init function to pass other args.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
-     * @param string                                                         $name           The unique scanner name from the configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ContextInterface $initialContext The initial context instance
+     * @param string                                              $name           The unique scanner name from the configuration
      */
-    public function __construct($initialContext, $name)
+    public function __construct(ContextInterface $initialContext, $name)
     {
 
         // invoke parent constructor
@@ -184,7 +185,7 @@ abstract class AbstractScanner extends AbstractContextThread implements ScannerI
      *
      * @param string $className The API service class name to return the instance for
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The service instance
+     * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface The service instance
      * @see \AppserverIo\Appserver\Core\InitialContext::newService()
      */
     public function newService($className)

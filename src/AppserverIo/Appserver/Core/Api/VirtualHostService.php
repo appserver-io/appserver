@@ -36,7 +36,7 @@ class VirtualHostService extends AbstractService
      * Returns all configured virtual hosts.
      *
      * @return array All configured virtual hosts
-     * @see ServiceInterface::findAll()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::findAll()
      */
     public function findAll()
     {
@@ -57,7 +57,7 @@ class VirtualHostService extends AbstractService
      * @param string $uuid UUID of the virtual host to return
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\VirtualHostNode|null The virtual host with the UUID passed as parameter
-     * @see ServiceInterface::load()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::load()
      */
     public function load($uuid)
     {

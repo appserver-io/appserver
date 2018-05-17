@@ -36,7 +36,7 @@ class MockContainerThread
 {
 
     /**
-     *@see \AppserverIo\Appserver\Core\ContainerThread::__construct()
+     *@see \AppserverIo\Appserver\Core\AbstractContainerThread::__construct()
      */
     public function __construct($initialContext, $id)
     {}

@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\EventInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * Listener that shutdown the applications for each container bound to the application server.
@@ -48,7 +48,7 @@ class ShutdownApplicationsListener extends AbstractSystemListener
 
         try {
             // load the application server and the naming directory instance
-            /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
+            /** @var \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
             /** @var \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory */
             $namingDirectory = $applicationServer->getNamingDirectory();
@@ -57,7 +57,7 @@ class ShutdownApplicationsListener extends AbstractSystemListener
             $applicationServer->getSystemLogger()->info($event->getName());
 
             // deploy the applications for all containers
-            /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+            /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
             foreach ($applicationServer->getSystemConfiguration()->getContainers() as $containerNode) {
                 // load the container instance to deploy the applications for
                 /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container */

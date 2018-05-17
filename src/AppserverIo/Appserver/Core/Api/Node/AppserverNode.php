@@ -24,7 +24,10 @@ use AppserverIo\Description\Api\Node\NodeValue;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\FileKeys;
-use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\AppConfigurationInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
 /**
  * DTO to transfer the application server's complete configuration.
@@ -62,49 +65,56 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     /**
      * The node containing information about the initial context.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\InitialContextNode @AS\Mapping(nodeName="initialContext", nodeType="AppserverIo\Appserver\Core\Api\Node\InitialContextNode")
+     * @var \AppserverIo\Psr\ApplicationServer\Configuration\InitialContextConfigurationInterface
+     * @AS\Mapping(nodeName="initialContext", nodeType="AppserverIo\Appserver\Core\Api\Node\InitialContextNode")
      */
     protected $initialContext;
 
     /**
      * Array with nodes for the registered loggers.
      *
-     * @var array @AS\Mapping(nodeName="loggers/logger", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LoggerNode")
+     * @var array
+     * @AS\Mapping(nodeName="loggers/logger", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LoggerNode")
      */
     protected $loggers = array();
 
     /**
      * Array with nodes for the registered extractors.
      *
-     * @var array @AS\Mapping(nodeName="extractors/extractor", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ExtractorNode")
+     * @var array
+     * @AS\Mapping(nodeName="extractors/extractor", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ExtractorNode")
      */
     protected $extractors = array();
 
     /**
      * Array with nodes for the registered containers.
      *
-     * @var array @AS\Mapping(nodeName="containers/container", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContainerNode")
+     * @var array
+     * @AS\Mapping(nodeName="containers/container", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContainerNode")
      */
     protected $containers = array();
 
     /**
      * Array with the information about the deployed applications.
      *
-     * @var array @AS\Mapping(nodeName="apps/app", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AppNode")
+     * @var array
+     * @AS\Mapping(nodeName="apps/app", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AppNode")
      */
     protected $apps = array();
 
     /**
      * Array with nodes for the registered datasources.
      *
-     * @var array @AS\Mapping(nodeName="datasources/datasource", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\DatasourceNode")
+     * @var array
+     * @AS\Mapping(nodeName="datasources/datasource", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\DatasourceNode")
      */
     protected $datasources = array();
 
     /**
      * Array with nodes for the registered scanners.
      *
-     * @var array @AS\Mapping(nodeName="scanners/scanner", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ScannerNode")
+     * @var array
+     * @AS\Mapping(nodeName="scanners/scanner", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ScannerNode")
      */
     protected $scanners = array();
 
@@ -240,7 +250,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     /**
      * Returns the node containing information about the initial context.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\InitialContextNode The initial context information
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\InitialContextConfigurationInterface The initial context information
      */
     public function getInitialContext()
     {
@@ -292,12 +302,12 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      *
      * @param string $name The name of the container to return
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface The container node matching the passed name
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface The container node matching the passed name
      */
     public function getContainer($name)
     {
         // try to match one of the container names with the passed name
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $container */
+        /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $container */
         foreach ($this->getContainers() as $container) {
             if (fnmatch($name, $container->getName())) {
                 return $container;
@@ -317,7 +327,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
         $containers = array();
 
         // iterate over all found containers and assemble the array
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $container */
+        /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $container */
         foreach ($this->getContainers() as $container) {
             $containers[$container->getName()] = $container;
         }
@@ -329,11 +339,11 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     /**
      * Attaches the passed container node.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $container The container node to attach
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $container The container node to attach
      *
      * @return void
      */
-    public function attachContainer(ContainerNodeInterface $container)
+    public function attachContainer(ContainerConfigurationInterface $container)
     {
         $this->containers[$container->getPrimaryKey()] = $container;
     }
@@ -351,11 +361,11 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     /**
      * Attaches the passed app node.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\AppNode $app The app node to attach
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\AppConfigurationInterface $app The app node to attach
      *
      * @return void
      */
-    public function attachApp(AppNode $app)
+    public function attachApp(AppConfigurationInterface $app)
     {
         $this->apps[$app->getPrimaryKey()] = $app;
     }
@@ -373,11 +383,11 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     /**
      * Attaches the passed datasource node.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\DatasourceNode $datasource The datasource node to attach
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface $datasource The datasource node to attach
      *
      * @return void
      */
-    public function attachDatasource(DatasourceNode $datasource)
+    public function attachDatasource(DatasourceConfigurationInterface $datasource)
     {
         $this->datasources[$datasource->getPrimaryKey()] = $datasource;
     }

@@ -38,7 +38,7 @@ class AbstractParamsNodeTest extends AbstractTest
     /**
      * The abstract node instance to test.
      *
-     * @var AppserverIo\Appserver\Core\Api\Node\Mock\MockAbstractParamsNode
+     * @var \AppserverIo\Appserver\Core\Api\Node\Mock\MockAbstractParamsNode
      */
     protected $abstractParamsNode;
 

@@ -21,8 +21,8 @@
 namespace AppserverIo\Appserver\Core\Commands;
 
 use React\Socket\ConnectionInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
 use AppserverIo\Appserver\Console\ConsoleContextInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * The command implementation for application based commands.
@@ -53,7 +53,7 @@ class ConsoleCommand extends AbstractCommand
     /**
      * The application server instance.
      *
-     * @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface
+     * @var \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface
      */
     protected $applicationServer;
 
@@ -61,8 +61,8 @@ class ConsoleCommand extends AbstractCommand
      * Initializes the command with the connection and the application server
      * instance to execute the command on.
      *
-     * @param \React\Socket\ConnectionInterface                                 $connection        The connection instance
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance
+     * @param \React\Socket\ConnectionInterface                             $connection        The connection instance
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer The application server instance
      */
     public function __construct(ConnectionInterface $connection, ApplicationServerInterface $applicationServer)
     {

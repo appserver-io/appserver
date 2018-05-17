@@ -30,9 +30,9 @@ use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
 use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Server\Dictionaries\ServerStateKeys;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
-use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
 use AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
 /**
  * Abstract container implementation.
@@ -45,12 +45,12 @@ use AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface         $namingDirectory Naming directory used for binding various information to
- * @property \AppserverIo\Appserver\Core\Api\AppService               $service         The app service used to bind applications to the configuration
- * @property \AppserverIo\Appserver\Core\Api\Node\ContainerNode       $containerNode   The container node information
- * @property \AppserverIo\Storage\GenericStackable                    $applications    The initialized applications
- * @property \AppserverIo\Appserver\Core\Utilities\ContainerStateKeys $containerState  The actual container state
- * @property string                                                   $runlevel        The runlevel the container has been started in
+ * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface                                 $namingDirectory Naming directory used for binding various information to
+ * @property \AppserverIo\Appserver\Core\Api\AppService                                       $service         The app service used to bind applications to the configuration
+ * @property \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode   The container node information
+ * @property \AppserverIo\Storage\GenericStackable                                            $applications    The initialized applications
+ * @property \AppserverIo\Appserver\Core\Utilities\ContainerStateKeys                         $containerState  The actual container state
+ * @property string                                                                           $runlevel        The runlevel the container has been started in
  */
 abstract class AbstractContainerThread extends AbstractContextThread implements ContainerInterface
 {
@@ -66,15 +66,15 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      * Initializes the container with the initial context, the unique container ID
      * and the deployed applications.
      *
-     * @param \AppserverIo\Appserver\Core\InitialContext                  $initialContext  The initial context
-     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface            $namingDirectory The naming directory
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode   The container node
-     * @param string                                                      $runlevel        The runlevel the container has been started in
+     * @param \AppserverIo\Psr\ApplicationServer\ContextInterface                              $initialContext  The initial context
+     * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface                                 $namingDirectory The naming directory
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode   The container node
+     * @param string                                                                           $runlevel        The runlevel the container has been started in
      */
     public function __construct(
         ContextInterface $initialContext,
         NamingDirectoryInterface $namingDirectory,
-        ContainerNodeInterface $containerNode,
+        ContainerConfigurationInterface $containerNode,
         $runlevel
     ) {
         $this->initialContext = $initialContext;
@@ -371,7 +371,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
     /**
      * Returns the initial context instance.
      *
-     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial context instance
+     * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The initial context instance
      * @see \AppserverIo\Appserver\Core\Interfaces\ContainerInterface::getInitialContext()
      */
     public function getInitialContext()
@@ -384,7 +384,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      *
      * @param string $className The API service class name to return the instance for
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The service instance
+     * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface The service instance
      * @see \AppserverIo\Appserver\Core\InitialContext::newService()
      */
     public function newService($className)

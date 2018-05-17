@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface;
 
 /**
  * DTO to transfer a host.
@@ -32,7 +33,7 @@ use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class HostNode extends AbstractNode implements HostNodeInterface
+class HostNode extends AbstractNode implements HostConfigurationInterface
 {
 
     /**

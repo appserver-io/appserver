@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Scanner;
 
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
+
 /**
  * Scanner to check for proper functioning of the appserver.
  *
@@ -64,10 +66,10 @@ class HeartbeatScanner extends AbstractScanner
      * Constructor sets initialContext object per default and calls
      * init function to pass other args.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
-     * @param string                                                         $name           The unique scanner name from the configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ContextInterface $initialContext The initial context instance
+     * @param string                                              $name           The unique scanner name from the configuration
      */
-    public function __construct($initialContext, $name)
+    public function __construct(ContextInterface $initialContext, $name)
     {
 
         // call parent constructor

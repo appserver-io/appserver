@@ -48,11 +48,11 @@ class LoadLoggersListener extends AbstractSystemListener
 
         try {
             // load the application server, naming directory and system configuration instance
-            /** @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer */
+            /** @var \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer */
             $applicationServer = $this->getApplicationServer();
             /** @var \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory */
             $namingDirectory = $applicationServer->getNamingDirectory();
-            /** @var \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration */
+            /** @var \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface $systemConfiguration */
             $systemConfiguration = $applicationServer->getSystemConfiguration();
 
             // initialize the loggers

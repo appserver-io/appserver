@@ -89,7 +89,7 @@ interface ContainerInterface
     /**
      * Returns the initial context instance.
      *
-     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial context instance
+     * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The initial context instance
      */
     public function getInitialContext();
 
@@ -114,7 +114,7 @@ interface ContainerInterface
      *
      * @param string $className The API service class name to return the instance for
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The service instance
+     * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The service instance
      */
     public function newService($className);
 

@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Scanner;
 
 use AppserverIo\Microcron\CronExpression;
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
 use AppserverIo\Appserver\Core\Api\Node\JobNodeInterface;
 
 /**
@@ -47,11 +48,11 @@ class CronScanner extends AbstractScanner
      * Constructor sets initialContext object per default and calls
      * init function to pass other args.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
-     * @param string                                                         $name           The unique scanner name from the configuration
-     * @param integer                                                        $interval       The interval in seconds we want to execute the configured jobs
+     * @param \AppserverIo\Psr\ApplicationServer\ContextInterface $initialContext The initial context instance
+     * @param string                                              $name           The unique scanner name from the configuration
+     * @param integer                                             $interval       The interval in seconds we want to execute the configured jobs
      */
-    public function __construct($initialContext, $name, $interval = 1)
+    public function __construct(ContextInterface $initialContext, $name, $interval = 1)
     {
 
         // call parent constructor

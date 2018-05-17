@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Psr\ApplicationServer\Configuration\DatabaseConfigurationInterface;
 
 /**
  * DTO to transfer a datasource.
@@ -31,117 +32,117 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
+class DatabaseNode extends AbstractNode implements DatabaseConfigurationInterface
 {
 
     /**
      * The database driver information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DriverNode
-     * @AS\Mapping(nodeName="driver", nodeType="AppserverIo\Appserver\Core\Api\Node\DriverNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="driver", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $driver;
 
     /**
      * The database user information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\UserNode
-     * @AS\Mapping(nodeName="user", nodeType="AppserverIo\Appserver\Core\Api\Node\UserNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="user", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $user;
 
     /**
      * The database password information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\PasswordNode
-     * @AS\Mapping(nodeName="password", nodeType="AppserverIo\Appserver\Core\Api\Node\PasswordNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="password", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $password;
 
     /**
      * The database name information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DatabaseNameNode
-     * @AS\Mapping(nodeName="databaseName", nodeType="AppserverIo\Appserver\Core\Api\Node\DatabaseNameNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="databaseName", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $databaseName;
 
     /**
      * The database path information (when using sqlite for example).
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\PathNode
-     * @AS\Mapping(nodeName="path", nodeType="AppserverIo\Appserver\Core\Api\Node\PathNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="path", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $path;
 
     /**
      * The flag to run Sqlite in memory (mutually exclusive with the path option).
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\MemoryNode
-     * @AS\Mapping(nodeName="memory", nodeType="AppserverIo\Appserver\Core\Api\Node\MemoryNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="memory", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $memory;
 
     /**
      * The database host information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DatabaseHostNode
-     * @AS\Mapping(nodeName="databaseHost", nodeType="AppserverIo\Appserver\Core\Api\Node\DatabaseHostNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="databaseHost", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $databaseHost;
 
     /**
      * The database port information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DatabasePortNode
-     * @AS\Mapping(nodeName="databasePort", nodeType="AppserverIo\Appserver\Core\Api\Node\DatabasePortNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="databasePort", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $databasePort;
 
     /**
      * The database charset information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\CharsetNode
-     * @AS\Mapping(nodeName="charset", nodeType="AppserverIo\Appserver\Core\Api\Node\CharsetNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="charset", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $charset;
 
     /**
      * The database driver options.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DriverOptionsNode
-     * @AS\Mapping(nodeName="driverOptions", nodeType="AppserverIo\Appserver\Core\Api\Node\DriverOptionsNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="driverOptions", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $driverOptions;
 
     /**
      * The name of the socket used to connect to the database.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\UnixSocketNode
-     * @AS\Mapping(nodeName="unixSocket", nodeType="AppserverIo\Appserver\Core\Api\Node\UnixSocketNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="unixSocket", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $unixSocket;
 
     /**
      * The DB platform.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\PlatformNode
-     * @AS\Mapping(nodeName="platform", nodeType="AppserverIo\Appserver\Core\Api\Node\PlatformNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="platform", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $platform;
 
     /**
      * The server version we want to connect to.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ServerVersionNode
-     * @AS\Mapping(nodeName="serverVersion", nodeType="AppserverIo\Appserver\Core\Api\Node\ServerVersionNode")
+     * @var \AppserverIo\Description\Api\Node\ValueNode
+     * @AS\Mapping(nodeName="serverVersion", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $serverVersion;
 
     /**
      * Returns the database driver information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DriverNode The database driver information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The database driver information
      */
     public function getDriver()
     {
@@ -151,7 +152,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the database user information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\UserNode The database user information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The database user information
      */
     public function getUser()
     {
@@ -161,7 +162,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the database password information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PasswordNode The database password information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The database password information
      */
     public function getPassword()
     {
@@ -171,7 +172,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the database name information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DatabaseNameNode The database name information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The database name information
      */
     public function getDatabaseName()
     {
@@ -181,7 +182,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the database path information (when using sqlite for example).
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PathNode The database path information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The database path information
      */
     public function getPath()
     {
@@ -191,7 +192,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the flag to run Sqlite in memory (mutually exclusive with the path option).
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PathNode The flag to run Sqlite in memory
+     * @return \AppserverIo\Description\Api\Node\ValueNode The flag to run Sqlite in memory
      */
     public function getMemory()
     {
@@ -201,7 +202,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the database host information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DatabaseHostNode The database host information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The database host information
      */
     public function getDatabaseHost()
     {
@@ -211,7 +212,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the database port information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DatabasePortNode The database port information
+     * @return \AppserverIo\Description\Api\Node\ValueNode The database port information
      */
     public function getDatabasePort()
     {
@@ -221,7 +222,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the database charset to use.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\CharsetNode The database charset
+     * @return \AppserverIo\Description\Api\Node\ValueNode The database charset
      */
     public function getCharset()
     {
@@ -231,7 +232,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the database driver options.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DriverOptionsNode The database driver options
+     * @return \AppserverIo\Description\Api\Node\ValueNode The database driver options
      */
     public function getDriverOptions()
     {
@@ -241,7 +242,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the name of the socket used to connect to the database.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\UnixSocketNode The name of the socket
+     * @return \AppserverIo\Description\Api\Node\ValueNode The name of the socket
      */
     public function getUnixSocket()
     {
@@ -251,7 +252,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the server version we want to connect to.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\ServerVersionNode The server version to connect to
+     * @return \AppserverIo\Description\Api\Node\ValueNode The server version to connect to
      */
     public function getServerVersion()
     {
@@ -261,7 +262,7 @@ class DatabaseNode extends AbstractNode implements DatabaseNodeInterface
     /**
      * Returns the DB platform.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\PlatformNode The DB platform
+     * @return \AppserverIo\Description\Api\Node\ValueNode The DB platform
      */
     public function getPlatform()
     {

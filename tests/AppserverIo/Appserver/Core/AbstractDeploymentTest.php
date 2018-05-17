@@ -60,8 +60,8 @@ class AbstractDeploymentTest extends AbstractTest
         $className = 'AppserverIo\Configuration\Configuration';
 
         // mock the initial context
-        $mockInitialContext = $this->getMockBuilder('AppserverIo\Appserver\Application\Interfaces\ContextInterface')
-                                   ->setMethods(get_class_methods('AppserverIo\Appserver\Application\Interfaces\ContextInterface'))
+        $mockInitialContext = $this->getMockBuilder('AppserverIo\Psr\ApplicationServer\ContextInterface')
+                                   ->setMethods(get_class_methods('AppserverIo\Psr\ApplicationServer\ContextInterface'))
                                    ->getMock();
         $mockInitialContext->expects($this->once())
                            ->method('newInstance')

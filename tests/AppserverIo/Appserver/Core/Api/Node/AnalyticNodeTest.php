@@ -45,7 +45,7 @@ class AnalyticNodeTest extends AbstractTest
      * Initializes an analytic node class we want to test.
      *
      * @return void
-     * @see PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit_Framework_TestCase::setUp()
      */
     protected function setUp()
     {

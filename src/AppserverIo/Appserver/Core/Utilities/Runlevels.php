@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Utilities;
 
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * Utility class that contains the application server's runlevels.

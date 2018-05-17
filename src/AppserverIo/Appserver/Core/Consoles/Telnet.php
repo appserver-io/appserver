@@ -23,7 +23,7 @@ namespace AppserverIo\Appserver\Core\Consoles;
 use AppserverIo\Appserver\Core\Commands\CommandFactory;
 use AppserverIo\Appserver\Core\Commands\Helper\Arguments;
 use AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * A Telnet based management console implementation using a React PHP socket server.
@@ -68,8 +68,8 @@ class Telnet extends \Thread implements ConsoleInterface
     /**
      * Initialize and start the management console.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The reference to the server
-     * @param \AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface         $consoleNode       The console configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer The reference to the server
+     * @param \AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface     $consoleNode       The console configuration
      *
      * @return void
      */
