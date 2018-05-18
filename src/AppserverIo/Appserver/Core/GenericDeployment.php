@@ -177,7 +177,7 @@ class GenericDeployment extends AbstractDeployment
                     $datasourcesNode->replaceProperties($systemProperties);
 
                     // store the datasource in the system configuration
-                    /** @var \AppserverIo\Appserver\Core\Api\Node\DatasourceNode $datasourceNode */
+                    /** @var \AppserverIo\Description\Api\Node\DatasourceNode $datasourceNode */
                     foreach ($datasourcesNode->getDatasources() as $datasourceNode) {
                         // add the datasource to the system configuration
                         $this->getDatasourceService()->persist($datasourceNode);

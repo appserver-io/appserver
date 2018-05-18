@@ -20,6 +20,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Appserver\Core\AbstractTest;
+use AppserverIo\Description\Api\Node\DatasourceNode;
 
 /**
  * Test for the abstract node implementatin.
@@ -36,7 +37,7 @@ class AppserverNodeTest extends AbstractTest
     /**
      * The abstract service instance to test.
      *
-     * @var AppserverIo\Appserver\Core\Api\Node\AppserverNodeTest
+     * @var \AppserverIo\Appserver\Core\Api\Node\AppserverNodeTest
      */
     protected $appserverNode;
 

@@ -41,14 +41,14 @@ class MockStorage extends AbstractStorage
 
     /**
      *
-     * @see AppserverIo\Appserver\Core\InitialContext\AbstractStorage::init();
+     * @see \AppserverIo\Storage\AbstractStorage::init();
      */
     public function init()
     {}
 
     /**
      *
-     * @see \AppserverIo\Appserver\Core\InitialContext\StorageInterface::set($entryIdentifier, $data, array $tags = array(), $lifetime = NULL)
+     * @see \AppserverIo\Storage\StorageInterface::set($entryIdentifier, $data, array $tags = array(), $lifetime = NULL)
      */
     public function set($entryIdentifier, $data, array $tags = array(), $lifetime = NULL)
     {
@@ -57,7 +57,7 @@ class MockStorage extends AbstractStorage
 
     /**
      *
-     * @see \AppserverIo\Appserver\Core\InitialContext\StorageInterface::get($entryIdentifier)
+     * @see \AppserverIo\Storage\StorageInterface::get($entryIdentifier)
      */
     public function get($entryIdentifier)
     {
@@ -69,21 +69,21 @@ class MockStorage extends AbstractStorage
 
     /**
      *
-     * @see \AppserverIo\Appserver\Core\InitialContext\StorageInterface::getByTag($tag)
+     * @see \AppserverIo\Storage\StorageInterface::getByTag($tag)
      */
     public function getByTag($tag)
     {}
 
     /**
      *
-     * @see \AppserverIo\Appserver\Core\InitialContext\StorageInterface::has($entryIdentifier)
+     * @see \AppserverIo\Storage\StorageInterface::has($entryIdentifier)
      */
     public function has($entryIdentifier)
     {}
 
     /**
      *
-     * @see \AppserverIo\Appserver\Core\InitialContext\StorageInterface::remove($entryIdentifier)
+     * @see \AppserverIo\Storage\StorageInterface::remove($entryIdentifier)
      */
     public function remove($entryIdentifier)
     {
@@ -92,42 +92,42 @@ class MockStorage extends AbstractStorage
 
     /**
      *
-     * @see \AppserverIo\Appserver\Core\InitialContext\StorageInterface::flush()
+     * @see \AppserverIo\Storage\StorageInterface::flush()
      */
     public function flush()
     {}
 
     /**
      *
-     * @see \AppserverIo\Appserver\Core\InitialContext\StorageInterface::flushByTag($tag)
+     * @see \AppserverIo\Storage\StorageInterface::flushByTag($tag)
      */
     public function flushByTag($tag)
     {}
 
     /**
      *
-     * @see \AppserverIo\Appserver\Core\InitialContext\StorageInterface::collectGarbage()
+     * @see \AppserverIo\Storage\StorageInterface::collectGarbage()
      */
     public function collectGarbage()
     {}
 
     /**
      *
-     * @see \AppserverIo\Appserver\Core\InitialContext\StorageInterface::isValidEntryIdentifier($identifier)
+     * @see \AppserverIo\Storage\StorageInterface::isValidEntryIdentifier($identifier)
      */
     public function isValidEntryIdentifier($identifier)
     {}
 
     /**
      *
-     * @see \AppserverIo\Appserver\Core\InitialContext\StorageInterface::isValidTag($tag)
+     * @see \AppserverIo\Storage\StorageInterface::isValidTag($tag)
      */
     public function isValidTag($tag)
     {}
 
     /**
      *
-     * @see \AppserverIo\Appserver\Core\InitialContext\StorageInterface::getAllKeys()
+     * @see \AppserverIo\Storage\StorageInterface::getAllKeys()
      */
     public function getAllKeys()
     {}

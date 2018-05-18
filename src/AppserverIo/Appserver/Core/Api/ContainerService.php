@@ -148,7 +148,7 @@ class ContainerService extends AbstractFileOperationService
      * Return's all container node configurations.
      *
      * @return array An array with container node configurations
-     * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::findAll()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::findAll()
      */
     public function findAll()
     {
@@ -186,7 +186,7 @@ class ContainerService extends AbstractFileOperationService
      * @param string $uuid Unique UUID of the container to return
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\ContainerNode The container with the UUID passed as parameter
-     * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::load($uuid)
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::load($uuid)
      */
     public function load($uuid)
     {
@@ -236,7 +236,7 @@ class ContainerService extends AbstractFileOperationService
         }
 
         // create the container specific directories
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
         foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
             // iterate over the container host's directories
             foreach ($containerNode->getHost()->getDirectories() as $directory) {
@@ -399,7 +399,7 @@ class ContainerService extends AbstractFileOperationService
                 // first check if it is a fresh installation
                 if ($isInstalledFlag->isReadable() === false) {
                      // first iterate over all containers deploy directories and look for application archives
-                     /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+                     /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
                     foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
                         // iterate over all found application archives and create the .dodeploy flag file
                         foreach (glob($this->getDeployDir($containerNode, '/*.phar')) as $archive) {
@@ -455,7 +455,7 @@ class ContainerService extends AbstractFileOperationService
             FileSystem::recursiveChmod($this->getSystemTmpDir());
 
             // ... and change own and mod for the container specific directories
-            /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+            /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
             foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
                 FileSystem::recursiveChown($this->getWebappsDir($containerNode), $user, $group);
                 FileSystem::recursiveChmod($this->getWebappsDir($containerNode));

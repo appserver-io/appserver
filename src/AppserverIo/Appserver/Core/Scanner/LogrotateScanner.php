@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Scanner;
 
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
 
 /**
  * This is a scanner that watches a flat directory for files that has to
@@ -111,13 +111,13 @@ class LogrotateScanner extends AbstractScanner
      * Constructor sets initialContext object per default and calls
      * init function to pass other args.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext    The initial context instance
-     * @param string                                                         $name              The unique scanner name from the configuration
-     * @param string                                                         $directory         The directory we want to scan
-     * @param integer                                                        $interval          The interval in seconds we want scan the directory
-     * @param string                                                         $extensionsToWatch The comma separeted list with extensions of files we want to watch
-     * @param integer                                                        $maxFiles          The maximal amount of files to keep (0 means unlimited)
-     * @param integer                                                        $maxSize           The maximal size of a log file in byte (limited to a technical max of 2GB)
+     * @param \AppserverIo\Psr\ApplicationServer\ContextInterface $initialContext    The initial context instance
+     * @param string                                              $name              The unique scanner name from the configuration
+     * @param string                                              $directory         The directory we want to scan
+     * @param integer                                             $interval          The interval in seconds we want scan the directory
+     * @param string                                              $extensionsToWatch The comma separeted list with extensions of files we want to watch
+     * @param integer                                             $maxFiles          The maximal amount of files to keep (0 means unlimited)
+     * @param integer                                             $maxSize           The maximal size of a log file in byte (limited to a technical max of 2GB)
      */
     public function __construct(
         ContextInterface $initialContext,

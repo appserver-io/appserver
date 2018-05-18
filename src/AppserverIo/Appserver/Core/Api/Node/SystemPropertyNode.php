@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\ParamNode;
+
 /**
  * DTO to transfer a system property.
  *

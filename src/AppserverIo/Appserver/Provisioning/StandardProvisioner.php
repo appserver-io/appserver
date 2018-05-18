@@ -76,7 +76,7 @@ class StandardProvisioner extends AbstractProvisioner
             $configurationService = $this->getInitialContext()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
 
             // load the container node to initialize the system properties
-            /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+            /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
             $containerNode = $application->getContainer()->getContainerNode();
 
             // iterate through all provisioning files (provision.xml), validate them and attach them to the configuration

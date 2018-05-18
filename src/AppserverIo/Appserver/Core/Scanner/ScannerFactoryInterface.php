@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Core\Scanner;
 
 use AppserverIo\Appserver\Core\Api\Node\ScannerNodeInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * Interface for a scanner factory implementation.
@@ -38,8 +38,8 @@ interface ScannerFactoryInterface
     /**
      * Creates a new scanner instance and attaches it to the passed server instance.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $server      The server instance to add the scanner to
-     * @param \AppserverIo\Appserver\Core\Api\Node\ScannerNodeInterface         $scannerNode The scanner configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $server      The server instance to add the scanner to
+     * @param \AppserverIo\Appserver\Core\Api\Node\ScannerNodeInterface     $scannerNode The scanner configuration
      *
      * @return object The scanner instance
      */

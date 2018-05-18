@@ -22,6 +22,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
 /**
  * DTO to transfer a container.
@@ -33,7 +34,7 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ContainerNode extends AbstractNode implements ContainerNodeInterface
+class ContainerNode extends AbstractNode implements ContainerConfigurationInterface
 {
 
     /**
@@ -194,7 +195,7 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
     /**
      * Returns the host configuration information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\HostNode The host configuration information
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface The host configuration information
      */
     public function getHost()
     {
@@ -204,7 +205,7 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
     /**
      * Returns the deployment configuration information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DeploymentNode The deployment configuration information
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\DeploymentConfigurationInterface The deployment configuration information
      */
     public function getDeployment()
     {
@@ -286,11 +287,11 @@ class ContainerNode extends AbstractNode implements ContainerNodeInterface
     /**
      *This method merges the passed container node into this one.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container node to merge
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container node to merge
      *
      * @return void
      */
-    public function merge(ContainerNodeInterface $containerNode)
+    public function merge(ContainerConfigurationInterface $containerNode)
     {
         // iterate over this container server nodes
         /** @var \AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface $serverNode */

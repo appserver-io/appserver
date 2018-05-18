@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Psr\ApplicationServer\Configuration\InitialContextConfigurationInterface;
 
 /**
  * DTO to transfer initial context information.
@@ -31,7 +32,7 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class InitialContextNode extends AbstractNode
+class InitialContextNode extends AbstractNode implements InitialContextConfigurationInterface
 {
 
     /**
@@ -53,7 +54,7 @@ class InitialContextNode extends AbstractNode
     /**
      * Node containing information about the storage implementation used by the inital context.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\StorageNode
+     * @var \AppserverIo\Psr\ApplicationServer\Configuration\StorageConfigurationInterface
      * @AS\Mapping(nodeName="storage", nodeType="AppserverIo\Appserver\Core\Api\Node\StorageNode")
      */
     protected $storage;
@@ -111,7 +112,7 @@ class InitialContextNode extends AbstractNode
     /**
      * Returns the storage configuration information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\StorageNode The node with the storage information
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\StorageConfigurationInterface The node with the storage information
      */
     public function getStorage()
     {

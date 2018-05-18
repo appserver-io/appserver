@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface;
 
 /**
  * DTO to transfer a applications provision configuration.
@@ -37,8 +38,8 @@ class ProvisionNode extends AbstractNode
     /**
      * The node containing datasource information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DatasourceNode
-     * @AS\Mapping(nodeName="datasource", nodeType="AppserverIo\Appserver\Core\Api\Node\DatasourceNode")
+     * @var \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface
+     * @AS\Mapping(nodeName="datasource", nodeType="AppserverIo\Description\Api\Node\DatasourceNode")
      */
     protected $datasource;
 
@@ -53,11 +54,11 @@ class ProvisionNode extends AbstractNode
     /**
      * Injects the datasource node.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\DatasourceNode $datasource The datasource node to inject
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface $datasource The datasource node to inject
      *
      * @return void
      */
-    public function injectDatasource(DatasourceNode $datasource)
+    public function injectDatasource(DatasourceConfigurationInterface $datasource)
     {
         $this->datasource = $datasource;
     }
@@ -65,7 +66,7 @@ class ProvisionNode extends AbstractNode
     /**
      * Returns the node containing datasource information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DatasourceNode The node containing datasource information
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface The node containing datasource information
      */
     public function getDatasource()
     {

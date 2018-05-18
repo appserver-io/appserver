@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Interfaces;
 
-use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
 /**
  * Interface for extractor implementations.
@@ -65,36 +65,36 @@ interface ExtractorInterface
      * into the deploy directory and prepares it for the next
      * restart by setting the appropriate flag.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
-     * @param \SplFileInfo                                                $archive       The archive to be soaked
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                                     $archive       The archive to be soaked
      *
      * @return void
      */
-    public function soakArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive);
+    public function soakArchive(ContainerConfigurationInterface $containerNode, \SplFileInfo $archive);
 
     /**
      * Extracts the passed archive to a folder with the
      * basename of the archive file.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
-     * @param \SplFileInfo                                                $archive       The archive file to be deployed
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                                     $archive       The archive file to be deployed
      *
      * @throws \Exception
      * @return void
      */
-    public function deployArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive);
+    public function deployArchive(ContainerConfigurationInterface $containerNode, \SplFileInfo $archive);
 
     /**
      * Un-deploys the passed archive after backing up
      * files that are NOT part of the archive.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
-     * @param \SplFileInfo                                                $archive       The archive file to be un-deployed
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                                     $archive       The archive file to be un-deployed
      *
      * @throws \Exception
      * @return void
      */
-    public function undeployArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive);
+    public function undeployArchive(ContainerConfigurationInterface $containerNode, \SplFileInfo $archive);
 
     /**
      * Checks if archive is deployable.

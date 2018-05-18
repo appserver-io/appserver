@@ -90,17 +90,17 @@
                 <descriptor>AppserverIo\Description\PreferenceDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\BeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\ServletDescriptor</descriptor>
+                <descriptor>AppserverIo\Description\FixtureDescriptor</descriptor>
+                <descriptor>AppserverIo\Description\MigrationDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\MessageDrivenBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\StatefulSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\SingletonSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\StatelessSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Routlt\Description\PathDescriptor</descriptor>
                 <descriptor>AppserverIo\Routlt\Description\ResultDescriptor</descriptor>
-                <descriptor>AppserverIo\Console\Server\Doctrine\Fixtures\Description\FixtureDescriptor</descriptor>
-                <descriptor>AppserverIo\Console\Server\Doctrine\DBAL\Migrations\Description\MigrationDescriptor</descriptor>
             </descriptors>
             <directories>
-                <directory>${vendor.dir}/appserver-io/console/etc/appserver/conf.d</directory>
+                <directory>${webapp.dir}/vendor/appserver-io/console/etc/appserver/conf.d</directory>
             </directories>
         </manager>
         <manager name="ConsoleContextInterface" type="AppserverIo\Appserver\Console\ConsoleManager" factory="AppserverIo\Appserver\Console\ConsoleManagerFactory"/>

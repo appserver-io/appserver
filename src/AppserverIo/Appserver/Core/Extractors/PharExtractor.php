@@ -22,7 +22,7 @@ namespace AppserverIo\Appserver\Core\Extractors;
 use AppserverIo\Appserver\Core\AbstractExtractor;
 use AppserverIo\Appserver\Core\Utilities\FileSystem;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
-use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
 /**
  * An extractor implementation for phar files.
@@ -68,13 +68,13 @@ class PharExtractor extends AbstractExtractor
     /**
      * (non-PHPdoc)
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
-     * @param \SplFileInfo                                                $archive       The archive file to be deployed
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                                     $archive       The archive file to be deployed
      *
      * @return void
      * @see \AppserverIo\Appserver\Core\AbstractExtractor::deployArchive()
      */
-    public function deployArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
+    public function deployArchive(ContainerConfigurationInterface $containerNode, \SplFileInfo $archive)
     {
 
         try {
@@ -158,12 +158,12 @@ class PharExtractor extends AbstractExtractor
      * Creates a backup of files that are NOT part of the
      * passed archive.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
-     * @param \SplFileInfo                                                $archive       Backup files that are NOT part of this archive
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                                     $archive       Backup files that are NOT part of this archive
      *
      * @return void
      */
-    public function backupArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
+    public function backupArchive(ContainerConfigurationInterface $containerNode, \SplFileInfo $archive)
     {
 
         // if we don't want to create backups, to nothing

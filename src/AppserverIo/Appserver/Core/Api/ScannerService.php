@@ -90,7 +90,7 @@ class ScannerService extends AbstractFileOperationService
             $cronInstances[] = $cronInstance;
 
             // iterate over the configured containers
-            /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+            /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
             foreach ($this->getSystemConfiguration()->getContainers() as $containerNode) {
                 // iterate over all applications and create the CRON configuration
                 foreach (glob($this->getWebappsDir($containerNode) . '/*', GLOB_ONLYDIR) as $webappPath) {

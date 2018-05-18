@@ -37,7 +37,7 @@ class AppstractArgsNodeTest extends AbstractTest
     /**
      * The mock instance of the abstract class.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\AppstractArgsNode
+     * @var \AppserverIo\Appserver\Core\Api\Node\AbstractArgsNode
      */
     protected $abstractArgsNode;
 
@@ -45,7 +45,7 @@ class AppstractArgsNodeTest extends AbstractTest
      * Initializes an instance of the abstract class we want to test.
      *
      * @return void
-     * @see PHPUnit_Framework_TestCase::setUp()
+     * @see \PHPUnit_Framework_TestCase::setUp()
      */
     protected function setUp()
     {

@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Psr\ApplicationServer\Configuration\DeploymentConfigurationInterface;
 
 /**
  * DTO to transfer deployment information.
@@ -31,7 +32,7 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DeploymentNode extends AbstractNode
+class DeploymentNode extends AbstractNode implements DeploymentConfigurationInterface
 {
 
     /**

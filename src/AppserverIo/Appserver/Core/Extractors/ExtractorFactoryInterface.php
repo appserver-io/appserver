@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Core\Extractors;
 
 use AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * A factory to create new extractor instances.
@@ -38,8 +38,8 @@ interface ExtractorFactoryInterface
     /**
      * Factory method to create a new extractor instance.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface       $configuration     The extractor configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer The application server instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface   $configuration     The extractor configuration
      *
      * @return void
      */

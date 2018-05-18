@@ -26,14 +26,15 @@ use AppserverIo\Logger\Logger;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Naming\NamingException;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
+use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\Core\Commands\ModeCommand;
 use AppserverIo\Appserver\Core\Commands\InitCommand;
 use AppserverIo\Appserver\Core\Api\Node\BootstrapNode;
 use AppserverIo\Appserver\Core\Utilities\Runlevels;
-use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Appserver\Core\Listeners\ApplicationServerAwareListenerInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
-use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface;
 
 /**
  * This is the main server class that starts the application server
@@ -52,7 +53,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * The application server instance itself.
      *
-     * @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface
+     * @var \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface
      */
     protected static $instance;
 
@@ -86,7 +87,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      * @param \AppserverIo\Psr\Naming\NamingDirectoryInterface $namingDirectory The default naming directory
      * @param \AppserverIo\Storage\GenericStackable            $runlevels       The storage for the services
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface The singleton application instance
+     * @return \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface The singleton application instance
      */
     public static function singleton(NamingDirectoryInterface $namingDirectory, GenericStackable $runlevels)
     {
@@ -158,7 +159,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * Sets the system configuration.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration object
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface $systemConfiguration The system configuration object
      *
      * @return null
      */
@@ -170,7 +171,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * Returns the system configuration.
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface The system configuration
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface The system configuration
      */
     public function getSystemConfiguration()
     {
@@ -180,11 +181,11 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * Sets the initial context instance.
      *
-     * @param \AppserverIo\Appserver\Core\InitialContext $initialContext The initial context instance
+     * @param \AppserverIo\Psr\ApplicationServer\ContextInterface $initialContext The initial context instance
      *
      * @return void
      */
-    public function setInitialContext(InitialContext $initialContext)
+    public function setInitialContext(ContextInterface $initialContext)
     {
         $this->initialContext = $initialContext;
     }
@@ -192,7 +193,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
     /**
      * Return's the initial context instance.
      *
-     * @return \AppserverIo\Appserver\Core\InitialContext The initial context instance
+     * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The initial context instance
      */
     public function getInitialContext()
     {
@@ -275,7 +276,7 @@ class ApplicationServer extends \Thread implements ApplicationServerInterface
      *
      * @param string $className The API service class name to return the instance for
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The service instance
+     * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface The service instance
      * @see \AppserverIo\Appserver\Core\InitialContext::newService()
      */
     public function newService($className)

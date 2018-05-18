@@ -20,10 +20,10 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
 use AppserverIo\Appserver\Core\Interfaces\ExtractorInterface;
 use AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface;
-use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
 /**
  * Abstract extractor functionality.
@@ -47,7 +47,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * The initial context instance.
      *
-     * @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface
+     * @var \AppserverIo\Psr\ApplicationServer\ContextInterface
      */
     protected $initialContext;
 
@@ -62,8 +62,8 @@ abstract class AbstractExtractor implements ExtractorInterface
      * Constructor to initialize the extractor instance with the initial context
      * and the extractor node configuration data.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext The initial context instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface    $extractorNode  The extractor node configuration data
+     * @param \AppserverIo\Psr\ApplicationServer\ContextInterface         $initialContext The initial context instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\ExtractorNodeInterface $extractorNode  The extractor node configuration data
      */
     public function __construct(ContextInterface $initialContext, ExtractorNodeInterface $extractorNode)
     {
@@ -100,7 +100,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     {
 
         // iterate over the deploy directories and deploy all archives
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
         foreach ($this->getService()->getSystemConfiguration()->getContainers() as $containerNode) {
             // check if deploy dir exists
             if (is_dir($deployDir = $this->getService()->getBaseDirectory($containerNode->getHost()->getDeployBase()))) {
@@ -201,13 +201,13 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * (non-PHPdoc)
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
-     * @param \SplFileInfo                                                $archive       The archive to be soaked
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                                     $archive       The archive to be soaked
      *
      * @return void
      * @see \AppserverIo\Appserver\Core\Interfaces\ExtractorInterface::soakArchive()
      */
-    public function soakArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
+    public function soakArchive(ContainerConfigurationInterface $containerNode, \SplFileInfo $archive)
     {
 
         // prepare the upload target in the deploy directory
@@ -223,14 +223,14 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * (non-PHPdoc)
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
-     * @param \SplFileInfo                                                $archive       The archive file to be undeployed
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                                     $archive       The archive file to be undeployed
      *
      * @throws \Exception
      * @return void
      * @see \AppserverIo\Appserver\Core\Interfaces\ExtractorInterface::undeployArchive()
      */
-    public function undeployArchive(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
+    public function undeployArchive(ContainerConfigurationInterface $containerNode, \SplFileInfo $archive)
     {
         try {
             // create webapp folder name based on the archive's basename
@@ -270,12 +270,12 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Restores the backup files from the backup directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode The container the archive belongs to
-     * @param \SplFileInfo                                                $archive       To restore the files for
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode The container the archive belongs to
+     * @param \SplFileInfo                                                                     $archive       To restore the files for
      *
      * @return void
      */
-    public function restoreBackup(ContainerNodeInterface $containerNode, \SplFileInfo $archive)
+    public function restoreBackup(ContainerConfigurationInterface $containerNode, \SplFileInfo $archive)
     {
 
         // if we don't want create backups we can't restore them, so do nothing
@@ -319,7 +319,7 @@ abstract class AbstractExtractor implements ExtractorInterface
      *
      * @param string $className The API service class name to return the instance for
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The service instance
+     * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface The service instance
      * @see \AppserverIo\Appserver\Core\InitialContext::newService()
      */
     public function newService($className)
@@ -330,7 +330,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Returns the inital context instance.
      *
-     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial context instance
+     * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The initial context instance
      */
     public function getInitialContext()
     {
@@ -360,12 +360,12 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Returns the container's tmp directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode        The container to return the temporary directory for
-     * @param string                                                      $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                                           $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getTmpDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
+    public function getTmpDir(ContainerConfigurationInterface $containerNode, $relativePathToAppend = '')
     {
         return $this->getService()->realpath(
             $this->getService()->makePathAbsolute(
@@ -377,12 +377,12 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Returns the container's deploy directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode        The container to return the temporary directory for
-     * @param string                                                      $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                                           $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getDeployDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
+    public function getDeployDir(ContainerConfigurationInterface $containerNode, $relativePathToAppend = '')
     {
         return $this->getService()->realpath(
             $this->getService()->makePathAbsolute(
@@ -394,12 +394,12 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * Returns the container's webapps directory.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode        The container to return the temporary directory for
-     * @param string                                                      $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                                           $relativePathToAppend A relative path to append
      *
      * @return string The web application directory
      */
-    public function getWebappsDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
+    public function getWebappsDir(ContainerConfigurationInterface $containerNode, $relativePathToAppend = '')
     {
         return $this->getService()->realpath(
             $this->getService()->makePathAbsolute(

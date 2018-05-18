@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Listeners;
 
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * Interface for application server aware listeners.
@@ -37,7 +37,7 @@ interface ApplicationServerAwareListenerInterface
     /**
      * Injects the application server instance into the listener.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance to inject
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer The application server instance to inject
      *
      * @return void
      */
@@ -46,7 +46,7 @@ interface ApplicationServerAwareListenerInterface
     /**
      * Returns the application server instance of the listener.
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface The listeners application server instance
+     * @return \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface The listeners application server instance
      */
     public function getApplicationServer();
 }

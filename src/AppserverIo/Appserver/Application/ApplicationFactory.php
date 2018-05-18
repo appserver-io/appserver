@@ -24,7 +24,7 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Core\LoggerFactory;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Utilities\PermissionHelper;
-use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
+use AppserverIo\Psr\ApplicationServer\ContainerInterface;
 
 /**
  * Application factory implementation.
@@ -41,8 +41,8 @@ class ApplicationFactory
     /**
      * Visitor method that registers the application in the container.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The container instance bind the application to
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContextNode          $context   The application configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ContainerInterface $container The container instance bind the application to
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContextNode      $context   The application configuration
      *
      * @return void
      */

@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Psr\ApplicationServer\Configuration\StorageConfigurationInterface;
 
 /**
  * DTO to transfer storage information.
@@ -31,7 +32,7 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class StorageNode extends AbstractNode
+class StorageNode extends AbstractNode implements StorageConfigurationInterface
 {
 
     /**

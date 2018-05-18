@@ -19,10 +19,10 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Appserver\Core\InitialContext\ContextKeys;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface;
 
 /**
  * Initial context implementation.
@@ -62,7 +62,7 @@ class InitialContext implements ContextInterface
     /**
      * Initializes the context with the connection to the storage backend.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface $systemConfiguration The system configuration
      */
     public function __construct(SystemConfigurationInterface $systemConfiguration)
     {
@@ -114,7 +114,7 @@ class InitialContext implements ContextInterface
     /**
      * Adds the system configuration to the initial context.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface $systemConfiguration The system configuration
      *
      * @return void
      */
@@ -126,7 +126,7 @@ class InitialContext implements ContextInterface
     /**
      * Returns the system configuration.
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface The system configuration
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface The system configuration
      */
     public function getSystemConfiguration()
     {
@@ -202,13 +202,11 @@ class InitialContext implements ContextInterface
      *
      * @param string $className The API service class name to return the instance for
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The service instance
+     * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface The service instance
      */
     public function newService($className)
     {
-        return $this->newInstance($className, array(
-            $this
-        ));
+        return $this->newInstance($className, array($this));
     }
 
     /**

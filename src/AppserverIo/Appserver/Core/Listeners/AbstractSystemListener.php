@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Core\Listeners;
 
 use League\Event\AbstractListener;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * Abstract application server aware system listener.
@@ -38,14 +38,14 @@ abstract class AbstractSystemListener extends AbstractListener implements Applic
     /**
      * The listeners application server instance.
      *
-     * @var \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface
+     * @var \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface
      */
     protected $applicationServer;
 
     /**
      * Injects the application server instance into the listener.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance to inject
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer The application server instance to inject
      *
      * @return void
      */
@@ -57,7 +57,7 @@ abstract class AbstractSystemListener extends AbstractListener implements Applic
     /**
      * Returns the application server instance of the listener.
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface The listeners application server instance
+     * @return \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface The listeners application server instance
      */
     public function getApplicationServer()
     {

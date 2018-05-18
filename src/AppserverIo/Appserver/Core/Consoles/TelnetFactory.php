@@ -20,8 +20,9 @@
 
 namespace AppserverIo\Appserver\Core\Consoles;
 
-use AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\Cli\ConsoleFactoryInterface;
+use AppserverIo\Psr\Cli\Configuration\ConsoleConfigurationInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * Factory to create new telnet console instances.
@@ -38,12 +39,12 @@ class TelnetFactory implements ConsoleFactoryInterface
     /**
      * Factory method to create new telnet console instances.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application server instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface         $consoleNode       The console configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface    $applicationServer The application server instance
+     * @param \AppserverIo\Psr\Cli\Configuration\ConsoleConfigurationInterface $consoleNode       The console configuration
      *
-     * @return \AppserverIo\Appserver\Core\Consoles\ConsoleInterface The telnet console instance
+     * @return \AppserverIo\Psr\Cli\ConsoleInterface The telnet console instance
      */
-    public static function factory(ApplicationServerInterface $applicationServer, ConsoleNodeInterface $consoleNode)
+    public static function factory(ApplicationServerInterface $applicationServer, ConsoleConfigurationInterface $consoleNode)
     {
         return new Telnet($applicationServer, $consoleNode);
     }

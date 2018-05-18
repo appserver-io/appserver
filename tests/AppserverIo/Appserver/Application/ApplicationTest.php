@@ -20,9 +20,8 @@
 
 namespace AppserverIo\Appserver\Application;
 
-use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Storage\StackableStorage;
+use AppserverIo\Appserver\Naming\NamingDirectory;
 use AppserverIo\Appserver\Application\Mock\MockManager;
 use AppserverIo\Appserver\Application\Mock\MockClassLoader;
 
@@ -280,7 +279,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
 
         // create a mock instance
-        $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
+        $mockInitialContext = $this->getMock('AppserverIo\Psr\ApplicationServer\ContextInterface', $methodsToMock);
 
         // check if the passed instance is equal to the getter one
         $this->application->injectInitialContext($mockInitialContext);
@@ -319,7 +318,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
 
         // create a mock instance
-        $mockInitialContext = $this->getMock('AppserverIo\Appserver\Application\Interfaces\ContextInterface', $methodsToMock);
+        $mockInitialContext = $this->getMock('AppserverIo\Psr\ApplicationServer\ContextInterface', $methodsToMock);
         $mockInitialContext->expects($this->any())
             ->method('newService')
             ->will($this->returnValue($newService = new \stdClass()));
@@ -476,7 +475,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
 
         // create a mock instance
-        $classToMock = 'AppserverIo\Appserver\Application\Interfaces\ContextInterface';
+        $classToMock = 'AppserverIo\Psr\ApplicationServer\ContextInterface';
         $mockInitialContext = $this->getMock($classToMock, get_class_methods($classToMock));
         $mockInitialContext->expects($this->any())
             ->method('getSystemLogger')
@@ -512,7 +511,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase
         $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
 
         // create a mock instance
-        $classToMock = 'AppserverIo\Appserver\Application\Interfaces\ContextInterface';
+        $classToMock = 'AppserverIo\Psr\ApplicationServer\ContextInterface';
         $mockInitialContext = $this->getMock($classToMock, get_class_methods($classToMock));
         $mockInitialContext->expects($this->any())
             ->method('getSystemLogger')

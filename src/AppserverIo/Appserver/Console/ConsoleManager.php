@@ -20,11 +20,12 @@
 
 namespace AppserverIo\Appserver\Console;
 
-use AppserverIo\Appserver\Core\AbstractManager;
-use AppserverIo\Psr\Application\ApplicationInterface;
 use React\Socket\ConnectionInterface;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Output\BufferedOutput;
+use AppserverIo\Appserver\Core\AbstractManager;
+use AppserverIo\Psr\Cli\ConsoleContextInterface;
+use AppserverIo\Psr\Application\ApplicationInterface;
 
 /**
  * The console manager handles the console applications registered for the application.

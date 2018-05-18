@@ -206,7 +206,7 @@ class AppServiceTest extends AbstractServicesTest
     public function testSoak()
     {
 
-        $mockContainer = $this->getMock('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface');
+        $mockContainer = $this->getMock('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface');
 
         $mockExtractor = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ExtractorInterface');
         $mockExtractor->expects($this->once())
@@ -224,15 +224,15 @@ class AppServiceTest extends AbstractServicesTest
     public function testDeploy()
     {
 
-        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+        $mockHost = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface'))
             ->getMock();
         $mockHost->expects($this->once())
             ->method('getDeployBase')
             ->willReturn('webapps');
 
-        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface'))
             ->getMock();
         $mockContainer->expects($this->once())
             ->method('getHost')
@@ -254,15 +254,15 @@ class AppServiceTest extends AbstractServicesTest
     public function testUndeploy()
     {
 
-        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+        $mockHost = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface'))
             ->getMock();
         $mockHost->expects($this->once())
             ->method('getDeployBase')
             ->willReturn('webapps');
 
-        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface'))
             ->getMock();
         $mockContainer->expects($this->once())
             ->method('getHost')
@@ -287,7 +287,7 @@ class AppServiceTest extends AbstractServicesTest
     public function testUndeployInvalidUuid()
     {
 
-        $mockContainer = $this->getMock('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface');
+        $mockContainer = $this->getMock('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface');
 
         $mockExtractor = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ExtractorInterface');
         $mockExtractor->expects($this->never())

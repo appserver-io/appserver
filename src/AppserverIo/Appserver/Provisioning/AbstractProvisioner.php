@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Provisioning;
 
 use AppserverIo\Psr\Application\ProvisionerInterface;
-use AppserverIo\Appserver\Application\Interfaces\ContextInterface;
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 
 /**
@@ -39,14 +39,14 @@ abstract class AbstractProvisioner implements ProvisionerInterface
     /**
      * The initial context instance.
      *
-     * @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface
+     * @var \AppserverIo\Psr\ApplicationServer\ContextInterface
      */
     protected $initialContext;
 
     /**
      * The provisioning service instance.
      *
-     * @var \AppserverIo\Appserver\Core\Api\ServiceInterface
+     * @var \AppserverIo\Psr\ApplicationServer\ServiceInterface
      */
     protected $service;
 
@@ -61,8 +61,8 @@ abstract class AbstractProvisioner implements ProvisionerInterface
      * Contructor to initialize the provisioner instance with the initial context
      * and the provision node configuration data.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ContextInterface $initialContext  The initial context instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface  $provisionerNode The provisioner node configuration data
+     * @param \AppserverIo\Psr\ApplicationServer\ContextInterface           $initialContext  The initial context instance
+     * @param \AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface $provisionerNode The provisioner node configuration data
      */
     public function __construct(ContextInterface $initialContext, ProvisionerNodeInterface $provisionerNode)
     {
@@ -79,7 +79,7 @@ abstract class AbstractProvisioner implements ProvisionerInterface
      *
      * @param string $className The API service class name to return the instance for
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The service instance
+     * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface The service instance
      * @see \AppserverIo\Appserver\Core\InitialContext::newService()
      */
     public function newService($className)
@@ -90,7 +90,7 @@ abstract class AbstractProvisioner implements ProvisionerInterface
     /**
      * Returns the inital context instance.
      *
-     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial context instance
+     * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The initial context instance
      */
     public function getInitialContext()
     {

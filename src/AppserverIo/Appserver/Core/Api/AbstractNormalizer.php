@@ -21,6 +21,8 @@
 namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\InitialContext;
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
+use AppserverIo\Psr\ApplicationServer\ServiceInterface;
 
 /**
  * Normalizes configuration nodes to \stdClass instances.
@@ -44,10 +46,10 @@ abstract class AbstractNormalizer implements NormalizerInterface
     /**
      * Initializes the normalizer with the initial context.
      *
-     * @param InitialContext   $initialContext The initial context instance
-     * @param ServiceInterface $service        The service to normalize for
+     * @param \AppserverIo\Psr\ApplicationServer\ContextInterface $initialContext The initial context instance
+     * @param \AppserverIo\Psr\ApplicationServer\ServiceInterface $service        The service to normalize for
      */
-    public function __construct(InitialContext $initialContext, ServiceInterface $service)
+    public function __construct(ContextInterface $initialContext, ServiceInterface $service)
     {
         $this->initialContext = $initialContext;
         $this->service = $service;
@@ -67,7 +69,7 @@ abstract class AbstractNormalizer implements NormalizerInterface
     /**
      * (non-PHPdoc)
      *
-     * @return ServiceInterface
+     * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface The service instance
      * @see NormalizerInterface::getService()
      */
     public function getService()

@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Collections\ArrayList;
 use AppserverIo\Collections\CollectionInterface;
 use AppserverIo\Psr\Di\ObjectManagerInterface;
@@ -29,17 +30,16 @@ use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Core\Api\Node\PersistenceNode;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
-use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
 use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
-use AppserverIo\Appserver\PersistenceContainer\Description\PersistenceUnitDescriptor;
 use AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineLocalContextConnection;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
-use AppserverIo\Appserver\PersistenceContainer\Description\PersistenceUnitFactoryDescriptor;
 use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
-use AppserverIo\Storage\StorageInterface;
+use AppserverIo\Description\PersistenceUnitDescriptor;
+use AppserverIo\Description\PersistenceUnitFactoryDescriptor;
+use AppserverIo\Description\Configuration\PersistenceUnitConfigurationInterface;
 
 /**
  * The persistence manager handles the entity managers registered for the application.
@@ -154,7 +154,7 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
         $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
 
         // load the container node to initialize the system properties
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
         $containerNode = $application->getContainer()->getContainerNode();
 
         // gather all the deployed web applications
@@ -204,12 +204,12 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
     /**
      * Deploys the entity manager described by the passed XML node.
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface                 $application         The application instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface $persistenceUnitNode The XML node that describes the entity manager
+     * @param \AppserverIo\Psr\Application\ApplicationInterface                            $application         The application instance
+     * @param \AppserverIo\Description\Configuration\PersistenceUnitConfigurationInterface $persistenceUnitNode The XML node that describes the entity manager
      *
      * @return void
      */
-    public function registerEntityManager(ApplicationInterface $application, PersistenceUnitNodeInterface $persistenceUnitNode)
+    public function registerEntityManager(ApplicationInterface $application, PersistenceUnitConfigurationInterface $persistenceUnitNode)
     {
 
         // bind the callback for the Entity Manager instance to the naming directory

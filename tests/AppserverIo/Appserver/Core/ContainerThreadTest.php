@@ -19,9 +19,8 @@
  */
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Configuration\Configuration;
 use AppserverIo\Appserver\Core\Mock\MockAbstractContainerThread;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
  * Test for the container thread class.
@@ -38,7 +37,7 @@ class ContainerThreadTest extends AbstractTest
     /**
      * The application instance to test.
      *
-     * @var \AppserverIo\Appserver\Core\ContainerThread
+     * @var \AppserverIo\Appserver\Core\AbstractContainerThread
      */
     protected $containerThread;
 

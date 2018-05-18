@@ -20,7 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Interfaces;
 
-use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
 /**
  * Interface for a factory to create new container instances.
@@ -37,10 +38,10 @@ interface ContainerFactoryInterface
     /**
      * Factory method to create a new container instance.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application instance to register the class loader with
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface       $configuration     The class loader configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface                    $applicationServer The application instance to register the class loader with
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $configuration     The class loader configuration
      *
      * @return void
      */
-    public static function factory(ApplicationServerInterface $applicationServer, ContainerNodeInterface $configuration);
+    public static function factory(ApplicationServerInterface $applicationServer, ContainerConfigurationInterface $configuration);
 }

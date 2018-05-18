@@ -20,14 +20,14 @@
 
 namespace AppserverIo\Appserver\Provisioning\Steps;
 
+use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\Api\Node\StepNode;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Core\Api\Node\StepNode;
-use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
-use AppserverIo\Appserver\Core\Api\ServiceInterface;
-use AppserverIo\Appserver\Core\Environment;
-use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
+use AppserverIo\Psr\ApplicationServer\ServiceInterface;
+use AppserverIo\Psr\ApplicationServer\ContextInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface;
 
 /**
  * Abstract base class for a step implementation.
@@ -58,14 +58,14 @@ abstract class AbstractStep extends \Thread implements StepInterface
     /**
      * The datasource node found in the provisioning configuration.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DatasourceNode
+     * @var \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface
      */
     protected $datasourceNode;
 
     /**
      * The initial context.
      *
-     * @var \AppserverIo\Appserver\Application\Interfaces\ContextInterface
+     * @var \AppserverIo\Psr\ApplicationServer\ContextInterface
      */
     protected $initialContext;
 
@@ -93,7 +93,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
     /**
      * Injects the provisioning service.
      *
-     * @param \AppserverIo\Appserver\Core\Api\ServiceInterface $service The provisioning service
+     * @param \AppserverIo\Psr\ApplicationServer\ServiceInterface $service The provisioning service
      *
      * @return void
      */
@@ -117,11 +117,11 @@ abstract class AbstractStep extends \Thread implements StepInterface
     /**
      * Injects the datasource node found in the provisioning configuration.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\DatasourceNode $datasourceNode The datasource node data
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface $datasourceNode The datasource node data
      *
      * @return void
      */
-    public function injectDatasourceNode(DatasourceNode $datasourceNode)
+    public function injectDatasourceNode(DatasourceConfigurationInterface $datasourceNode)
     {
         $this->datasourceNode = $datasourceNode;
     }
@@ -157,7 +157,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
      *
      * @return void
      */
-    public function injectInitialContext(InitialContext $initialContext)
+    public function injectInitialContext(ContextInterface $initialContext)
     {
         $this->initialContext = $initialContext;
     }
@@ -177,7 +177,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
     /**
      * Returns the provisioning service.
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The provisioning service
+     * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface The provisioning service
      */
     public function getService()
     {
@@ -197,7 +197,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
     /**
      * Returns the datasource node found in the provisioning configuration.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DatasourceNode The datasource node data
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface The datasource node data
      */
     public function getDatasourceNode()
     {
@@ -207,7 +207,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
     /**
      * Returns the initial context instance.
      *
-     * @return \AppserverIo\Appserver\Application\Interfaces\ContextInterface The initial context
+     * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The initial context
      */
     public function getInitialContext()
     {

@@ -23,7 +23,7 @@ namespace AppserverIo\Appserver\Core\Modules\StorageProvider;
 use AppserverIo\Server\Interfaces\ModuleConfigurationInterface;
 use AppserverIo\DnsServer\StorageProvider\JsonStorageProvider;
 use AppserverIo\DnsServer\StorageProvider\AbstractStorageProvider;
-use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface;
 
 /**
  * A storage provider implementation that uses the system configuration
@@ -42,8 +42,8 @@ class SystemConfigurationStorageProvider extends JsonStorageProvider
      * Initializes the storage provider by loading the configuration values from
      * the passed module configuration.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
-     * @param \AppserverIo\Server\Interfaces\ModuleConfigurationInterface         $moduleConfiguration The module configuration
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Server\Interfaces\ModuleConfigurationInterface                   $moduleConfiguration The module configuration
      *
      * @throws \Exception Is thrown if the JSON can not be read
      */

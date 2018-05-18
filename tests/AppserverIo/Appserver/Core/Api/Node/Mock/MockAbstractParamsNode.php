@@ -20,7 +20,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node\Mock;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
-use AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
 /**
  * A mock class that allows us to instanciate an AbstractParamsNode instance.
@@ -33,8 +33,12 @@ use AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait;
  */
 class MockAbstractParamsNode extends AbstractNode
 {
-    // We use several traits which give us the possibility to have collections of the child nodes mentioned in the
-    // corresponding trait name
+
+    /**
+     * A params node trait.
+     *
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
+     */
     use ParamsNodeTrait;
 
 

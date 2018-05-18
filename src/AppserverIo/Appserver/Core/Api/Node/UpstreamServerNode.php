@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
 /**
  * DTO to transfer upstream server information.
@@ -33,10 +34,11 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  */
 class UpstreamServerNode extends AbstractNode
 {
+
     /**
-     * The trait for the server params.
+     * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 

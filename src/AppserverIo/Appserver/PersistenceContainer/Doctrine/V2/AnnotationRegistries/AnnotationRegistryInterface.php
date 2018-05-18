@@ -20,7 +20,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries;
 
-use AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface;
+use AppserverIo\Description\Configuration\AnnotationRegistryConfigurationInterface;
 
 /**
  * The interface all Doctrine annotation registries.
@@ -38,9 +38,9 @@ interface AnnotationRegistryInterface
     /**
      * Register's the annotation driver for the passed configuration.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface $annotationRegistry The configuration node
+     * @param \AppserverIo\Description\Configuration\AnnotationRegistryConfigurationInterface $annotationRegistry The configuration node
      *
      * @return void
      */
-    public function register(AnnotationRegistryNodeInterface $annotationRegistry);
+    public function register(AnnotationRegistryConfigurationInterface $annotationRegistry);
 }

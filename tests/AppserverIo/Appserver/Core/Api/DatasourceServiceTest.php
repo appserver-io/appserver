@@ -23,7 +23,7 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
-use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
+use AppserverIo\Description\Api\Node\DatasourceNode;
 
 /**
  * Tests for our DatasourceService class

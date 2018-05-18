@@ -165,7 +165,7 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
         $configurationService = $application->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
 
         // load the container node to initialize the system properties
-        /** @var \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface $containerNode */
+        /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
         $containerNode = $application->getContainer()->getContainerNode();
 
         // gather all the deployed web applications

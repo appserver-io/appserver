@@ -85,7 +85,7 @@ class MockThread extends AbstractThread
      * Method to initialize the thread with the constructor
      * params without the initial context.
      *
-     * @param \stcClass $someInstance Some instance to test
+     * @param \stdClass $someInstance Some instance to test
      *
      * @return void
      */

@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\AppConfigurationInterface;
 
 /**
  * DTO to transfer an app.
@@ -32,7 +33,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class AppNode extends AbstractNode implements AppNodeInterface
+class AppNode extends AbstractNode implements AppConfigurationInterface
 {
 
     /**

@@ -25,8 +25,8 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Naming\NamingDirectory;
-use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\Runlevels;
+use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
 declare (ticks = 1);
 

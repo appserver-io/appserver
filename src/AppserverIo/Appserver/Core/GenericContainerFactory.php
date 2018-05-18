@@ -20,9 +20,9 @@
 
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ContainerFactoryInterface;
-use AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
 /**
  * A factory for the container instances.
@@ -39,15 +39,15 @@ class GenericContainerFactory implements ContainerFactoryInterface
     /**
      * Factory method to create a new container instance.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ApplicationServerInterface $applicationServer The application instance to register the class loader with
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface       $configuration     The class loader configuration
-     * @param integer                                                           $runlevel          The runlevel the container has been started in
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface                    $applicationServer The application instance to register the class loader with
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $configuration     The class loader configuration
+     * @param integer                                                                          $runlevel          The runlevel the container has been started in
      *
      * @return void
      */
     public static function factory(
         ApplicationServerInterface $applicationServer,
-        ContainerNodeInterface $configuration,
+        ContainerConfigurationInterface $configuration,
         $runlevel = ApplicationServerInterface::NETWORK
     ) {
 

@@ -27,9 +27,10 @@ use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Utilities\FileKeys;
 use AppserverIo\Appserver\Core\Utilities\FileSystem;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
-use AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface;
-use AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
+use AppserverIo\Psr\ApplicationServer\ServiceInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface;
+use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
 /**
  * Abstract service implementation.
@@ -86,7 +87,7 @@ abstract class AbstractService implements ServiceInterface
      * (non-PHPdoc)
      *
      * @return \AppserverIo\Appserver\Core\InitialContext The initial Context
-     * @see ServiceInterface::getInitialContext()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::getInitialContext()
      */
     public function getInitialContext()
     {
@@ -96,8 +97,8 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface The system configuration
-     * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::getSystemConfiguration()
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface The system configuration
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::getSystemConfiguration()
      */
     public function getSystemConfiguration()
     {
@@ -107,10 +108,10 @@ abstract class AbstractService implements ServiceInterface
     /**
      * (non-PHPdoc)
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\SystemConfigurationInterface $systemConfiguration The system configuration
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface $systemConfiguration The system configuration
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface
-     * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::setSystemConfiguration()
+     * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::setSystemConfiguration()
      */
     public function setSystemConfiguration(SystemConfigurationInterface $systemConfiguration)
     {
@@ -136,7 +137,7 @@ abstract class AbstractService implements ServiceInterface
      *
      * @param string $className The API service class name to return the instance for
      *
-     * @return \AppserverIo\Appserver\Core\Api\ServiceInterface The service instance
+     * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface The service instance
      * @see \AppserverIo\Appserver\Core\InitialContext::newService()
      */
     public function newService($className)
@@ -223,12 +224,12 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the servers tmp directory, append with the passed directory.
      *
-     * @param ContainerNodeInterface $containerNode        The container to return the temporary directory for
-     * @param string                 $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                                           $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getTmpDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
+    public function getTmpDir(ContainerConfigurationInterface $containerNode, $relativePathToAppend = '')
     {
         return $this->realpath(
             $this->makePathAbsolute(
@@ -240,12 +241,12 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the servers deploy directory.
      *
-     * @param ContainerNodeInterface $containerNode        The container to return the deployment directory for
-     * @param string                 $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode        The container to return the deployment directory for
+     * @param string                                                                           $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getDeployDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
+    public function getDeployDir(ContainerConfigurationInterface $containerNode, $relativePathToAppend = '')
     {
         return $this->realpath(
             $this->makePathAbsolute(
@@ -257,12 +258,12 @@ abstract class AbstractService implements ServiceInterface
     /**
      * Returns the servers webapps directory.
      *
-     * @param ContainerNodeInterface $containerNode        The container to return the temporary directory for
-     * @param string                 $relativePathToAppend A relative path to append
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode        The container to return the temporary directory for
+     * @param string                                                                           $relativePathToAppend A relative path to append
      *
      * @return string
      */
-    public function getWebappsDir(ContainerNodeInterface $containerNode, $relativePathToAppend = '')
+    public function getWebappsDir(ContainerConfigurationInterface $containerNode, $relativePathToAppend = '')
     {
         return $this->realpath(
             $this->makePathAbsolute(
@@ -450,11 +451,11 @@ abstract class AbstractService implements ServiceInterface
      * Returns the system proprties. If a container node has been passed,
      * the container properties will also be appended.
      *
-     * @param ContainerNodeInterface|null $containerNode The container to return the system properties for
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface|null $containerNode The container to return the system properties for
      *
      * @return \AppserverIo\Properties\Properties The system properties
      */
-    public function getSystemProperties(ContainerNodeInterface $containerNode = null)
+    public function getSystemProperties(ContainerConfigurationInterface $containerNode = null)
     {
 
         // initialize the properties

@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\Core\Api;
 
 use AppserverIo\Appserver\Core\Api\Mock\MockInitialContext;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+
 /**
  * Unit tests for our abstract service implementation.
  *
@@ -177,15 +178,15 @@ class AbstractServiceTest extends AbstractServicesTest
     public function testGetTmpDirDirectoryAppended()
     {
 
-        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+        $mockHost = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface'))
             ->getMock();
         $mockHost->expects($this->exactly(2))
             ->method('getTmpBase')
             ->willReturn('var/tmp');
 
-        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface'))
             ->getMock();
         $mockContainer->expects($this->exactly(2))
             ->method('getHost')
@@ -205,15 +206,15 @@ class AbstractServiceTest extends AbstractServicesTest
     public function testGetTmpDirNothingToAppend()
     {
 
-        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+        $mockHost = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface'))
             ->getMock();
         $mockHost->expects($this->once())
             ->method('getTmpBase')
             ->willReturn('var/tmp');
 
-        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface'))
             ->getMock();
         $mockContainer->expects($this->once())
             ->method('getHost')
@@ -233,15 +234,15 @@ class AbstractServiceTest extends AbstractServicesTest
     public function testGetDeployDirDirectoryAppended()
     {
 
-        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+        $mockHost = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface'))
             ->getMock();
         $mockHost->expects($this->exactly(2))
             ->method('getDeployBase')
             ->willReturn('deploy');
 
-        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface'))
             ->getMock();
         $mockContainer->expects($this->exactly(2))
             ->method('getHost')
@@ -261,15 +262,15 @@ class AbstractServiceTest extends AbstractServicesTest
     public function testGetDeployDirNothingToAppend()
     {
 
-        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+        $mockHost = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface'))
             ->getMock();
         $mockHost->expects($this->once())
             ->method('getDeployBase')
             ->willReturn('deploy');
 
-        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface'))
             ->getMock();
         $mockContainer->expects($this->once())
             ->method('getHost')
@@ -290,15 +291,15 @@ class AbstractServiceTest extends AbstractServicesTest
     public function testGetWebappsDirDirectoryAppended()
     {
 
-        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+        $mockHost = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface'))
             ->getMock();
         $mockHost->expects($this->exactly(2))
             ->method('getAppBase')
             ->willReturn('webapps');
 
-        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface'))
             ->getMock();
         $mockContainer->expects($this->exactly(2))
             ->method('getHost')
@@ -318,15 +319,15 @@ class AbstractServiceTest extends AbstractServicesTest
     public function testGetWebappsDirNothingToAppend()
     {
 
-        $mockHost = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\HostNodeInterface'))
+        $mockHost = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface'))
             ->getMock();
         $mockHost->expects($this->once())
             ->method('getAppBase')
             ->willReturn('webapps');
 
-        $mockContainer = $this->getMockBuilder('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface')
-            ->setMethods(get_class_methods('\AppserverIo\Appserver\Core\Api\Node\ContainerNodeInterface'))
+        $mockContainer = $this->getMockBuilder('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface')
+            ->setMethods(get_class_methods('\AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface'))
             ->getMock();
         $mockContainer->expects($this->once())
             ->method('getHost')

@@ -19,8 +19,6 @@
  */
 namespace AppserverIo\Appserver\Core;
 
-use AppserverIo\Configuration\Configuration;
-use AppserverIo\Appserver\Core\InitialContext;
 use AppserverIo\Appserver\Core\Mock\MockContextThread;
 
 /**
@@ -38,7 +36,7 @@ class AbstractContextThreadTest extends AbstractTest
     /**
      * The mock context thread to test.
      *
-     * @var \AppserverIo\Appserver\Core\MockAbstractContextThread
+     * @var \AppserverIo\Appserver\Core\Mock\MockContextThread
      */
     protected $contextThread;
 

@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
 /**
  * DTO to transfer a applications provision configuration.
@@ -33,7 +34,12 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  */
 class StepNode extends AbstractNode
 {
-    // We want to use params here.
+
+    /**
+     * A params node trait.
+     *
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
+     */
     use ParamsNodeTrait;
 
     /**

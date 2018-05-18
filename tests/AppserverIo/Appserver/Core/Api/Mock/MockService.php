@@ -37,7 +37,7 @@ class MockService extends AbstractService
     /**
      * (non-PHPdoc)
      *
-     * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::findAll()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::findAll()
      */
     public function findAll()
     {}
@@ -45,7 +45,7 @@ class MockService extends AbstractService
     /**
      * (non-PHPdoc)
      *
-     * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::load()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::load()
      */
     public function load($id)
     {}
@@ -53,7 +53,7 @@ class MockService extends AbstractService
     /**
      * (non-PHPdoc)
      *
-     * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::create()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::create()
      */
     public function create(\stdClass $stdClass)
     {}
@@ -61,7 +61,7 @@ class MockService extends AbstractService
     /**
      * (non-PHPdoc)
      *
-     * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::update()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::update()
      */
     public function update(\stdClass $stdClass)
     {}
@@ -69,7 +69,7 @@ class MockService extends AbstractService
     /**
      * (non-PHPdoc)
      *
-     * @see \AppserverIo\Appserver\Core\Api\ServiceInterface::delete()
+     * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::delete()
      */
     public function delete($id)
     {}

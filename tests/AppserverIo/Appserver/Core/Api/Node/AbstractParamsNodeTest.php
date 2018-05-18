@@ -20,6 +20,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Configuration\Configuration;
+use AppserverIo\Description\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\AbstractTest;
 use AppserverIo\Appserver\Core\Api\Node\Mock\MockAbstractParamsNode;
 
@@ -38,7 +39,7 @@ class AbstractParamsNodeTest extends AbstractTest
     /**
      * The abstract node instance to test.
      *
-     * @var AppserverIo\Appserver\Core\Api\Node\Mock\MockAbstractParamsNode
+     * @var \AppserverIo\Appserver\Core\Api\Node\Mock\MockAbstractParamsNode
      */
     protected $abstractParamsNode;
 

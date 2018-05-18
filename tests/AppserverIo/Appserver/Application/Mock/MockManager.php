@@ -68,7 +68,7 @@ class MockManager extends \Stackable implements ManagerInterface
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *
-     * @param \AppserverIo\Appserver\Application\Interfaces\ApplicationInterface $application The application instance
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
      *
      * @return void
      */
@@ -108,6 +108,16 @@ class MockManager extends \Stackable implements ManagerInterface
      * @return mixed The requested attribute
      */
     public function getAttribute($key)
+    {
+    }
+
+    /**
+     * Stops the manager instance.
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Application\ManagerInterface::stop()
+     */
+    public function stop()
     {
     }
 }

@@ -25,7 +25,6 @@ use AppserverIo\Authenticator\Utils\FormKeys;
 use AppserverIo\Description\Api\Node\NodeValue;
 use AppserverIo\Description\Api\Node\ValueNode;
 use AppserverIo\Description\Api\Node\AbstractNode;
-use phpDocumentor\Reflection\DocBlock\Description;
 
 /**
  * DTO to transfer a web application.
