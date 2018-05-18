@@ -22,7 +22,8 @@ namespace AppserverIo\Appserver\Core\Consoles;
 
 use AppserverIo\Appserver\Core\Commands\CommandFactory;
 use AppserverIo\Appserver\Core\Commands\Helper\Arguments;
-use AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface;
+use AppserverIo\Psr\Cli\ConsoleInterface;
+use AppserverIo\Psr\Cli\Configuration\ConsoleConfigurationInterface;
 use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**
@@ -68,12 +69,12 @@ class Telnet extends \Thread implements ConsoleInterface
     /**
      * Initialize and start the management console.
      *
-     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface $applicationServer The reference to the server
-     * @param \AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface     $consoleNode       The console configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ApplicationServerInterface    $applicationServer The reference to the server
+     * @param \AppserverIo\Psr\Cli\Configuration\ConsoleConfigurationInterface $consoleNode       The console configuration
      *
      * @return void
      */
-    public function __construct(ApplicationServerInterface $applicationServer, ConsoleNodeInterface $consoleNode)
+    public function __construct(ApplicationServerInterface $applicationServer, ConsoleConfigurationInterface $consoleNode)
     {
         $this->applicationServer = $applicationServer;
         $this->consoleNode = $consoleNode;

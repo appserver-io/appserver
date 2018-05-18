@@ -20,8 +20,10 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Api\Node\ParamNode;
 use AppserverIo\Description\Api\Node\NodeValue;
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\FileKeys;
 use AppserverIo\Psr\ApplicationServer\Configuration\AppConfigurationInterface;
@@ -44,7 +46,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
     /**
      * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 
@@ -106,7 +108,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      * Array with nodes for the registered datasources.
      *
      * @var array
-     * @AS\Mapping(nodeName="datasources/datasource", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\DatasourceNode")
+     * @AS\Mapping(nodeName="datasources/datasource", nodeType="array", elementType="AppserverIo\Description\Api\Node\DatasourceNode")
      */
     protected $datasources = array();
 

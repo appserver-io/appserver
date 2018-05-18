@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
 /**
  * DTO to transfer logger information.
@@ -35,9 +36,9 @@ class LoggerNode extends AbstractNode implements LoggerNodeInterface
 {
 
     /**
-     * The param node trait.
+     * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 

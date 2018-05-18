@@ -85,7 +85,7 @@ class StartContainersListener extends AbstractSystemListener
                 /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerFactoryInterface $containerFactory */
                 $containerFactory = $containerNode->getFactory();
                 // use the factory to create a new container instance
-                /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container */
+                /** @var \AppserverIo\Psr\ApplicationServer\ContainerInterface $container */
                 $container = $containerFactory::factory($applicationServer, $containerNode, $runlevel);
                 $container->start();
 

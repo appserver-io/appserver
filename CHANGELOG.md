@@ -1,3 +1,16 @@
+Version 1.1.5-beta10
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Remove appserver-io/console from appserver distribution => has to be deliverd with the application
+* Move persistence unit descriptor interfaces and implementations to appserver-io/description
+* Move descriptor configuration to appserver-io-psr/epb and implementation to appserver-io/description
+* Extract interfaces from appserver-io/appserver to appserver-io-psr/cli and appserver-io-psr/application-server
+
 Version 1.1.5-beta9
 
 ## Bugfixes

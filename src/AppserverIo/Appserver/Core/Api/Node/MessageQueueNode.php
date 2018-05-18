@@ -45,7 +45,7 @@ class MessageQueueNode extends AbstractNode implements MessageQueueNodeInterface
     /**
      * The message queue destination information.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DatabaseNode
+     * @var \AppserverIo\Description\Api\Node\ValueNode
      * @AS\Mapping(nodeName="destination", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $destination;

@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
 /**
  * Node class which represents the Access node of the configuration.
@@ -37,7 +38,7 @@ class AccessNode extends AbstractNode
     /**
      * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 

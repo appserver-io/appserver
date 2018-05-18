@@ -25,11 +25,6 @@ use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Lang\Reflection\ReflectionMethod;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
-use AppserverIo\Description\NameAwareDescriptorInterface;
-use AppserverIo\Description\ReferenceDescriptorInterface;
-use AppserverIo\Description\FactoryAwareDescriptorInterface;
-use AppserverIo\Description\MethodInvocationDescriptorInterface;
-use AppserverIo\Description\MethodInvocationAwareDescriptorInterface;
 use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Psr\Servlet\Annotations\Route;
@@ -53,7 +48,12 @@ use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
+use AppserverIo\Psr\EnterpriseBeans\Description\ReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\FactoryAwareDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\MethodInvocationDescriptorInterface;
+use AppserverIo\Psr\EnterpriseBeans\Description\MethodInvocationAwareDescriptorInterface;
 
 /**
  * A basic dependency injection provider implementation.
@@ -281,7 +281,7 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Loads the dependencies for the passed object descriptor.
      *
-     * @param \AppserverIo\Description\NameAwareDescriptorInterface $objectDescriptor The object descriptor to load the dependencies for
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface $objectDescriptor The object descriptor to load the dependencies for
      *
      * @throws \AppserverIo\Psr\Di\DependencyInjectionException Is thrown, if the dependencies can not be loaded
      * @return array The array with the initialized dependencies
@@ -302,7 +302,7 @@ class Provider extends GenericStackable implements ProviderInterface
         $dependencies = array('method' =>  array(), 'property' => array());
 
         // check for declared EPB and resource references
-        /** @var \AppserverIo\Description\ReferenceDescriptorInterface $reference */
+        /** @var \AppserverIo\Psr\EnterpriseBeans\Description\ReferenceDescriptorInterface $reference */
         foreach ($objectDescriptor->getReferences() as $reference) {
             // check if we've a reflection target defined
             if ($injectionTarget = $reference->getInjectionTarget()) {
@@ -335,7 +335,7 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Load's and return's the dependency instance for the passed reference.
      *
-     * @param \AppserverIo\Description\ReferenceDescriptorInterface $referenceDescriptor The reference descriptor
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\ReferenceDescriptorInterface $referenceDescriptor The reference descriptor
      *
      * @return object The reference instance
      * @throws \Exception Is thrown, if no DI type definition for the passed reference is available
@@ -402,7 +402,7 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Loads the dependencies for the passed method invocation descriptor.
      *
-     * @param \AppserverIo\Description\MethodInvocationDescriptorInterface $descriptor The descriptor to load the dependencies for
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\MethodInvocationDescriptorInterface $descriptor The descriptor to load the dependencies for
      *
      * @return array The array with the initialized dependencies
      */
@@ -424,7 +424,7 @@ class Provider extends GenericStackable implements ProviderInterface
     /**
      * Creates a new instance with the dependencies defined by the passed descriptor.
      *
-     * @param \AppserverIo\Description\NameAwareDescriptorInterface $objectDescriptor The object descriptor with the dependencies
+     * @param \AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface $objectDescriptor The object descriptor with the dependencies
      *
      * @return object The instance
      */

@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
 /**
  * DTO to transfer an authentication configuration.
@@ -35,9 +36,9 @@ class LoginModuleNode extends AbstractNode implements LoginModuleNodeInterface
 {
 
     /**
-     * Trait to handle the login module params configuration.
+     * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 

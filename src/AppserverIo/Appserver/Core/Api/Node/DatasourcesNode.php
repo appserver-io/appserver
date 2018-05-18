@@ -38,7 +38,7 @@ class DatasourcesNode extends AbstractNode
      * The datasources.
      *
      * @var array
-     * @AS\Mapping(nodeName="datasource", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\DatasourceNode")
+     * @AS\Mapping(nodeName="datasource", nodeType="array", elementType="AppserverIo\Description\Api\Node\DatasourceNode")
      */
     protected $datasources;
 

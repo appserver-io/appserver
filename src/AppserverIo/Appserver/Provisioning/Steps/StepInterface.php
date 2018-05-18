@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Provisioning\Steps;
 
 use AppserverIo\Appserver\Core\Api\Node\StepNode;
-use AppserverIo\Appserver\Core\Api\Node\DatasourceNode;
+use AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface;
 
 /**
  * Interface for all step implementations.
@@ -54,11 +54,11 @@ interface StepInterface
     /**
      * Injects the datasource node found in the provisioning configuration.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\DatasourceNode $datasourceNode The datasource node data
+     * @param \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface $datasourceNode The datasource node data
      *
      * @return void
      */
-    public function injectDatasourceNode(DatasourceNode $datasourceNode);
+    public function injectDatasourceNode(DatasourceConfigurationInterface $datasourceNode);
 
     /**
      * Injects the absolute path to the appservers PHP executable.

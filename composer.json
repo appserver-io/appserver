@@ -10,29 +10,27 @@
         "react/socket": "0.4.*",
         "react/socket-client": "0.5.0",
         "doctrine/orm": "2.5.*",
-        "doctrine/doctrine-fixtures-bundle" : "2.4.1",
         "league/event": "2.1.*",
         "symfony/var-dumper": "3.4.7",
         "zendframework/zend-diactoros" : "1.4.*",
         "appserver-io-psr/di": "3.0.*",
-        "appserver-io-psr/epb": "5.0.*",
+        "appserver-io-psr/epb": "6.0.*",
         "appserver-io-psr/pms": "1.0.*",
         "appserver-io-psr/mop": "1.2.*",
-        "appserver-io-psr/cli": "dev-master",
+        "appserver-io-psr/cli": "1.0.*",
         "appserver-io-psr/auth": "2.0.*",
         "appserver-io-psr/naming": "1.1.*",
         "appserver-io-psr/servlet": "3.2.*",
         "appserver-io-psr/security": "1.4.*",
         "appserver-io-psr/deployment": "2.0.*",
         "appserver-io-psr/application": "1.4.*",
-        "appserver-io-psr/application-server": "dev-master",
+        "appserver-io-psr/application-server": "1.0.*",
         "appserver-io/rmi": "3.2.*",
         "appserver-io/http": "2.2.*",
         "appserver-io/lang": "3.0.*",
         "appserver-io/logger": "1.0.*",
         "appserver-io/fastcgi" : "2.0.*",
-        "appserver-io/routlt": "2.2.0-beta9",
-        "appserver-io/console": "4.0.*",
+        "appserver-io/routlt": "2.2.0-beta11",
         "appserver-io/storage": "2.0.*",
         "appserver-io/messaging": "3.0.*",
         "appserver-io/microcron": "1.0.*",
@@ -42,7 +40,7 @@
         "appserver-io/properties": "2.1.*",
         "appserver-io/concurrency": "0.3.*",
         "appserver-io/robo-tasks": "0.2.*",
-        "appserver-io/description": "9.0.*",
+        "appserver-io/description": "11.0.*",
         "appserver-io/authenticator": "1.0.*",
         "appserver-io/configuration": "3.0.*",
         "appserver-io/doppelgaenger": "1.7.*",
@@ -94,15 +92,5 @@
         "post-update-cmd": [
             "AppserverIo\\Appserver\\Meta\\Composer\\Script\\Setup::postUpdate"
         ]
-    },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../../appserver-io-psr/cli"
-        },
-        {
-            "type": "path",
-            "url": "../../appserver-io-psr/application-server"
-        }
-    ]
+    }
 }

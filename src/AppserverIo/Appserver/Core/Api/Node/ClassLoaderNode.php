@@ -21,6 +21,8 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
+use AppserverIo\Description\Api\Node\DirectoriesNodeTrait;
 use AppserverIo\Appserver\Core\Utilities\ClassLoaderKeys;
 
 /**
@@ -38,14 +40,14 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
     /**
      * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 
     /**
-     * A directories node trait.
+     * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DirectoriesNodeTrait
+     * @var \AppserverIo\Description\Api\Node\DirectoriesNodeTrait
      */
     use DirectoriesNodeTrait;
 

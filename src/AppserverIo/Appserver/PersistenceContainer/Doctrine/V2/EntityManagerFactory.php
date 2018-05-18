@@ -25,11 +25,11 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Annotations\AnnotationReader;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
-use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
-use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
-use AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineEntityManagerDecorator;
 use AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\DriverFactories\DriverKeys;
-use AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\CacheConfigurationNodeInterface;
+use AppserverIo\Appserver\PersistenceContainer\Doctrine\DoctrineEntityManagerDecorator;
+use AppserverIo\Description\Configuration\CacheConfigurationInterface;
+use AppserverIo\Description\Configuration\MetadataConfigurationInterface;
+use AppserverIo\Description\Configuration\PersistenceUnitConfigurationInterface;
 
 /**
  * Factory implementation for a Doctrin EntityManager instance.
@@ -51,18 +51,18 @@ class EntityManagerFactory
     protected $application;
 
     /**
-     *  @var \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface
+     *  @var \AppserverIo\Description\Configuration\PersistenceUnitConfigurationInterface
      */
     protected $persistenceUnitNode;
 
     /**
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface                 $application         The application instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface $persistenceUnitNode The persistence unit configuration node
+     * @param \AppserverIo\Psr\Application\ApplicationInterface                            $application         The application instance
+     * @param \AppserverIo\Description\Configuration\PersistenceUnitConfigurationInterface $persistenceUnitNode The persistence unit configuration node
      */
     public function __construct(
         ApplicationInterface $application,
-        PersistenceUnitNodeInterface $persistenceUnitNode
+        PersistenceUnitConfigurationInterface $persistenceUnitNode
     ) {
         $this->application = $application;
         $this->persistenceUnitNode = $persistenceUnitNode;
@@ -96,10 +96,10 @@ class EntityManagerFactory
 
             // prepare the setup properties
             $absolutePaths = $metadataConfiguration->getDirectoriesAsArray();
-            $proxyDir = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_DIR);
-            $proxyNamespace = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_NAMESPACE);
-            $autoGenerateProxyClasses = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_AUTO_GENERATE_PROXY_CLASSES);
-            $useSimpleAnnotationReader = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_USE_SIMPLE_ANNOTATION_READER);
+            $proxyDir = $metadataConfiguration->getParam(MetadataConfigurationInterface::PARAM_PROXY_DIR);
+            $proxyNamespace = $metadataConfiguration->getParam(MetadataConfigurationInterface::PARAM_PROXY_NAMESPACE);
+            $autoGenerateProxyClasses = $metadataConfiguration->getParam(MetadataConfigurationInterface::PARAM_AUTO_GENERATE_PROXY_CLASSES);
+            $useSimpleAnnotationReader = $metadataConfiguration->getParam(MetadataConfigurationInterface::PARAM_USE_SIMPLE_ANNOTATION_READER);
 
             // load the metadata driver factory class name
             $metadataDriverFactory = $metadataConfiguration->getFactory();
@@ -198,14 +198,14 @@ class EntityManagerFactory
     /**
      * Factory method to create a new cache instance from the passed configuration.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface                                      $persistenceUnit    The persistence unit node
-     * @param \AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\CacheConfigurationNodeInterface $cacheConfiguration The cache configuration
+     * @param \AppserverIo\Description\Configuration\PersistenceUnitConfigurationInterface $persistenceUnit    The persistence unit node
+     * @param \AppserverIo\Description\Configuration\CacheConfigurationInterface           $cacheConfiguration The cache configuration
      *
      * @return \Doctrine\Common\Cache\CacheProvider The cache instance
      */
     public static function getCacheImpl(
-        PersistenceUnitNodeInterface $persistenceUnit,
-        CacheConfigurationNodeInterface $cacheConfiguration
+        PersistenceUnitConfigurationInterface $persistenceUnit,
+        CacheConfigurationInterface $cacheConfiguration
     ) {
 
         // load the factory class

@@ -55,7 +55,7 @@ class StartConsolesListener extends AbstractSystemListener
             $applicationServer->getSystemLogger()->info($event->getName());
 
             // and initialize a console for each node found in the configuration
-            /** @var \AppserverIo\Appserver\Core\Api\Node\ConsoleNodeInterface $consoleNode */
+            /** @var \AppserverIo\Psr\Cli\Configuration\ConsoleConfigurationInterface $consoleNode */
             foreach ($applicationServer->getSystemConfiguration()->getConsoles() as $consoleNode) {
                 /** @var \AppserverIo\Appserver\Core\Interfaces\ConsoleFactoryInterface $consoleFactory */
                 $consoleFactory = $consoleNode->getFactory();

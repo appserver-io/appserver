@@ -159,7 +159,7 @@ abstract class AbstractServletEngine implements HttpModuleInterface
     /**
      * Returns the container instance.
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\ContainerInterface The container instance
+     * @return \AppserverIo\Psr\ApplicationServer\ContainerInterface The container instance
      */
     public function getContainer()
     {

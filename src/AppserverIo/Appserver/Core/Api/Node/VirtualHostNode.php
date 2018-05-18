@@ -22,6 +22,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 use AppserverIo\Appserver\Core\Api\ExtensionInjectorParameterTrait;
 
 /**
@@ -52,9 +53,9 @@ class VirtualHostNode extends AbstractNode implements VirtualHostNodeInterface
     use HeadersNodeTrait;
 
     /**
-     * The trait for the virtual host params.
+     * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 

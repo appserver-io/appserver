@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Consoles;
 
+use AppserverIo\Psr\Cli\ConsoleInterface;
+
 /**
  * A SSH based management console implementation using a React PHP socket server.
  *

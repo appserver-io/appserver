@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
 /**
  * Node which represents the configuration of a connector to a certain service.
@@ -33,10 +34,11 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  */
 class ConnectorNode extends AbstractNode
 {
+
     /**
      * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 

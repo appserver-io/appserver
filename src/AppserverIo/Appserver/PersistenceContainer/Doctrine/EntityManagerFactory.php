@@ -26,8 +26,8 @@ use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\AnnotationRegistry;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Doctrine\Utils\ConnectionUtil;
-use AppserverIo\Appserver\Core\Api\Node\MetadataConfigurationNode;
-use AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface;
+use AppserverIo\Description\Configuration\PersistenceUnitConfigurationInterface;
+use AppserverIo\Description\Configuration\MetadataConfigurationInterface;
 
 /**
  * Factory implementation for a Doctrin EntityManager instance.
@@ -49,7 +49,7 @@ class EntityManagerFactory
     protected $application;
 
     /**
-     *  @var \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface
+     *  @var \AppserverIo\Description\Configuration\PersistenceUnitConfigurationInterface
      */
     protected $persistenceUnitNode;
 
@@ -66,12 +66,12 @@ class EntityManagerFactory
 
     /**
      *
-     * @param \AppserverIo\Psr\Application\ApplicationInterface                 $application         The application instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNodeInterface $persistenceUnitNode The persistence unit configuration node
+     * @param \AppserverIo\Psr\Application\ApplicationInterface                            $application         The application instance
+     * @param \AppserverIo\Description\Configuration\PersistenceUnitConfigurationInterface $persistenceUnitNode The persistence unit configuration node
      */
     public function __construct(
         ApplicationInterface $application,
-        PersistenceUnitNodeInterface $persistenceUnitNode
+        PersistenceUnitConfigurationInterface $persistenceUnitNode
     ) {
         $this->application = application;
         $this->persistenceUnitNode = $persistenceUnitNode;
@@ -103,9 +103,9 @@ class EntityManagerFactory
 
         // prepare the setup properties
         $absolutePaths = $metadataConfiguration->getDirectoriesAsArray($this->application->getWebappPath());
-        $proxyDir = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_PROXY_DIR);
-        $isDevMode = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_IS_DEV_MODE);
-        $useSimpleAnnotationReader = $metadataConfiguration->getParam(MetadataConfigurationNode::PARAM_USE_SIMPLE_ANNOTATION_READER);
+        $proxyDir = $metadataConfiguration->getParam(MetadataConfigurationInterface::PARAM_PROXY_DIR);
+        $isDevMode = $metadataConfiguration->getParam(MetadataConfigurationInterface::PARAM_IS_DEV_MODE);
+        $useSimpleAnnotationReader = $metadataConfiguration->getParam(MetadataConfigurationInterface::PARAM_USE_SIMPLE_ANNOTATION_READER);
 
         // load the factory method from the available mappings
         $factoryMethod = EntityManagerFactory::$metadataMapping[$metadataConfiguration->getType()];

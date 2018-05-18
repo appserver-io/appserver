@@ -60,7 +60,7 @@ class ShutdownApplicationsListener extends AbstractSystemListener
             /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
             foreach ($applicationServer->getSystemConfiguration()->getContainers() as $containerNode) {
                 // load the container instance to deploy the applications for
-                /** @var \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container */
+                /** @var \AppserverIo\Psr\ApplicationServer\ContainerInterface $container */
                 $container = $namingDirectory->search(
                     sprintf(
                         'php:services/%s/%s',

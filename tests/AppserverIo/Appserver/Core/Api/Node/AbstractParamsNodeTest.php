@@ -20,6 +20,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Configuration\Configuration;
+use AppserverIo\Description\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\AbstractTest;
 use AppserverIo\Appserver\Core\Api\Node\Mock\MockAbstractParamsNode;
 

@@ -38,7 +38,7 @@ class DatasourceService extends AbstractService
     /**
      * Returns all deployed applications.
      *
-     * @return array<\AppserverIo\Appserver\Core\Api\Node\DatasourceNode> All deployed applications
+     * @return array All deployed applications
      * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::findAll()
      */
     public function findAll()
@@ -75,7 +75,7 @@ class DatasourceService extends AbstractService
      *
      * @param string $name Name of the datasource to return
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DatasourceNode The datasource with the name passed as parameter
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface The datasource with the name passed as parameter
      */
     public function findByName($name)
     {
@@ -91,7 +91,7 @@ class DatasourceService extends AbstractService
      *
      * @param string $uuid UUID of the datasource to return
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DatasourceNode The datasource with the UUID passed as parameter
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface The datasource with the UUID passed as parameter
      * @see \AppserverIo\Psr\ApplicationServer\ServiceInterface::load()
      */
     public function load($uuid)

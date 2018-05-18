@@ -21,6 +21,8 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
+use AppserverIo\Description\Api\Node\DirectoriesNodeTrait;
 
 /**
  * DTO to transfer the provisioner information.
@@ -37,14 +39,14 @@ class ScannerNode extends AbstractNode implements ScannerNodeInterface
     /**
      * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 
     /**
-     * A directories node trait.
+     * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DirectoriesNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use DirectoriesNodeTrait;
 

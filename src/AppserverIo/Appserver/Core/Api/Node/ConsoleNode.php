@@ -21,6 +21,8 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
+use AppserverIo\Psr\Cli\Configuration\ConsoleConfigurationInterface;
 
 /**
  * DTO to transfer a console configuration.
@@ -31,13 +33,13 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ConsoleNode extends AbstractNode implements ConsoleNodeInterface
+class ConsoleNode extends AbstractNode implements ConsoleConfigurationInterface
 {
 
     /**
-     * The console configuration params.
+     * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 

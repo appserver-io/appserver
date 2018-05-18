@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
-use AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface;
+use AppserverIo\Description\Configuration\AnnotationRegistryConfigurationInterface;
 
 /**
  * An annotation registry using namespaces and directories to register annotation classes.
@@ -39,11 +39,11 @@ class NamespaceAnnotationRegistry implements AnnotationRegistryInterface
     /**
      * Register's the annotation driver for the passed configuration.
      *
-     * @param \AppserverIo\Appserver\Core\Api\Node\AnnotationRegistryNodeInterface $annotationRegistry The configuration node
+     * @param \AppserverIo\Description\Configuration\AnnotationRegistryConfigurationInterface $annotationRegistry The configuration node
      *
      * @return void
      */
-    public function register(AnnotationRegistryNodeInterface $annotationRegistry)
+    public function register(AnnotationRegistryConfigurationInterface $annotationRegistry)
     {
         AnnotationRegistry::registerAutoloadNamespace(
             $annotationRegistry->getNamespace(),

@@ -26,7 +26,7 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Core\Utilities\LoggerUtils;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Traits\ThreadedContextTrait;
-use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
+use AppserverIo\Psr\ApplicationServer\ContainerInterface;
 use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\LoggerNodeInterface;
@@ -374,7 +374,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     /**
      * Return's the container instance the application is bound to.
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\ContainerInterface The container instance
+     * @return \AppserverIo\Psr\ApplicationServer\ContainerInterface The container instance
      */
     public function getContainer()
     {
@@ -601,8 +601,8 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      * Prepares the application with the specific data found in the
      * passed context node.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The container instance bind the application to
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContextNode          $context   The application configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ContainerInterface $container The container instance bind the application to
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContextNode      $context   The application configuration
      *
      * @return void
      */

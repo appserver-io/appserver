@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 use AppserverIo\Server\Interfaces\ModuleConfigurationInterface;
 
 /**
@@ -36,9 +37,9 @@ class ModuleNode extends AbstractNode implements ModuleConfigurationInterface
 {
 
     /**
-     * Trait to handle the params.
+     * A params node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ParamsNodeTrait
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
      */
     use ParamsNodeTrait;
 

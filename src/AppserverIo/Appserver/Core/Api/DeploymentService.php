@@ -26,7 +26,7 @@ use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\ContainersNode;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
-use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
+use AppserverIo\Psr\ApplicationServer\ContainerInterface;
 use AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface;
 use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
@@ -151,7 +151,7 @@ class DeploymentService extends AbstractFileOperationService
     /**
      * Initializes the available application contexts and returns them.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The container we want to add the applications to
+     * @param \AppserverIo\Psr\ApplicationServer\ContainerInterface $container The container we want to add the applications to
      *
      * @return ContextNode[] The array with the application contexts
      */

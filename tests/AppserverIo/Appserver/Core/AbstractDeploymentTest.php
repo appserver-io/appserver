@@ -69,8 +69,8 @@ class AbstractDeploymentTest extends AbstractTest
                            ->will($this->returnValue(new $className()));
 
         // mock the container
-        $mockContainer = $this->getMockBuilder('AppserverIo\Appserver\Core\Interfaces\ContainerInterface')
-                              ->setMethods(get_class_methods('AppserverIo\Appserver\Core\Interfaces\ContainerInterface'))
+        $mockContainer = $this->getMockBuilder('AppserverIo\Psr\ApplicationServer\ContainerInterface')
+                              ->setMethods(get_class_methods('AppserverIo\Psr\ApplicationServer\ContainerInterface'))
                               ->getMock();
         $mockContainer->expects($this->once())
                       ->method('getInitialContext')

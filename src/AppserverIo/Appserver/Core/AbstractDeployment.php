@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Psr\Deployment\DeploymentInterface;
-use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
+use AppserverIo\Psr\ApplicationServer\ContainerInterface;
 
 /**
  * Abstract deployment implementation.
@@ -38,7 +38,7 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * The container instance.
      *
-     * @var \AppserverIo\Appserver\Core\Interfaces\ContainerInterface
+     * @var \AppserverIo\Psr\ApplicationServer\ContainerInterface
      */
     protected $container;
 
@@ -66,7 +66,7 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * Injects the container instance.
      *
-     * @param \AppserverIo\Appserver\Core\Interfaces\ContainerInterface $container The initial context instance
+     * @param \AppserverIo\Psr\ApplicationServer\ContainerInterface $container The initial context instance
      *
      * @return void
      */
@@ -78,7 +78,7 @@ abstract class AbstractDeployment implements DeploymentInterface
     /**
      * Returns the container instance
      *
-     * @return \AppserverIo\Appserver\Core\Interfaces\ContainerInterface The container instance
+     * @return \AppserverIo\Psr\ApplicationServer\ContainerInterface The container instance
      */
     public function getContainer()
     {

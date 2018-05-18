@@ -20,9 +20,9 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Description\Api\Node\ParamNode;
 use AppserverIo\Configuration\ConfigurationUtils;
 use AppserverIo\Appserver\Core\InitialContext;
-use AppserverIo\Appserver\Core\Api\Node\ParamNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
 /**

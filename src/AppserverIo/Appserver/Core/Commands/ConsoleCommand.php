@@ -21,7 +21,7 @@
 namespace AppserverIo\Appserver\Core\Commands;
 
 use React\Socket\ConnectionInterface;
-use AppserverIo\Appserver\Console\ConsoleContextInterface;
+use AppserverIo\Psr\Cli\ConsoleContextInterface;
 use AppserverIo\Psr\ApplicationServer\ApplicationServerInterface;
 
 /**

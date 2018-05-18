@@ -24,15 +24,15 @@ namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Psr\Application\ApplicationInterface;
-use AppserverIo\Appserver\Core\Interfaces\ContainerInterface;
-use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
-use AppserverIo\Appserver\Core\Api\Node\ParamNode;
+use AppserverIo\Description\Api\Node\ParamNode;
 use AppserverIo\Server\Dictionaries\ServerStateKeys;
+use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Psr\ApplicationServer\ContainerInterface;
 use AppserverIo\Psr\Naming\NamingDirectoryInterface;
 use AppserverIo\Psr\ApplicationServer\ContextInterface;
-use AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface;
 use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
+use AppserverIo\Appserver\Core\Api\Node\ServerNodeInterface;
+use AppserverIo\Appserver\Core\Utilities\ContainerStateKeys;
 
 /**
  * Abstract container implementation.
@@ -88,7 +88,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      * Returns the unique container name from the configuration.
      *
      * @return string The unique container name
-     * @see \AppserverIo\Appserver\Core\Interfaces\ContainerInterface::getName()
+     * @see \AppserverIo\Psr\ApplicationServer\ContainerInterface::getName()
      */
     public function getName()
     {
@@ -372,7 +372,7 @@ abstract class AbstractContainerThread extends AbstractContextThread implements 
      * Returns the initial context instance.
      *
      * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The initial context instance
-     * @see \AppserverIo\Appserver\Core\Interfaces\ContainerInterface::getInitialContext()
+     * @see \AppserverIo\Psr\ApplicationServer\ContainerInterface::getInitialContext()
      */
     public function getInitialContext()
     {

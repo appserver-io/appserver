@@ -20,6 +20,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Appserver\Core\AbstractTest;
+use AppserverIo\Description\Api\Node\DatasourceNode;
 
 /**
  * Test for the abstract node implementatin.
