@@ -1,3 +1,15 @@
+Version 1.1.5-beta11
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Allow DI usage in provisioning steps
+* Switch to latest runtime with PHP version 5.6.35
+* Register environment in BeanManager::initialize() and Job::run() methods to allow usage of short logging functions
+
 Version 1.1.5-beta10
 
 ## Bugfixes

@@ -46,6 +46,7 @@ use AppserverIo\Appserver\PersistenceContainer\Utils\SessionBeanUtil;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DirectoryParser;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser;
 use AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface;
+use AppserverIo\Psr\Servlet\SessionUtils;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -188,6 +189,15 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
      */
     public function initialize(ApplicationInterface $application)
     {
+
+        // add the application instance to the environment
+        Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
+
+        // create s simulated request/session ID whereas session equals request ID
+        Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
+        Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
+
+        // finally register the beans
         $this->registerBeans($application);
     }
 
