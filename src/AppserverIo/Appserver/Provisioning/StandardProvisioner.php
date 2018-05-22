@@ -159,8 +159,10 @@ class StandardProvisioner extends AbstractProvisioner
         foreach ($stepNodes as $stepNode) {
             try {
                 // create a new reflection class of the step
-                $reflectionClass = new \ReflectionClass($stepNode->getType());
-                $step = $reflectionClass->newInstance();
+                // $reflectionClass = new \ReflectionClass($stepNode->getType());
+                // $step = $reflectionClass->newInstance();
+
+                $step = $application->search($stepNode->getType());
 
                 // try to inject the datasource node if available
                 if ($datasourceNode = $provisionNode->getDatasource()) {

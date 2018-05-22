@@ -23,8 +23,11 @@ namespace AppserverIo\Appserver\MessageQueue;
 use AppserverIo\Psr\Pms\JobInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Psr\Pms\QueueContextInterface;
+use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Naming\InitialContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 
 /**
  * A simple job implementation.
@@ -105,6 +108,13 @@ class Job extends \Thread implements JobInterface
             // we need to register the class loaders again
             $application = $this->application;
             $application->registerClassLoaders();
+
+            // add the application instance to the environment
+            Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
+
+            // create s simulated request/session ID whereas session equals request ID
+            Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
+            Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
 
             // load application and message instance
             $message = $this->message;
