@@ -82,7 +82,7 @@ class SwitchUserListener extends AbstractSystemListener
             }
 
             // print a message with the new GID/EGID
-            $applicationServer->getSystemLogger()->info("Running as group" . posix_getgid() . "/" . posix_getegid());
+            $applicationServer->getSystemLogger()->info("Running as group " . posix_getgid() . "/" . posix_getegid());
 
             // switch the effective UID to the passed user
             if (posix_seteuid($uid) === false) {

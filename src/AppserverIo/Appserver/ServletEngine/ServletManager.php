@@ -493,19 +493,16 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
         // load the servlet path => to locate the servlet
         $servletPath = $servletRequest->getServletPath();
 
-        // check if we've a HTTP session-ID
-        $sessionId = null;
-
-        // if no session has already been load, initialize the session manager
+        // if a session cookie has been sent, initialize the session manager and the session
         if ($manager = $this->getApplication()->search(SessionManagerInterface::IDENTIFIER)) {
             $requestedSessionName = $manager->getSessionSettings()->getSessionName();
             if ($servletRequest->hasCookie($requestedSessionName)) {
-                $sessionId = $servletRequest->getCookie($requestedSessionName)->getValue();
+                $servletRequest->getCookie($requestedSessionName)->getValue();
             }
         }
 
         // return the instance
-        return $this->lookup($servletPath, $sessionId, $args);
+        return $this->lookup($servletPath, $args);
     }
 
     /**

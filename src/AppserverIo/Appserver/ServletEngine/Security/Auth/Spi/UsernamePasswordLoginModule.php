@@ -24,6 +24,7 @@ use AppserverIo\Lang\String;
 use AppserverIo\Lang\Boolean;
 use AppserverIo\Collections\HashMap;
 use AppserverIo\Collections\MapInterface;
+use AppserverIo\Psr\Security\SecurityException;
 use AppserverIo\Psr\Security\PrincipalInterface;
 use AppserverIo\Psr\Security\Auth\Subject;
 use AppserverIo\Psr\Security\Auth\Login\LoginException;
@@ -32,7 +33,6 @@ use AppserverIo\Psr\Security\Auth\Callback\CallbackHandlerInterface;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\Util;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\ParamKeys;
 use AppserverIo\Appserver\ServletEngine\Security\Utils\SharedStateKeys;
-use AppserverIo\Psr\Security\SecurityException;
 
 /**
  * This valve will check if the actual request needs authentication.
@@ -47,46 +47,53 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
 {
 
     /**
-     * The login identity.
+     * The authenticated login identity.
      *
      * @var \AppserverIo\Psr\Security\PrincipalInterface
      */
-    private $identity;
+    protected $identity;
+
+    /**
+     * The unauthentacted login identity.
+     *
+     * @var \AppserverIo\Psr\Security\PrincipalInterface
+     */
+    protected $unauthenticatedIdentity;
 
     /**
      * The proof of login identity.
      *
      * @var \AppserverIo\Lang\String
      */
-    private $credential;
+    protected $credential;
 
     /**
      * The message digest algorithm used to hash passwords. If null then plain passwords will be used.
      *
      * @var string
      */
-    private $hashAlgorithm = null;
+    protected $hashAlgorithm = null;
 
    /**
     * The name of the charset/encoding to use when converting the password String to a byte array. Default is the platform's default encoding.
     *
     * @var string
     */
-    private $hashCharset = null;
+    protected $hashCharset = null;
 
     /**
      * The string encoding format to use. Defaults to base64.
      *
      * @var string
      */
-    private $hashEncoding = null;
+    protected $hashEncoding = null;
 
     /**
      * A flag indicating if the password comparison should ignore case
      *
      * @var boolean
      */
-    private $ignorePasswordCase;
+    protected $ignorePasswordCase;
 
     /**
      * Initialize the login module. This stores the subject, callbackHandler and sharedState and options
@@ -167,7 +174,6 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
                 try {
                     $this->identity = $this->createIdentity($name);
                 } catch (\Exception $e) {
-                    // log.debug("Failed to create principal", e);
                     throw new LoginException(sprintf('Failed to create principal: %s', $e->getMessage()));
                 }
             }
@@ -184,14 +190,12 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
 
         if ($name == null && $password == null) {
             $this->identity = $this->unauthenticatedIdentity;
-            // super.log.trace("Authenticating as unauthenticatedIdentity="+identity);
         }
 
         if ($this->identity == null) {
             try {
                 $this->identity = $this->createIdentity($name);
             } catch (\Exception $e) {
-                // log.debug("Failed to create principal", e);
                 throw new LoginException(sprintf('Failed to create principal: %s', $e->getMessage()));
             }
 
@@ -204,7 +208,6 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
 
             // validate the password
             if ($this->validatePassword($password, $expectedPassword) === false) {
-                // super.log.debug("Bad password for username="+username);
                 throw new FailedLoginException('Password Incorrect/Password Required');
             }
         }
@@ -217,7 +220,6 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
         }
 
         $this->loginOk = true;
-        // super.log.trace("User '" + identity + "' authenticated, loginOk="+loginOk);
         return true;
     }
 

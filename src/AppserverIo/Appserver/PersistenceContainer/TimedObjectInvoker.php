@@ -166,10 +166,7 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
             Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
 
             // log a message with the timed object information
-            $this->getApplication()
-                 ->getNamingDirectory()
-                 ->search('php:global/log/System')
-                 ->info(sprintf('Now invoke timed object "%s" with session ID "%s"', $this->getTimedObjectId(), $sessionId));
+            \info(sprintf('Now invoke timed object "%s" with session ID "%s"', $this->getTimedObjectId(), $sessionId));
 
             // lookup the enterprise bean using the initial context
             $instance = $initialContext->lookup($this->getTimedObjectId());

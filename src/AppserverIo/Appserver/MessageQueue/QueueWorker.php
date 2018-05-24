@@ -20,7 +20,6 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Pms\JobInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
@@ -35,6 +34,10 @@ use AppserverIo\Messaging\Utils\StateToProcess;
 use AppserverIo\Messaging\Utils\StateUnknown;
 use AppserverIo\Appserver\Core\AbstractDaemonThread;
 use AppserverIo\Appserver\Core\Utilities\EnumState;
+use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
+use AppserverIo\Psr\Servlet\SessionUtils;
+use AppserverIo\Appserver\Core\Utilities\LoggerUtils;
 
 /**
  * A message queue worker implementation listening to a queue, defined in the passed application.
@@ -179,7 +182,7 @@ class QueueWorker extends AbstractDaemonThread
      */
     public function log($level, $message, array $context = array())
     {
-        $this->getApplication()->getInitialContext()->getSystemLogger()->log($level, $message, $context);
+        LoggerUtils::log($level, $message, $context);
     }
 
     /**
@@ -198,8 +201,15 @@ class QueueWorker extends AbstractDaemonThread
         $application = $this->application;
         $application->registerClassLoaders();
 
+        // add the application instance to the environment
+        Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
+
+        // create s simulated request/session ID whereas session equals request ID
+        Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
+        Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
+
         // try to load the profile logger
-        if ($this->profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
+        if ($this->profileLogger = $application->getInitialContext()->getLogger(\AppserverIo\Logger\LoggerUtils::PROFILE)) {
             $this->profileLogger->appendThreadContext(sprintf('queue-worker-%s', $this->priorityKey));
         }
     }
@@ -280,18 +290,14 @@ class QueueWorker extends AbstractDaemonThread
                                         $jobsExecuting[$message->getMessageId()]->isFinished()
                                     ) {
                                         // log a message that the job is still in progress
-                                        $this->getApplication()->getInitialContext()->getSystemLogger()->info(
-                                            sprintf('Job %s has been finished, remove it from job queue now', $message->getMessageId())
-                                        );
+                                        \info(sprintf('Job %s has been finished, remove it from job queue now', $message->getMessageId()));
 
                                         // set the new state now
                                         $messageStates[$message->getMessageId()] = StateProcessed::KEY;
 
                                     } else {
                                         // log a message that the job is still in progress
-                                        $this->getApplication()->getInitialContext()->getSystemLogger()->debug(
-                                            sprintf('Job %s is still in progress', $message->getMessageId())
-                                        );
+                                        \debug(sprintf('Job %s is still in progress', $message->getMessageId()));
                                     }
 
                                     break;
@@ -331,9 +337,7 @@ class QueueWorker extends AbstractDaemonThread
 
                                     } else {
                                         // log a message that queue is actually full
-                                        $application->getInitialContext()->getSystemLogger()->info(
-                                            sprintf('Job queue full - (%d jobs/%d msg wait)', $inQueue, sizeof($messages))
-                                        );
+                                        \info(sprintf('Job queue full - (%d jobs/%d msg wait)', $inQueue, sizeof($messages)));
 
                                         // if the job queue is full, restart iteration to remove processed jobs from queue first
                                         continue 2;
@@ -348,9 +352,7 @@ class QueueWorker extends AbstractDaemonThread
                                     $messageStates[$message->getMessageId()] = StateFailed::KEY;
 
                                     // log a message that we've a message with a unknown state
-                                    $this->getApplication()->getInitialContext()->getSystemLogger()->critical(
-                                        sprintf('Message %s has state %s', $message->getMessageId(), StateFailed::KEY)
-                                    );
+                                    \critical(sprintf('Message %s has state %s', $message->getMessageId(), StateFailed::KEY));
 
                                     break;
 
@@ -361,9 +363,7 @@ class QueueWorker extends AbstractDaemonThread
                                     $messageStates[$message->getMessageId()] = StateFailed::KEY;
 
                                     // log a message that we've a message with an invalid state
-                                    $this->getApplication()->getInitialContext()->getSystemLogger()->critical(
-                                        sprintf('Message %s has an invalid state', $message->getMessageId())
-                                    );
+                                    \critical(sprintf('Message %s has an invalid state', $message->getMessageId()));
 
                                     break;
                             }
@@ -402,7 +402,7 @@ class QueueWorker extends AbstractDaemonThread
             }, $this);
 
         } catch (\Exception $e) {
-            $application->getInitialContext()->getSystemLogger()->error($e->__toString());
+            \error($e->__toString());
         }
     }
 }

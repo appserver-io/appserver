@@ -1,3 +1,13 @@
+Version 1.1.5-beta12
+
+## Bugfixes
+
+* Remove invalid parameter sessionId when invoking ServletManager::lookup() from ServletManager::locate() method
+
+## Features
+
+* Refactor logger integration, switch to function usage instead of loading logger instances via application or initial context
+
 Version 1.1.5-beta11
 
 ## Bugfixes
