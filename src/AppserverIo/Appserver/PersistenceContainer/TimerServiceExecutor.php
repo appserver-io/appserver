@@ -20,9 +20,12 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
-use AppserverIo\Logger\LoggerUtils;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\AbstractDaemonThread;
+use AppserverIo\Appserver\Core\Utilities\LoggerUtils;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
+use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimerInterface;
 use AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface;
@@ -157,9 +160,16 @@ class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecut
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
+        // add the application instance to the environment
+        Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
+
+        // create s simulated request/session ID whereas session equals request ID
+        Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
+        Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
+
         // try to load the profile logger
-        if (isset($this->loggers[LoggerUtils::PROFILE])) {
-            $this->profileLogger = $this->loggers[LoggerUtils::PROFILE];
+        if (isset($this->loggers[$profileLoggerKey = \AppserverIo\Logger\LoggerUtils::PROFILE])) {
+            $this->profileLogger = $this->loggers[$profileLoggerKey];
             $this->profileLogger->appendThreadContext('timer-service-executor');
         }
     }
@@ -182,9 +192,7 @@ class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecut
             // this should never happen
             if (!$timerTaskWrapper instanceof \stdClass) {
                 // log an error message because we task wrapper has wrong type
-                $this->getApplication()->getInitialContext()->getSystemLogger()->error(
-                    sprintf('Timer-Task-Wrapper %s has wrong type %s', $taskId, get_class($timerTaskWrapper))
-                );
+                \error(sprintf('Timer-Task-Wrapper %s has wrong type %s', $taskId, get_class($timerTaskWrapper)));
                 // we didn't foud a timer task ignore this
                 continue;
             }
@@ -207,9 +215,7 @@ class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecut
 
                 } else {
                     // log an error message because we can't find the timer instance
-                    $this->getApplication()->getInitialContext()->getSystemLogger()->error(
-                        sprintf('Can\'t find timer %s to create timer task %s', $timerTaskWrapper->timerId, $taskId)
-                    );
+                    \error(sprintf('Can\'t find timer %s to create timer task %s', $timerTaskWrapper->timerId, $taskId));
                 }
             }
         }
@@ -233,7 +239,7 @@ class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecut
      */
     public function log($level, $message, array $context = array())
     {
-        $this->getApplication()->getInitialContext()->getSystemLogger()->log($level, $message, $context);
+        LoggerUtils::log($level, $message, $context);
     }
 
     /**

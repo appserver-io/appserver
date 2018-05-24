@@ -18,550 +18,565 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\Application;
+namespace AppserverIo\Appserver\Application {;
 
-use AppserverIo\Storage\GenericStackable;
-use AppserverIo\Appserver\Naming\NamingDirectory;
-use AppserverIo\Appserver\Application\Mock\MockManager;
-use AppserverIo\Appserver\Application\Mock\MockClassLoader;
-
-/**
- * Test implementation for the threaded application implementation.
- *
- * @author    Tim Wagner <tw@appserver.io>
- * @copyright 2015 TechDivision GmbH <info@appserver.io>
- * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/appserver-io/appserver
- * @link      http://www.appserver.io
- */
-class ApplicationTest extends \PHPUnit_Framework_TestCase
-{
+    use AppserverIo\Storage\GenericStackable;
+    use AppserverIo\Appserver\Naming\NamingDirectory;
+    use AppserverIo\Appserver\Application\Mock\MockManager;
+    use AppserverIo\Appserver\Application\Mock\MockClassLoader;
+    use AppserverIo\Appserver\Core\Environment;
+    use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
+    use AppserverIo\Psr\Servlet\SessionUtils;
 
     /**
-     * The application name for testing purposes.
+     * Test implementation for the threaded application implementation.
      *
-     * @var  string
+     * @author    Tim Wagner <tw@appserver.io>
+     * @copyright 2015 TechDivision GmbH <info@appserver.io>
+     * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
+     * @link      https://github.com/appserver-io/appserver
+     * @link      http://www.appserver.io
      */
-    const NAME = 'foo';
-
-    /**
-     * The container name for testing purposes.
-     *
-     * @var  string
-     */
-    const CONTAINER_NAME = 'combined-container';
-
-    /**
-     * The user for testing purposes.
-     *
-     * @var string
-     */
-    const USER = 'www-data';
-
-    /**
-     * The group for testing purposes.
-     *
-     * @var string
-     */
-    const GROUP = 'www-data';
-
-    /**
-     * The umask for testing purposes.
-     *
-     * @var integer
-     */
-    const UMASK = 0002;
-
-    /**
-     * The global tmp directory.
-     *
-     * @var string
-     */
-    const GLOBAL_TMP_DIR = '/opt/appserver/var/tmp';
-
-    /**
-     * The base directory for testing purposes.
-     *
-     * @var  string
-     */
-    const BASE_DIRECTORY = '/opt/appserver';
-
-    /**
-     * The application base directory for testing purposes.
-     *
-     * @var  string
-     */
-    const APP_BASE = '/opt/appserver/webapps';
-
-    /**
-     * The application temporary directory for testing purposes.
-     *
-     * @var  string
-     */
-    const TMP_DIR = '/opt/appserver/var/tmp/foo';
-
-    /**
-     * The application cache directory for testing purposes.
-     *
-     * @var string
-     */
-    const CACHE_DIR = '/opt/appserver/var/tmp/foo/cache';
-
-    /**
-     * The application directory for testing purposes.
-     *
-     * @var string
-     */
-    const WEBAPP_PATH = '/opt/appserver/webapps/foo';
-
-    /**
-     * The application session directory for testing purposes.
-     *
-     * @var string
-     */
-    const SESSION_DIR = '/opt/appserver/var/tmp/foo/session';
-
-    /**
-     * The server name for testing purposes.
-     *
-     * @var  string
-     */
-    const SERVER_NAME = 'test.local';
-
-    /**
-     * The application instance we want to test.
-     *
-     * @var \AppserverIo\Appserver\Application\Application
-     */
-    protected $application;
-
-    /**
-     * The storage for the managers.
-     *
-     * @var \AppserverIo\Storage\GenericStackable
-     */
-    protected $managers;
-
-    /**
-     * The storage for the class loaders.
-     *
-     * @var \AppserverIo\Storage\GenericStackable
-     */
-    protected $classLoaders;
-
-    /**
-     * The storage for the naming directory data.
-     *
-     * @var \AppserverIo\Storage\StackableStorage
-     */
-    protected $data;
-
-    /**
-     * Initialize the instance to test.
-     *
-     * @return void
-     */
-    public function setUp()
+    class ApplicationTest extends \PHPUnit_Framework_TestCase
     {
 
-        // initialize the application instance
-        $this->application = new Application();
+        /**
+         * The application name for testing purposes.
+         *
+         * @var  string
+         */
+        const NAME = 'foo';
 
-        // create a generic stackable for the necessary storages
-        $this->managers = new GenericStackable();
-        $this->classLoaders = new GenericStackable();
+        /**
+         * The container name for testing purposes.
+         *
+         * @var  string
+         */
+        const CONTAINER_NAME = 'combined-container';
 
-        // create a mock instance of the naming directory
-        $this->namingDirectory = new NamingDirectory();
-        $this->namingDirectory->setScheme('php');
-        $this->namingDirectory->createSubdirectory('php:env');
-        $this->namingDirectory->createSubdirectory('php:env/foo');
-        $this->namingDirectory->createSubdirectory('php:global');
-        $this->namingDirectory->createSubdirectory('php:global/foo');
+        /**
+         * The user for testing purposes.
+         *
+         * @var string
+         */
+        const USER = 'www-data';
 
-        $this->namingDirectory->bind('php:env/user', ApplicationTest::USER);
-        $this->namingDirectory->bind('php:env/group', ApplicationTest::GROUP);
-        $this->namingDirectory->bind('php:env/umask', ApplicationTest::UMASK);
-        $this->namingDirectory->bind('php:env/tmpDirectory', ApplicationTest::GLOBAL_TMP_DIR);
-        $this->namingDirectory->bind('php:env/baseDirectory', ApplicationTest::BASE_DIRECTORY);
-        $this->namingDirectory->bind(sprintf('php:env/%s/%s/webappPath', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::WEBAPP_PATH);
-        $this->namingDirectory->bind(sprintf('php:env/%s/%s/tmpDirectory', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::TMP_DIR);
-        $this->namingDirectory->bind(sprintf('php:env/%s/%s/cacheDirectory', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::CACHE_DIR);
-        $this->namingDirectory->bind(sprintf('php:env/%s/%s/sessionDirectory', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::SESSION_DIR);
-        $this->namingDirectory->bind(sprintf('php:env/%s/%s/appBase', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::APP_BASE);
+        /**
+         * The group for testing purposes.
+         *
+         * @var string
+         */
+        const GROUP = 'www-data';
 
-        // inject the storages
-        $this->application->injectName(ApplicationTest::NAME);
-        $this->application->injectContainerName(ApplicationTest::CONTAINER_NAME);
-        $this->application->injectManagers($this->managers);
-        $this->application->injectClassLoaders($this->classLoaders);
-        $this->application->injectNamingDirectory($this->namingDirectory);
-    }
+        /**
+         * The umask for testing purposes.
+         *
+         * @var integer
+         */
+        const UMASK = 0002;
 
-    /**
-     * Test if the application has successfully been initialized.
-     *
-     * @return void
-     */
-    public function testConstructor()
-    {
-        $this->assertInstanceOf('AppserverIo\Psr\Application\ApplicationInterface', $this->application);
-    }
+        /**
+         * The global tmp directory.
+         *
+         * @var string
+         */
+        const GLOBAL_TMP_DIR = '/opt/appserver/var/tmp';
 
-    /**
-     * Test if the getter/setter for the application name works.
-     *
-     * @return void
-     */
-    public function testGetName()
-    {
-        $this->assertEquals(ApplicationTest::NAME, $this->application->getName());
-    }
+        /**
+         * The base directory for testing purposes.
+         *
+         * @var  string
+         */
+        const BASE_DIRECTORY = '/opt/appserver';
 
-    /**
-     * Test if the getter/setter for the app base works.
-     *
-     * @return void
-     */
-    public function testGetAppBase()
-    {
-        $this->assertEquals(ApplicationTest::APP_BASE, $this->application->getAppBase());
-    }
+        /**
+         * The application base directory for testing purposes.
+         *
+         * @var  string
+         */
+        const APP_BASE = '/opt/appserver/webapps';
 
-    /**
-     * Test if the getter for a certain class loader works.
-     *
-     * @return void
-     */
-    public function testGetClassLoader()
-    {
-        $mockLoader = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface');
-        $reflectionClass = new \ReflectionClass($mockLoader);
+        /**
+         * The application temporary directory for testing purposes.
+         *
+         * @var  string
+         */
+        const TMP_DIR = '/opt/appserver/var/tmp/foo';
 
-        $mockLoaderConfig = $this->getMock('\AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface');
-        $mockLoaderConfig->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue($reflectionClass->getShortName()));
+        /**
+         * The application cache directory for testing purposes.
+         *
+         * @var string
+         */
+        const CACHE_DIR = '/opt/appserver/var/tmp/foo/cache';
 
-        $this->application->addClassLoader($mockLoader, $mockLoaderConfig);
-        $this->assertEquals($mockLoader, $this->application->getClassLoader($reflectionClass->getShortName()));
-    }
+        /**
+         * The application directory for testing purposes.
+         *
+         * @var string
+         */
+        const WEBAPP_PATH = '/opt/appserver/webapps/foo';
 
-    /**
-     * Test if the getter for the session dir works.
-     *
-     * @return void
-     */
-    public function testGetSessionDir()
-    {
-        $this->assertEquals(ApplicationTest::SESSION_DIR, $this->application->getSessionDir());
-    }
+        /**
+         * The application session directory for testing purposes.
+         *
+         * @var string
+         */
+        const SESSION_DIR = '/opt/appserver/var/tmp/foo/session';
 
-    /**
-     * Test if the getter for the cache dir works.
-     *
-     * @return void
-     */
-    public function testGetCacheDir()
-    {
-        $this->assertEquals(ApplicationTest::CACHE_DIR, $this->application->getCacheDir());
-    }
+        /**
+         * The server name for testing purposes.
+         *
+         * @var  string
+         */
+        const SERVER_NAME = 'test.local';
 
-    /**
-     * Test if the getter/setter for the initial context works.
-     *
-     * @return void
-     */
-    public function testInjectGetInitialContext()
-    {
+        /**
+         * The application instance we want to test.
+         *
+         * @var \AppserverIo\Appserver\Application\Application
+         */
+        protected $application;
 
-        // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
+        /**
+         * The storage for the managers.
+         *
+         * @var \AppserverIo\Storage\GenericStackable
+         */
+        protected $managers;
 
-        // create a mock instance
-        $mockInitialContext = $this->getMock('AppserverIo\Psr\ApplicationServer\ContextInterface', $methodsToMock);
+        /**
+         * The storage for the class loaders.
+         *
+         * @var \AppserverIo\Storage\GenericStackable
+         */
+        protected $classLoaders;
 
-        // check if the passed instance is equal to the getter one
-        $this->application->injectInitialContext($mockInitialContext);
-        $this->assertEquals($mockInitialContext, $this->application->getInitialContext());
-    }
+        /**
+         * The storage for the naming directory data.
+         *
+         * @var \AppserverIo\Storage\StackableStorage
+         */
+        protected $data;
 
-    /**
-     * Test if the getter/setter for the managers works.
-     *
-     * @return void
-     */
-    public function testInjectGetManagers()
-    {
-        $this->assertEquals($this->managers, $this->application->getManagers());
-    }
+        /**
+         * Initialize the instance to test.
+         *
+         * @return void
+         */
+        public function setUp()
+        {
 
-    /**
-     * Test if the getter/setter for the class loaders works.
-     *
-     * @return void
-     */
-    public function testInjectGetClassLoaders()
-    {
-        $this->assertEquals($this->classLoaders, $this->application->getClassLoaders());
-    }
+            // initialize the application instance
+            $this->application = new Application();
 
-    /**
-     * Test if the newService() method will be forwarded to the initial context.
-     *
-     * @return void
-     */
-    public function testNewService()
-    {
+            // create a generic stackable for the necessary storages
+            $this->managers = new GenericStackable();
+            $this->classLoaders = new GenericStackable();
 
-        // define the methods to mock
-        $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
+            // create a mock instance of the naming directory
+            $this->namingDirectory = new NamingDirectory();
+            $this->namingDirectory->setScheme('php');
+            $this->namingDirectory->createSubdirectory('php:env');
+            $this->namingDirectory->createSubdirectory('php:env/foo');
+            $this->namingDirectory->createSubdirectory('php:global');
+            $this->namingDirectory->createSubdirectory('php:global/foo');
 
-        // create a mock instance
-        $mockInitialContext = $this->getMock('AppserverIo\Psr\ApplicationServer\ContextInterface', $methodsToMock);
-        $mockInitialContext->expects($this->any())
-            ->method('newService')
-            ->will($this->returnValue($newService = new \stdClass()));
+            $this->namingDirectory->bind('php:env/user', ApplicationTest::USER);
+            $this->namingDirectory->bind('php:env/group', ApplicationTest::GROUP);
+            $this->namingDirectory->bind('php:env/umask', ApplicationTest::UMASK);
+            $this->namingDirectory->bind('php:env/tmpDirectory', ApplicationTest::GLOBAL_TMP_DIR);
+            $this->namingDirectory->bind('php:env/baseDirectory', ApplicationTest::BASE_DIRECTORY);
+            $this->namingDirectory->bind(sprintf('php:env/%s/%s/webappPath', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::WEBAPP_PATH);
+            $this->namingDirectory->bind(sprintf('php:env/%s/%s/tmpDirectory', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::TMP_DIR);
+            $this->namingDirectory->bind(sprintf('php:env/%s/%s/cacheDirectory', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::CACHE_DIR);
+            $this->namingDirectory->bind(sprintf('php:env/%s/%s/sessionDirectory', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::SESSION_DIR);
+            $this->namingDirectory->bind(sprintf('php:env/%s/%s/appBase', ApplicationTest::CONTAINER_NAME, ApplicationTest::NAME), ApplicationTest::APP_BASE);
 
-        // check if the passed instance is equal to the getter one
-        $this->application->injectInitialContext($mockInitialContext);
-        $this->assertEquals($newService, $this->application->newService('\stdClass'));
-    }
+            // inject the storages
+            $this->application->injectName(ApplicationTest::NAME);
+            $this->application->injectContainerName(ApplicationTest::CONTAINER_NAME);
+            $this->application->injectManagers($this->managers);
+            $this->application->injectClassLoaders($this->classLoaders);
+            $this->application->injectNamingDirectory($this->namingDirectory);
 
-    /**
-     * Test if the getter/setter for the base directory works.
-     *
-     * @return void
-     */
-    public function testGetBaseDirectory()
-    {
-        $this->assertEquals(ApplicationTest::BASE_DIRECTORY, $this->application->getBaseDirectory());
-    }
+            // add the application instance to the environment
+            Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $this->application);
 
-    /**
-     * Test if the passed directory will be appended correctly.
-     *
-     * @return void
-     */
-    public function testGetBaseDirectoryWithDirectoryToAppend()
-    {
+            // create s simulated request/session ID whereas session equals request ID
+            Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
+            Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
+        }
 
-        // create a directory
-        $aDirectory = ApplicationTest::BASE_DIRECTORY . DIRECTORY_SEPARATOR . ApplicationTest::NAME;
+        /**
+         * Test if the application has successfully been initialized.
+         *
+         * @return void
+         */
+        public function testConstructor()
+        {
+            $this->assertInstanceOf('AppserverIo\Psr\Application\ApplicationInterface', $this->application);
+        }
 
-        // inject the base directory
-        $this->assertEquals($aDirectory, $this->application->getBaseDirectory(DIRECTORY_SEPARATOR . ApplicationTest::NAME));
-    }
+        /**
+         * Test if the getter/setter for the application name works.
+         *
+         * @return void
+         */
+        public function testGetName()
+        {
+            $this->assertEquals(ApplicationTest::NAME, $this->application->getName());
+        }
 
-    /**
-     * Test if the getter for the webapp path works.
-     *
-     * @return void
-     */
-    public function testGetWebappPath()
-    {
-        $this->assertEquals(ApplicationTest::WEBAPP_PATH, $this->application->getWebappPath());
-    }
+        /**
+         * Test if the getter/setter for the app base works.
+         *
+         * @return void
+         */
+        public function testGetAppBase()
+        {
+            $this->assertEquals(ApplicationTest::APP_BASE, $this->application->getAppBase());
+        }
 
-    /**
-     * Test if the class loader has been added successfully.
-     *
-     * @return void
-     */
-    public function testAddClassLoader()
-    {
-        // create a mock loader configuration
-        $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface';
-        $mockLoaderConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
-        $mockLoaderConfiguration->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue('MockLoader'));
+        /**
+         * Test if the getter for a certain class loader works.
+         *
+         * @return void
+         */
+        public function testGetClassLoader()
+        {
+            $mockLoader = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface');
+            $reflectionClass = new \ReflectionClass($mockLoader);
 
-        // create the mock class loader instance
-        $mockLoader = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface');
+            $mockLoaderConfig = $this->getMock('\AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface');
+            $mockLoaderConfig->expects($this->any())
+                ->method('getName')
+                ->will($this->returnValue($reflectionClass->getShortName()));
 
-        // add the class loader to the application
-        $this->application->addClassLoader($mockLoader, $mockLoaderConfiguration);
+            $this->application->addClassLoader($mockLoader, $mockLoaderConfig);
+            $this->assertEquals($mockLoader, $this->application->getClassLoader($reflectionClass->getShortName()));
+        }
 
-        // iterate over the class loaders
-        foreach ($this->application->getClassLoaders() as $cls) {
-            $this->assertEquals($cls, $mockLoader);
+        /**
+         * Test if the getter for the session dir works.
+         *
+         * @return void
+         */
+        public function testGetSessionDir()
+        {
+            $this->assertEquals(ApplicationTest::SESSION_DIR, $this->application->getSessionDir());
+        }
+
+        /**
+         * Test if the getter for the cache dir works.
+         *
+         * @return void
+         */
+        public function testGetCacheDir()
+        {
+            $this->assertEquals(ApplicationTest::CACHE_DIR, $this->application->getCacheDir());
+        }
+
+        /**
+         * Test if the getter/setter for the initial context works.
+         *
+         * @return void
+         */
+        public function testInjectGetInitialContext()
+        {
+
+            // define the methods to mock
+            $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
+
+            // create a mock instance
+            $mockInitialContext = $this->getMock('AppserverIo\Psr\ApplicationServer\ContextInterface', $methodsToMock);
+
+            // check if the passed instance is equal to the getter one
+            $this->application->injectInitialContext($mockInitialContext);
+            $this->assertEquals($mockInitialContext, $this->application->getInitialContext());
+        }
+
+        /**
+         * Test if the getter/setter for the managers works.
+         *
+         * @return void
+         */
+        public function testInjectGetManagers()
+        {
+            $this->assertEquals($this->managers, $this->application->getManagers());
+        }
+
+        /**
+         * Test if the getter/setter for the class loaders works.
+         *
+         * @return void
+         */
+        public function testInjectGetClassLoaders()
+        {
+            $this->assertEquals($this->classLoaders, $this->application->getClassLoaders());
+        }
+
+        /**
+         * Test if the newService() method will be forwarded to the initial context.
+         *
+         * @return void
+         */
+        public function testNewService()
+        {
+
+            // define the methods to mock
+            $methodsToMock = array('getClassLoader', 'newInstance', 'newService', 'getAttribute', 'getSystemLogger', 'getSystemConfiguration', 'getLogger');
+
+            // create a mock instance
+            $mockInitialContext = $this->getMock('AppserverIo\Psr\ApplicationServer\ContextInterface', $methodsToMock);
+            $mockInitialContext->expects($this->any())
+                ->method('newService')
+                ->will($this->returnValue($newService = new \stdClass()));
+
+            // check if the passed instance is equal to the getter one
+            $this->application->injectInitialContext($mockInitialContext);
+            $this->assertEquals($newService, $this->application->newService('\stdClass'));
+        }
+
+        /**
+         * Test if the getter/setter for the base directory works.
+         *
+         * @return void
+         */
+        public function testGetBaseDirectory()
+        {
+            $this->assertEquals(ApplicationTest::BASE_DIRECTORY, $this->application->getBaseDirectory());
+        }
+
+        /**
+         * Test if the passed directory will be appended correctly.
+         *
+         * @return void
+         */
+        public function testGetBaseDirectoryWithDirectoryToAppend()
+        {
+
+            // create a directory
+            $aDirectory = ApplicationTest::BASE_DIRECTORY . DIRECTORY_SEPARATOR . ApplicationTest::NAME;
+
+            // inject the base directory
+            $this->assertEquals($aDirectory, $this->application->getBaseDirectory(DIRECTORY_SEPARATOR . ApplicationTest::NAME));
+        }
+
+        /**
+         * Test if the getter for the webapp path works.
+         *
+         * @return void
+         */
+        public function testGetWebappPath()
+        {
+            $this->assertEquals(ApplicationTest::WEBAPP_PATH, $this->application->getWebappPath());
+        }
+
+        /**
+         * Test if the class loader has been added successfully.
+         *
+         * @return void
+         */
+        public function testAddClassLoader()
+        {
+            // create a mock loader configuration
+            $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface';
+            $mockLoaderConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
+            $mockLoaderConfiguration->expects($this->any())
+                ->method('getName')
+                ->will($this->returnValue('MockLoader'));
+
+            // create the mock class loader instance
+            $mockLoader = $this->getMock('\AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface');
+
+            // add the class loader to the application
+            $this->application->addClassLoader($mockLoader, $mockLoaderConfiguration);
+
+            // iterate over the class loaders
+            foreach ($this->application->getClassLoaders() as $cls) {
+                $this->assertEquals($cls, $mockLoader);
+            }
+        }
+
+        /**
+         * Test if the class loader has been added successfully.
+         *
+         * @return void
+         */
+        public function testSetGetAttribute()
+        {
+            $this->application->setAttribute($key = 'test', ApplicationTest::NAME);
+            $this->assertSame(ApplicationTest::NAME, $this->application->getAttribute($key));
+        }
+
+        /**
+         * Test if the manager instance has been added successfully.
+         *
+         * @return void
+         */
+        public function testAddManager()
+        {
+
+            // create a mock manager configuration
+            $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface';
+            $mockManagerConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
+            $mockManagerConfiguration->expects($this->any())
+                ->method('getName')
+                ->will($this->returnValue(MockManager::IDENTIFIER));
+
+            // add a mock manager
+            $this->application->addManager($mockManager = new MockManager(), $mockManagerConfiguration);
+            $this->assertEquals($mockManager, $this->application->getManager(MockManager::IDENTIFIER));
+        }
+
+        /**
+         * Test if the NULL will be returned for an invalid manager request.
+         *
+         * @return void
+         */
+        public function testGetInvalidManager()
+        {
+            $this->assertNull($this->application->getManager(MockManager::IDENTIFIER));
+        }
+
+        /**
+         * Test if the added manager has been returned.
+         *
+         * @return void
+         */
+        public function testGetManagers()
+        {
+            // create a mock manager configuration
+            $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface';
+            $mockManagerConfiguration1 = $this->getMock($classToMock, get_class_methods($classToMock));
+            $mockManagerConfiguration1->expects($this->any())
+                ->method('getName')
+                ->will($this->returnValue('MockManager1'));
+
+            // create another mock manager configuration
+            $mockManagerConfiguration2 = $this->getMock($classToMock, get_class_methods($classToMock));
+            $mockManagerConfiguration2->expects($this->any())
+                ->method('getName')
+                ->will($this->returnValue('MockManager2'));
+
+            // initialize the managers
+            $mgr1 = new MockManager('test_01');
+            $mgr2 = new MockManager('test_02');
+
+            // add the managers
+            $this->application->addManager($mgr1, $mockManagerConfiguration1);
+            $this->application->addManager($mgr2, $mockManagerConfiguration2);
+            $this->assertEquals(2, sizeof($this->application->getManagers()));
+            foreach ($this->application->getManagers() as $manager) {
+                $this->assertInstanceOf('AppserverIo\Psr\Application\ManagerInterface', $manager);
+            }
+        }
+
+        /**
+         * Test if the class loaders has been registered successfully.
+         *
+         * @return void
+         */
+        public function testRegisterClassLoaders()
+        {
+
+            // initialize the mock logger
+            $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
+
+            // create a mock instance
+            $classToMock = 'AppserverIo\Psr\ApplicationServer\ContextInterface';
+            $mockInitialContext = $this->getMock($classToMock, get_class_methods($classToMock));
+            $mockInitialContext->expects($this->any())
+                ->method('getSystemLogger')
+                ->will($this->returnValue($mockLogger));
+
+            // inject the mock initial context instance
+            $this->application->injectInitialContext($mockInitialContext);
+
+            // create a mock loader configuration
+            $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface';
+            $mockLoaderConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
+            $mockLoaderConfiguration->expects($this->any())
+                ->method('getName')
+                ->will($this->returnValue('MockLoader'));
+
+            // register the mock class loader instance
+            $this->application->addClassLoader($mockClassLoader = new MockClassLoader(), $mockLoaderConfiguration);
+            $this->application->registerClassLoaders();
+
+            // check that the mock class loader has been registered
+            $this->assertTrue($mockClassLoader->isRegistered());
+        }
+
+        /**
+         * Test if the managers has been initialized successfully.
+         *
+         * @return void
+         */
+        public function testInitializeManagers()
+        {
+
+            // initialize the mock logger
+            $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
+
+            // create a mock instance
+            $classToMock = 'AppserverIo\Psr\ApplicationServer\ContextInterface';
+            $mockInitialContext = $this->getMock($classToMock, get_class_methods($classToMock));
+            $mockInitialContext->expects($this->any())
+                ->method('getSystemLogger')
+                ->will($this->returnValue($mockLogger));
+
+            // inject the mock initial context instance
+            $this->application->injectInitialContext($mockInitialContext);
+
+            // create a mock manager configuration
+            $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface';
+            $mockManagerConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
+            $mockManagerConfiguration->expects($this->any())
+                ->method('getName')
+                ->will($this->returnValue('MockManager'));
+
+            // register the mock manager instance
+            $this->application->addManager($mockManager = new MockManager(), $mockManagerConfiguration);
+            $this->application->initializeManagers();
+
+            // check that the mock manager has been initialized
+            $this->assertTrue($mockManager->isInitialized());
+        }
+
+        /**
+         * Test if the getter for the user works.
+         *
+         * @return void
+         */
+        public function testGetUser()
+        {
+            $this->assertSame(ApplicationTest::USER, $this->application->getUser());
+        }
+
+        /**
+         * Test if the getter for the group works.
+         *
+         * @return void
+         */
+        public function testGetGroup()
+        {
+            $this->assertSame(ApplicationTest::GROUP, $this->application->getGroup());
+        }
+
+        /**
+         * Test if the getter for the group works.
+         *
+         * @return void
+         */
+        public function testGetUmask()
+        {
+            $this->assertSame(ApplicationTest::UMASK, $this->application->getUmask());
         }
     }
+}
 
-    /**
-     * Test if the class loader has been added successfully.
-     *
-     * @return void
-     */
-    public function testSetGetAttribute()
-    {
-        $this->application->setAttribute($key = 'test', ApplicationTest::NAME);
-        $this->assertSame(ApplicationTest::NAME, $this->application->getAttribute($key));
-    }
-
-    /**
-     * Test if the manager instance has been added successfully.
-     *
-     * @return void
-     */
-    public function testAddManager()
-    {
-
-        // create a mock manager configuration
-        $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface';
-        $mockManagerConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
-        $mockManagerConfiguration->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue(MockManager::IDENTIFIER));
-
-        // add a mock manager
-        $this->application->addManager($mockManager = new MockManager(), $mockManagerConfiguration);
-        $this->assertEquals($mockManager, $this->application->getManager(MockManager::IDENTIFIER));
-    }
-
-    /**
-     * Test if the NULL will be returned for an invalid manager request.
-     *
-     * @return void
-     */
-    public function testGetInvalidManager()
-    {
-        $this->assertNull($this->application->getManager(MockManager::IDENTIFIER));
-    }
-
-    /**
-     * Test if the added manager has been returned.
-     *
-     * @return void
-     */
-    public function testGetManagers()
-    {
-        // create a mock manager configuration
-        $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface';
-        $mockManagerConfiguration1 = $this->getMock($classToMock, get_class_methods($classToMock));
-        $mockManagerConfiguration1->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue('MockManager1'));
-
-        // create another mock manager configuration
-        $mockManagerConfiguration2 = $this->getMock($classToMock, get_class_methods($classToMock));
-        $mockManagerConfiguration2->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue('MockManager2'));
-
-        // initialize the managers
-        $mgr1 = new MockManager('test_01');
-        $mgr2 = new MockManager('test_02');
-
-        // add the managers
-        $this->application->addManager($mgr1, $mockManagerConfiguration1);
-        $this->application->addManager($mgr2, $mockManagerConfiguration2);
-        $this->assertEquals(2, sizeof($this->application->getManagers()));
-        foreach ($this->application->getManagers() as $manager) {
-            $this->assertInstanceOf('AppserverIo\Psr\Application\ManagerInterface', $manager);
-        }
-    }
-
-    /**
-     * Test if the class loaders has been registered successfully.
-     *
-     * @return void
-     */
-    public function testRegisterClassLoaders()
-    {
-
-        // initialize the mock logger
-        $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
-
-        // create a mock instance
-        $classToMock = 'AppserverIo\Psr\ApplicationServer\ContextInterface';
-        $mockInitialContext = $this->getMock($classToMock, get_class_methods($classToMock));
-        $mockInitialContext->expects($this->any())
-            ->method('getSystemLogger')
-            ->will($this->returnValue($mockLogger));
-
-        // inject the mock initial context instance
-        $this->application->injectInitialContext($mockInitialContext);
-
-        // create a mock loader configuration
-        $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface';
-        $mockLoaderConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
-        $mockLoaderConfiguration->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue('MockLoader'));
-
-        // register the mock class loader instance
-        $this->application->addClassLoader($mockClassLoader = new MockClassLoader(), $mockLoaderConfiguration);
-        $this->application->registerClassLoaders();
-
-        // check that the mock class loader has been registered
-        $this->assertTrue($mockClassLoader->isRegistered());
-    }
-
-    /**
-     * Test if the managers has been initialized successfully.
-     *
-     * @return void
-     */
-    public function testInitializeManagers()
-    {
-
-        // initialize the mock logger
-        $mockLogger = $this->getMock('Psr\Log\LoggerInterface', array('log', 'error', 'warning', 'notice', 'emergency', 'debug', 'info', 'alert', 'critical'));
-
-        // create a mock instance
-        $classToMock = 'AppserverIo\Psr\ApplicationServer\ContextInterface';
-        $mockInitialContext = $this->getMock($classToMock, get_class_methods($classToMock));
-        $mockInitialContext->expects($this->any())
-            ->method('getSystemLogger')
-            ->will($this->returnValue($mockLogger));
-
-        // inject the mock initial context instance
-        $this->application->injectInitialContext($mockInitialContext);
-
-        // create a mock manager configuration
-        $classToMock = 'AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface';
-        $mockManagerConfiguration = $this->getMock($classToMock, get_class_methods($classToMock));
-        $mockManagerConfiguration->expects($this->any())
-            ->method('getName')
-            ->will($this->returnValue('MockManager'));
-
-        // register the mock manager instance
-        $this->application->addManager($mockManager = new MockManager(), $mockManagerConfiguration);
-        $this->application->initializeManagers();
-
-        // check that the mock manager has been initialized
-        $this->assertTrue($mockManager->isInitialized());
-    }
-
-    /**
-     * Test if the getter for the user works.
-     *
-     * @return void
-     */
-    public function testGetUser()
-    {
-        $this->assertSame(ApplicationTest::USER, $this->application->getUser());
-    }
-
-    /**
-     * Test if the getter for the group works.
-     *
-     * @return void
-     */
-    public function testGetGroup()
-    {
-        $this->assertSame(ApplicationTest::GROUP, $this->application->getGroup());
-    }
-
-    /**
-     * Test if the getter for the group works.
-     *
-     * @return void
-     */
-    public function testGetUmask()
-    {
-        $this->assertSame(ApplicationTest::UMASK, $this->application->getUmask());
-    }
+namespace {
+    function debug($message, array $context = array()) {}
 }

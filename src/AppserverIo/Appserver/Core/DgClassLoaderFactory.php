@@ -25,6 +25,8 @@ use AppserverIo\Doppelgaenger\AspectRegister;
 use AppserverIo\Doppelgaenger\Config;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
+use AppserverIo\Psr\Naming\NamingException;
+use AppserverIo\Appserver\Core\Utilities\LoggerUtils;
 
 /**
  * A factory for the Doppelgaenger class loader instances.
@@ -101,7 +103,14 @@ class DgClassLoaderFactory implements ClassLoaderFactoryInterface
         $config->setValue('enforcement/enforce-default-type-safety', $configuration->getTypeSafety());
         $config->setValue('enforcement/processing', $configuration->getProcessing());
         $config->setValue('enforcement/level', $configuration->getEnforcementLevel());
-        $config->setValue('enforcement/logger', $application->getInitialContext()->getSystemLogger());
+
+        try {
+            // try to load the application system logger
+            $config->setValue('enforcement/logger', $application->search(LoggerUtils::SYSTEM_LOGGER));
+        } catch (NamingException $ne) {
+            // load the general system logger, if the application has no logger registered
+            $config->setValue('enforcement/logger', $application->search(LoggerUtils::SYSTEM));
+        }
 
         // create a autoloader instance and initialize it
         $classLoader = new DgClassLoader($config);

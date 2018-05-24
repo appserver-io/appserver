@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Application;
 
 use Rhumsaa\Uuid\Uuid;
+use Psr\Log\LogLevel;
 use Psr\Log\LoggerInterface;
 use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Core\Utilities\LoggerUtils;
@@ -33,13 +34,15 @@ use AppserverIo\Appserver\Core\Api\Node\LoggerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
-use AppserverIo\Appserver\Naming\Utils\NamingDirectoryKeys;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Application\ProvisionerInterface;
 use AppserverIo\Psr\Application\DirectoryAwareInterface;
 use AppserverIo\Psr\Application\FilesystemAwareInterface;
 use AppserverIo\Psr\ApplicationServer\ContextInterface;
+use AppserverIo\Appserver\Core\Environment;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
+use AppserverIo\Psr\Servlet\SessionUtils;
 
 /**
  * The application instance holds all information about the deployed application
@@ -700,32 +703,6 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
-     * Provisions the initialized application.
-     *
-     * @return void
-     */
-    public function provision()
-    {
-
-        // invoke the provisioners and provision the application
-        /** @var \AppserverIo\Psr\Application\ProvisionerInterface $provisioner */
-        foreach ($this->getProvisioners() as $provisioner) {
-            // log the manager we want to initialize
-            $this->getInitialContext()->getSystemLogger()->debug(
-                sprintf('Now invoking provisioner %s for application %s', get_class($provisioner), $this->getName())
-            );
-
-            // execute the provisioning steps
-            $provisioner->provision($this);
-
-            // log the manager we've successfully registered
-            $this->getInitialContext()->getSystemLogger()->debug(
-                sprintf('Successfully invoked provisioner %s for application %s', get_class($provisioner), $this->getName())
-            );
-        }
-    }
-
-    /**
      * Registers all class loaders injected to the applications in the opposite
      * order as they have been injected.
      *
@@ -753,6 +730,28 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
+     * Provisions the initialized application.
+     *
+     * @return void
+     */
+    public function provision()
+    {
+
+        // invoke the provisioners and provision the application
+        /** @var \AppserverIo\Psr\Application\ProvisionerInterface $provisioner */
+        foreach ($this->getProvisioners() as $provisioner) {
+            // log the manager we want to initialize
+            \debug(sprintf('Now invoking provisioner %s for application %s', get_class($provisioner), $this->getName()));
+
+            // execute the provisioning steps
+            $provisioner->provision($this);
+
+            // log the manager we've successfully registered
+            \debug(sprintf('Successfully invoked provisioner %s for application %s', get_class($provisioner), $this->getName()));
+        }
+    }
+
+    /**
      * Registers all managers in the application.
      *
      * @return void
@@ -764,17 +763,13 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
         /** @var \AppserverIo\Psr\Application\ManagerInterface $manager */
         foreach ($this->getManagers() as $manager) {
             // log the manager we want to initialize
-            $this->getInitialContext()->getSystemLogger()->debug(
-                sprintf('Now register manager %s for application %s', get_class($manager), $this->getName())
-            );
+            \debug(sprintf('Now register manager %s for application %s', get_class($manager), $this->getName()));
 
             // initialize the manager instance
             $manager->initialize($this);
 
             // log the manager we've successfully registered
-            $this->getInitialContext()->getSystemLogger()->debug(
-                sprintf('Now registered manager %s for application %s', get_class($manager), $this->getName())
-            );
+            \debug(sprintf('Now registered manager %s for application %s', get_class($manager), $this->getName()));
         }
     }
 
@@ -793,9 +788,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
         do {
             // log a message that we'll wait till application has been shutdown
-            $this->getInitialContext()->getSystemLogger()->info(
-                sprintf('Wait for application %s to be shutdown', $this->getName())
-            );
+            \info(sprintf('Wait for application %s to be shutdown', $this->getName()));
 
             // query whether application state key is SHUTDOWN or not
             $waitForShutdown = $this->synchronized(function ($self) {
@@ -840,6 +833,13 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             // register shutdown handler
             register_shutdown_function(array(&$this, "shutdown"));
 
+            // add the application instance to the environment
+            Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $this);
+
+            // create s simulated request/session ID whereas session equals request ID
+            Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
+            Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
+
             // log a message that we now start to connect the application
             $this->getInitialContext()->getSystemLogger()->debug(sprintf('%s wait to be connected', $this->getName()));
 
@@ -862,7 +862,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             }
 
             // log a message that we has successfully been connected now
-            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->info(sprintf('%s has successfully been connected', $this->getName()));
+            \info(sprintf('%s has successfully been connected', $this->getName()));
 
             // the application has successfully been initialized
             $this->synchronized(function ($self) {
@@ -887,7 +887,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             }
 
             // log a message that we has successfully been shutdown now
-            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->info(sprintf('%s start to shutdown managers', $this->getName()));
+            \info(sprintf('%s start to shutdown managers', $this->getName()));
 
             // array for the manager shutdown threads
             $shutdownThreads = array();
@@ -913,10 +913,10 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             $this->unload();
 
             // log a message that we has successfully been shutdown now
-            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->info(sprintf('%s has successfully been shutdown', $this->getName()));
+            \info(sprintf('%s has successfully been shutdown', $this->getName()));
 
         } catch (\Exception $e) {
-            $this->getNamingDirectory()->search(NamingDirectoryKeys::SYSTEM_LOGGER)->error($e->__toString());
+            LoggerUtils::log(LogLevel::ERROR, $e);
         }
     }
 
@@ -938,7 +938,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             extract($lastError);
             // query whether we've a fatal/user error
             if ($type === E_ERROR || $type === E_USER_ERROR) {
-                $this->getInitialContext()->getSystemLogger()->critical($message);
+                LoggerUtils::log(LogLevel::CRITICAL, $message);
             }
         }
     }
