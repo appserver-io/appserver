@@ -1,3 +1,13 @@
+Version 1.1.5
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Release version 1.1.5
+
 Version 1.1.5-beta12
 
 ## Bugfixes
