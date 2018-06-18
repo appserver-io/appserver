@@ -55,6 +55,7 @@ class TimerServiceRegistryFactory implements ManagerFactoryInterface
         // initialize the stackable for the data, the services and the scheduled timer tasks
         $data = new StackableStorage();
         $services = new StackableStorage();
+        $timerTasks = new GenericStackable();
         $tasksToExecute = new GenericStackable();
         $scheduledTimers = new GenericStackable();
 
@@ -71,6 +72,7 @@ class TimerServiceRegistryFactory implements ManagerFactoryInterface
         // initialize the executor for the scheduled timer tasks
         $timerServiceExecutor = new TimerServiceExecutor();
         $timerServiceExecutor->injectApplication($application);
+        $timerServiceExecutor->injectTimerTasks($timerTasks);
         $timerServiceExecutor->injectTasksToExecute($tasksToExecute);
         $timerServiceExecutor->injectScheduledTimers($scheduledTimers);
         $timerServiceExecutor->start();
