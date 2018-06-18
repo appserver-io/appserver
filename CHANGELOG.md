@@ -1,3 +1,13 @@
+Version 1.1.6
+
+## Bugfixes
+
+* Fixed issue with blocking timer threads
+
+## Features
+
+* None
+
 Version 1.1.5
 
 ## Bugfixes

@@ -43,6 +43,7 @@ use AppserverIo\Psr\EnterpriseBeans\TimerServiceContextInterface;
  * @property \AppserverIo\Psr\Application\ApplicationInterface $application     The application instance
  * @property \AppserverIo\Storage\GenericStackable             $scheduledTimers Contains the scheduled timers
  * @property \AppserverIo\Storage\GenericStackable             $tasksToExecute  Contains the ID's of the tasks to be executed
+ * @property \AppserverIo\Storage\GenericStackable             $timerTasks      Contains the timer tasks that have to be executed
  */
 class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecutorInterface
 {
@@ -81,6 +82,18 @@ class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecut
     public function injectTasksToExecute(GenericStackable $tasksToExecute)
     {
         $this->tasksToExecute = $tasksToExecute;
+    }
+
+    /**
+     * Injects the timer tasks that have to be executed.
+     *
+     * @param  \AppserverIo\Storage\GenericStackable $timerTasks The storage for the timer tasks
+     *
+     * @return void
+     */
+    public function injectTimerTasks(GenericStackable $timerTasks)
+    {
+        $this->timerTasks = $timerTasks;
     }
 
     /**
@@ -124,10 +137,10 @@ class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecut
     {
 
         // force handling the timer tasks now
-        $this->synchronized(function (TimerServiceExecutor $self, TimerInterface $t) {
+        $this->synchronized(function (TimerInterface $t) {
 
             // store the timer-ID and the PK of the timer service => necessary to load the timer later
-            $self->scheduledTimers[$timerId = $t->getId()] = $t->getTimerService()->getPrimaryKey();
+            $this->scheduledTimers[$timerId = $t->getId()] = $t->getTimerService()->getPrimaryKey();
 
             // create a wrapper instance for the timer task that we want to schedule
             $timerTaskWrapper = new \stdClass();
@@ -136,12 +149,9 @@ class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecut
             $timerTaskWrapper->timerId = $timerId;
 
             // schedule the timer tasks as wrapper
-            $self->tasksToExecute[$timerTaskWrapper->taskId] = $timerTaskWrapper;
+            $this->tasksToExecute[$timerTaskWrapper->taskId] = $timerTaskWrapper;
 
-            // notify the thread to execute the timers
-            $self->notify();
-
-        }, $this, $timer);
+        }, $timer);
     }
 
     /**
@@ -173,6 +183,25 @@ class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecut
             $this->profileLogger->appendThreadContext('timer-service-executor');
         }
     }
+
+    /**
+     * Collect the finished timer task jobs.
+     *
+     * @return void
+     */
+    public function collectGarbage()
+    {
+        $this->synchronized(function () {
+            foreach ($this->timerTasks as $taskId => $timerTask) {
+                if ($timerTask->isRunning()) {
+                    continue;
+                } else {
+                    unset($this->timerTasks[$taskId]);
+                }
+            }
+        });
+    }
+
 
     /**
      * This is invoked on every iteration of the daemons while() loop.
@@ -207,8 +236,8 @@ class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecut
                     // lookup the timer from the timer service
                     $timer = $timerServiceRegistry->lookup($pk)->getTimers()->get($timerId);
 
-                    // create the timer task to be executed
-                    $timer->getTimerTask($this->getApplication());
+                    // create and execute the timer task
+                    $this->timerTasks[$taskId] = $timer->getTimerTask($this->getApplication());
 
                     // remove the key from the list of tasks to be executed
                     unset($this->tasksToExecute[$taskId]);
@@ -219,6 +248,9 @@ class TimerServiceExecutor extends AbstractDaemonThread implements ServiceExecut
                 }
             }
         }
+
+        // collect the garbage (finished timer task jobs)
+        $this->collectGarbage();
 
         // profile the size of the timer tasks to be executed
         if ($this->profileLogger) {
