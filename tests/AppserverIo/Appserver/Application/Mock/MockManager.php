@@ -78,6 +78,18 @@ class MockManager extends \Stackable implements ManagerInterface
     }
 
     /**
+     * Lifecycle callback that'll be invoked after the application has been started.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Application\ManagerInterface::postStartup()
+     */
+    public function postStartup(ApplicationInterface $application)
+    {
+    }
+
+    /**
      * Factory method that adds a initialized manager instance to the passed application.
      *
      * @param \AppserverIo\Psr\Application\ApplicationInterface              $application          The application instance

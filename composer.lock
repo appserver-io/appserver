@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "695790351f0f851f34939b73843e7b00",
+    "content-hash": "56025eb534b924d5f03ec46f241a8382",
     "packages": [
         {
             "name": "appserver-io-psr/application",
-            "version": "1.4.0",
+            "version": "1.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io-psr/application.git",
-                "reference": "766d24696c4a976590918b42d670cd3243eaa370"
+                "reference": "2c282b60c9fff5f3bc09b326740f1ba35dde847f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io-psr/application/zipball/766d24696c4a976590918b42d670cd3243eaa370",
-                "reference": "766d24696c4a976590918b42d670cd3243eaa370",
+                "url": "https://api.github.com/repos/appserver-io-psr/application/zipball/2c282b60c9fff5f3bc09b326740f1ba35dde847f",
+                "reference": "2c282b60c9fff5f3bc09b326740f1ba35dde847f",
                 "shasum": ""
             },
             "require": {
@@ -53,7 +53,7 @@
             "keywords": [
                 "persistence container protocol doctrine"
             ],
-            "time": "2017-12-09T14:28:20+00:00"
+            "time": "2018-06-21T14:55:15+00:00"
         },
         {
             "name": "appserver-io-psr/application-server",
@@ -375,22 +375,22 @@
         },
         {
             "name": "appserver-io-psr/epb",
-            "version": "6.0.0",
+            "version": "6.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io-psr/epb.git",
-                "reference": "581e4b2966ae36ab00aa51e654b0c0c13a7a7505"
+                "reference": "6c6a9740e787fa62e563a5fdf451e30c105d5626"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io-psr/epb/zipball/581e4b2966ae36ab00aa51e654b0c0c13a7a7505",
-                "reference": "581e4b2966ae36ab00aa51e654b0c0c13a7a7505",
+                "url": "https://api.github.com/repos/appserver-io-psr/epb/zipball/6c6a9740e787fa62e563a5fdf451e30c105d5626",
+                "reference": "6c6a9740e787fa62e563a5fdf451e30c105d5626",
                 "shasum": ""
             },
             "require": {
-                "appserver-io-psr/application": "1.4.*",
+                "appserver-io-psr/application": "~1.0",
                 "appserver-io/lang": "~3.0",
-                "appserver-io/storage": "2.0.*",
+                "appserver-io/storage": "~2.0",
                 "php": ">=5.5.0"
             },
             "require-dev": {
@@ -428,7 +428,7 @@
             "keywords": [
                 "php enterprise beans"
             ],
-            "time": "2018-05-17T20:03:26+00:00"
+            "time": "2018-06-21T15:21:02+00:00"
         },
         {
             "name": "appserver-io-psr/http-message",
@@ -1058,22 +1058,22 @@
         },
         {
             "name": "appserver-io/dnsserver",
-            "version": "2.0.5",
+            "version": "2.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/dnsserver.git",
-                "reference": "caa3f1e2723995f4c52388eae3d7f077dd02af16"
+                "reference": "53a75ced6bb7b9670f11df2da41a4f132017065a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/dnsserver/zipball/caa3f1e2723995f4c52388eae3d7f077dd02af16",
-                "reference": "caa3f1e2723995f4c52388eae3d7f077dd02af16",
+                "url": "https://api.github.com/repos/appserver-io/dnsserver/zipball/53a75ced6bb7b9670f11df2da41a4f132017065a",
+                "reference": "53a75ced6bb7b9670f11df2da41a4f132017065a",
                 "shasum": ""
             },
             "require": {
                 "appserver-io-psr/socket": "~1.0",
                 "appserver-io/concurrency": "~0.1",
-                "appserver-io/logger": "~1.0",
+                "appserver-io/logger": "~2.0",
                 "appserver-io/server": "~10.0",
                 "monolog/monolog": "1.10.*",
                 "php": ">=5.4.0",
@@ -1116,7 +1116,7 @@
                 "php",
                 "server"
             ],
-            "time": "2016-07-01T18:56:55+00:00"
+            "time": "2018-06-19T20:04:59+00:00"
         },
         {
             "name": "appserver-io/doppelgaenger",
@@ -1352,16 +1352,16 @@
         },
         {
             "name": "appserver-io/logger",
-            "version": "1.0.1",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/logger.git",
-                "reference": "a6d570e00bf90aecf582638bc24cc9ca4432175c"
+                "reference": "b5c2fc7f5c42065599542419b296c305e0152d3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/logger/zipball/a6d570e00bf90aecf582638bc24cc9ca4432175c",
-                "reference": "a6d570e00bf90aecf582638bc24cc9ca4432175c",
+                "url": "https://api.github.com/repos/appserver-io/logger/zipball/b5c2fc7f5c42065599542419b296c305e0152d3e",
+                "reference": "b5c2fc7f5c42065599542419b296c305e0152d3e",
                 "shasum": ""
             },
             "require": {
@@ -1394,7 +1394,7 @@
             ],
             "description": "Thread-Safe and PSR-3 compatible logger implementation.",
             "homepage": "https://github.com/appserver-io/logger",
-            "time": "2015-02-24T08:46:50+00:00"
+            "time": "2018-06-19T19:20:40+00:00"
         },
         {
             "name": "appserver-io/messaging",
@@ -1742,21 +1742,21 @@
         },
         {
             "name": "appserver-io/server",
-            "version": "10.0.0",
+            "version": "10.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/server.git",
-                "reference": "1e51c93ac623c5313569fc4deb5026a1591c64f6"
+                "reference": "765ec0eac49fc3079ca53dfc0872621fd7161f88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/server/zipball/1e51c93ac623c5313569fc4deb5026a1591c64f6",
-                "reference": "1e51c93ac623c5313569fc4deb5026a1591c64f6",
+                "url": "https://api.github.com/repos/appserver-io/server/zipball/765ec0eac49fc3079ca53dfc0872621fd7161f88",
+                "reference": "765ec0eac49fc3079ca53dfc0872621fd7161f88",
                 "shasum": ""
             },
             "require": {
                 "appserver-io-psr/socket": "~1.0",
-                "appserver-io/logger": "~1.0",
+                "appserver-io/logger": "~2.0",
                 "php": ">=5.4.0"
             },
             "require-dev": {
@@ -1804,7 +1804,7 @@
                 "php",
                 "server"
             ],
-            "time": "2016-07-01T18:33:59+00:00"
+            "time": "2018-06-19T19:34:02+00:00"
         },
         {
             "name": "appserver-io/single-app",
@@ -1908,16 +1908,16 @@
         },
         {
             "name": "appserver-io/webserver",
-            "version": "5.1.4",
+            "version": "5.1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/webserver.git",
-                "reference": "b3708818bd2413f40087a60f6fb0fe08f9b15623"
+                "reference": "86e7f2fb536408ab9d6b191862da3a77c2c5837f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/webserver/zipball/b3708818bd2413f40087a60f6fb0fe08f9b15623",
-                "reference": "b3708818bd2413f40087a60f6fb0fe08f9b15623",
+                "url": "https://api.github.com/repos/appserver-io/webserver/zipball/86e7f2fb536408ab9d6b191862da3a77c2c5837f",
+                "reference": "86e7f2fb536408ab9d6b191862da3a77c2c5837f",
                 "shasum": ""
             },
             "require": {
@@ -1926,7 +1926,7 @@
                 "appserver-io/concurrency": "~0.1",
                 "appserver-io/fastcgi": "~2.0",
                 "appserver-io/http": "~2.0",
-                "appserver-io/logger": "~1.0",
+                "appserver-io/logger": "~2.0",
                 "appserver-io/server": "~10.0",
                 "php": ">=5.4.0",
                 "psr/log": "*",
@@ -1980,7 +1980,7 @@
                 "server",
                 "webserver"
             ],
-            "time": "2018-04-11T22:00:45+00:00"
+            "time": "2018-06-19T19:46:59+00:00"
         },
         {
             "name": "consolidation/annotated-command",

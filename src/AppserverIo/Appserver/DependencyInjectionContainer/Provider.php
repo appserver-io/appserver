@@ -83,6 +83,18 @@ class Provider extends GenericStackable implements ProviderInterface
     }
 
     /**
+     * Lifecycle callback that'll be invoked after the application has been started.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Application\ManagerInterface::postStartup()
+     */
+    public function postStartup(ApplicationInterface $application)
+    {
+    }
+
+    /**
      * Has been automatically invoked by the container after the application
      * instance has been created.
      *

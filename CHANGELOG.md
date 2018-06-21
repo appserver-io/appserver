@@ -1,3 +1,14 @@
+Version 1.1.7
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Switch to appserver-io/logger version 2.0.* and appserver-io/application version 1.5.*
+* Add postStartup() lifecycle callback to managers to allow actions after the application has been connected
+
 Version 1.1.6
 
 ## Bugfixes
