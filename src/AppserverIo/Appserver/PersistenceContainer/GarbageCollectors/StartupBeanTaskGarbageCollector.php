@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\PersistenceContainer\StandardGarbageCollector
+ * \AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StartupBeanTaskGarbageCollector
  *
  * NOTICE OF LICENSE
  *
@@ -18,7 +18,7 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer;
+namespace AppserverIo\Appserver\PersistenceContainer\GarbageCollectors;
 
 use Psr\Log\LogLevel;
 use AppserverIo\Logger\LoggerUtils;
@@ -27,7 +27,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 
 /**
- * The garbage collector for the stateful session beans.
+ * The garbage collector for the startup bean tasks.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -35,7 +35,7 @@ use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class StandardGarbageCollector extends AbstractDaemonThread
+class StartupBeanTaskGarbageCollector extends AbstractDaemonThread
 {
 
     /**
@@ -81,7 +81,7 @@ class StandardGarbageCollector extends AbstractDaemonThread
 
         // try to load the profile logger
         if ($this->profileLogger = $this->getApplication()->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
-            $this->profileLogger->appendThreadContext('persistence-container-garbage-collector');
+            $this->profileLogger->appendThreadContext('startup-bean-task-garbage-collector');
         }
     }
 
@@ -114,32 +114,27 @@ class StandardGarbageCollector extends AbstractDaemonThread
         /** @var \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface $beanManager */
         $beanManager = $this->getApplication()->search(BeanContextInterface::IDENTIFIER);
 
-        // load the map with the stateful session beans
-        /** @var \AppserverIo\Storage\StorageInterface $statefulSessionBeans */
-        $statefulSessionBeans = $beanManager->getStatefulSessionBeans();
+        // load the map with the startup bean tasks
+        /** @var \AppserverIo\Storage\GenericStackable $statefulSessionBeans */
+        $startupBeanTasks = $beanManager->getStartupBeanTasks();
 
-        // initialize the timestamp with the actual time
-        $actualTime = time();
-
-        // load the map with the SFSB lifetime data
-        $lifetimeMap = $statefulSessionBeans->getLifetime();
-
-        // write a log message with size of SFSBs to be garbage collected
-        $this->log(LogLevel::DEBUG, sprintf('Found %d SFSBs be garbage collected', sizeof($lifetimeMap)));
+        // write a log message with size of startup bean tasks to be garbage collected
+        $this->log(LogLevel::DEBUG, sprintf('Found "%d" startup been tasks to be garbage collected', sizeof($startupBeanTasks)));
 
         // iterate over the applications sessions with stateful session beans
-        foreach ($lifetimeMap as $identifier => $lifetime) {
+        /** @var \Thread $startupBeanTask */
+        foreach ($startupBeanTasks as $identifier => $startupBeanTask) {
             // check the lifetime of the stateful session beans
-            if ($lifetime < $actualTime) {
-                // if the stateful session bean has timed out, remove it
-                $statefulSessionBeans->remove($identifier, array($beanManager, 'destroyBeanInstance'));
+            if ($startupBeanTask->isRunning()) {
                 // write a log message
-                $this->log(LogLevel::DEBUG, sprintf('Successfully removed SFSB %s', $identifier));
+                $this->log(LogLevel::DEBUG, sprintf('Startup bean task "%s" is still running', $identifier));
+            } else {
+                // remove the startup been task if it has been finished
+                unset($startupBeanTasks[$identifier]);
+                // write a log message
+                $this->log(LogLevel::DEBUG, sprintf('Successfully removed startup bean task "%s"', $identifier));
                 // reduce CPU load
                 usleep(1000);
-            } else {
-                // write a log message
-                $this->log(LogLevel::DEBUG, sprintf('Lifetime %s of SFSB %s is > %s', $lifetime, $identifier, $actualTime));
             }
         }
 
@@ -147,7 +142,7 @@ class StandardGarbageCollector extends AbstractDaemonThread
         /** @var \Psr\Log\LoggerInterface $this->profileLogger */
         if ($this->profileLogger) {
             $this->profileLogger->debug(
-                sprintf('Processed standard garbage collector, handling %d SFSBs', sizeof($statefulSessionBeans))
+                sprintf('Processed startup been task garbage collector, handling "%d" startup bean tasks', sizeof($startupBeanTasks))
             );
         }
     }

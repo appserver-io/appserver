@@ -317,6 +317,18 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     }
 
     /**
+     * Lifecycle callback that'll be invoked after the application has been started.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Application\ManagerInterface::postStartup()
+     */
+    public function postStartup(ApplicationInterface $application)
+    {
+    }
+
+    /**
      * A dummy functionality to implement the stop functionality.
      *
      * @return void
@@ -324,6 +336,6 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      */
     public function stop()
     {
-        error_log(sprintf('Now shutdown manager %s', $this->getIdentifier()));
+        error_log(sprintf('Now shutdown manager "%s"', $this->getIdentifier()));
     }
 }

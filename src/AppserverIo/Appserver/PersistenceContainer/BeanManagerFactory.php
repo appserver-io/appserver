@@ -26,7 +26,9 @@ use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
 use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
+use AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StandardGarbageCollector;
 use AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\RemoteProxyGenerator;
+use AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StartupBeanTaskGarbageCollector;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -65,6 +67,7 @@ class BeanManagerFactory implements ManagerFactoryInterface
         // initialize the stackable for the data, the stateful + singleton session beans and the naming directory
         $data = new StackableStorage();
         $instances = new GenericStackable();
+        $startupBeanTasks = new GenericStackable();
         $singletonSessionBeans = new StackableStorage();
         $statefulSessionBeans = new StatefulSessionBeanMap();
 
@@ -83,6 +86,11 @@ class BeanManagerFactory implements ManagerFactoryInterface
         $garbageCollector->injectApplication($application);
         $garbageCollector->start();
 
+        // add a garbage collector for the startup bean tasks
+        $startupBeanTaskGarbageCollector = new StartupBeanTaskGarbageCollector();
+        $startupBeanTaskGarbageCollector->injectApplication($application);
+        $startupBeanTaskGarbageCollector->start();
+
         // initialize the bean manager
         $beanManager = new BeanManager();
         $beanManager->injectData($data);
@@ -90,12 +98,14 @@ class BeanManagerFactory implements ManagerFactoryInterface
         $beanManager->injectResourceLocator($beanLocator);
         $beanManager->injectObjectFactory($objectFactory);
         $beanManager->injectRequestContext($requestContext);
+        $beanManager->injectStartupBeanTasks($startupBeanTasks);
         $beanManager->injectGarbageCollector($garbageCollector);
         $beanManager->injectManagerSettings($beanManagerSettings);
         $beanManager->injectRemoteProxyGenerator($remoteProxyGenerator);
         $beanManager->injectStatefulSessionBeans($statefulSessionBeans);
         $beanManager->injectSingletonSessionBeans($singletonSessionBeans);
         $beanManager->injectDirectories($managerConfiguration->getDirectories());
+        $beanManager->injectStartupBeanTaskGarbageCollector($startupBeanTaskGarbageCollector);
 
         // create the naming context and add it the manager
         $contextFactory = $managerConfiguration->getContextFactory();

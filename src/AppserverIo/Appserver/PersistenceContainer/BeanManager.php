@@ -21,6 +21,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Collections\CollectionInterface;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
@@ -28,6 +29,7 @@ use AppserverIo\RemoteMethodInvocation\RemoteMethodInterface;
 use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\AbstractEpbManager;
 use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
+use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -43,10 +45,12 @@ use AppserverIo\Psr\EnterpriseBeans\Description\MessageDrivenBeanDescriptorInter
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\SessionBeanUtil;
+use AppserverIo\Appserver\PersistenceContainer\Tasks\StartupBeanTask;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DirectoryParser;
 use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser;
+use AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StandardGarbageCollector;
 use AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface;
-use AppserverIo\Psr\Servlet\SessionUtils;
+use AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StartupBeanTaskGarbageCollector;
 
 /**
  * The bean manager handles the message and session beans registered for the application.
@@ -58,14 +62,18 @@ use AppserverIo\Psr\Servlet\SessionUtils;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property array                                                                                      $directories                   The additional directories to be parsed
- * @property \AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface                                  $resourceLocator               The resource locator
- * @property \AppserverIo\Storage\StorageInterface                                                      $statefulSessionBeans          The storage for the stateful session beans
- * @property \AppserverIo\Storage\StorageInterface                                                      $singletonSessionBeans         The storage for the singleton session beans
- * @property \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface                   $managerSettings               Settings for the bean manager
- * @property \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMapFactory                  $statefulSessionBeanMapFactory The factory instance
- * @property \AppserverIo\Appserver\PersistenceContainer\ObjectFactoryInterface                         $objectFactory                 The object factory instance
- * @property \AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface $remoteProxyGenerator          The remote proxy generator
+ * @property array                                                                                         $requestContext                  The request context to cache the beans
+ * @property array                                                                                         $directories                     The additional directories to be parsed
+ * @property \AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface                                     $resourceLocator                 The resource locator
+ * @property \AppserverIo\Storage\StorageInterface                                                         $statefulSessionBeans            The storage for the stateful session beans
+ * @property \AppserverIo\Storage\StorageInterface                                                         $singletonSessionBeans           The storage for the singleton session beans
+ * @property \AppserverIo\Appserver\PersistenceContainer\BeanManagerSettingsInterface                      $managerSettings                 Settings for the bean manager
+ * @property \AppserverIo\Appserver\PersistenceContainer\StatefulSessionBeanMapFactory                     $statefulSessionBeanMapFactory   The factory instance
+ * @property \AppserverIo\Appserver\PersistenceContainer\ObjectFactoryInterface                            $objectFactory                   The object factory instance
+ * @property \AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface    $remoteProxyGenerator            The remote proxy generator
+ * @property \AppserverIo\Storage\GenericStackable                                                         $startupBeanTasks                The storage with manager's startup bean tasks
+ * @property \AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StandardGarbageCollector        $garbageCollector                The standard garbage collection for the SFSBs
+ * @property \AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StartupBeanTaskGarbageCollector $startupBeanTaskGarbageCollector The garbage collector for the startup bean tasks
  */
 class BeanManager extends AbstractEpbManager implements BeanContextInterface, ManagerSettingsAwareInterface
 {
@@ -157,13 +165,25 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     /**
      * Injects the garbage collector.
      *
-     * @param \AppserverIo\Appserver\PersistenceContainer\StandardGarbageCollector $garbageCollector The garbage collector
+     * @param \AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StandardGarbageCollector $garbageCollector The garbage collector
      *
      * @return void
      */
     public function injectGarbageCollector(StandardGarbageCollector $garbageCollector)
     {
         $this->garbageCollector = $garbageCollector;
+    }
+
+    /**
+     * Injects the startup bean task garbage collector.
+     *
+     * @param \AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StartupBeanTaskGarbageCollector $startupBeanTaskGarbageCollector The garbage collector
+     *
+     * @return void
+     */
+    public function injectStartupBeanTaskGarbageCollector(StartupBeanTaskGarbageCollector $startupBeanTaskGarbageCollector)
+    {
+        $this->startupBeanTaskGarbageCollector = $startupBeanTaskGarbageCollector;
     }
 
     /**
@@ -176,6 +196,43 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     public function injectRemoteProxyGenerator(ProxyGeneratorInterface $remoteProxyGenerator)
     {
         $this->remoteProxyGenerator = $remoteProxyGenerator;
+    }
+
+    /**
+     * Injects the storage for the startup bean tasks.
+     *
+     * @param \AppserverIo\Storage\GenericStackable $startupBeanTasks The storage for the startup bean tasks
+     *
+     * @return void
+     */
+    public function injectStartupBeanTasks(GenericStackable $startupBeanTasks)
+    {
+        $this->startupBeanTasks = $startupBeanTasks;
+    }
+
+    /**
+     * Lifecycle callback that'll be invoked after the application has been started.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Application\ManagerInterface::postStartup()
+     */
+    public function postStartup(ApplicationInterface $application)
+    {
+
+        // load the object manager
+        /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
+        $objectManager = $application->search(ObjectManagerInterface::IDENTIFIER);
+
+        // register the beans found by annotations and the XML configuration
+        /** \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor */
+        foreach ($objectManager->getObjectDescriptors() as $descriptor) {
+            // if we found a singleton session bean with a startup callback instanciate it
+            if ($descriptor instanceof SingletonSessionBeanDescriptorInterface && $descriptor->isInitOnStartup()) {
+                $this->startupBeanTasks[] = new StartupBeanTask($application, $descriptor);
+            }
+        }
     }
 
     /**
@@ -236,11 +293,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
             // check if we've found a bean descriptor and register the bean
             if ($descriptor instanceof BeanDescriptorInterface) {
                 $this->registerBean($descriptor);
-            }
-
-            // if we found a singleton session bean with a startup callback
-            if ($descriptor instanceof SingletonSessionBeanDescriptorInterface && $descriptor->isInitOnStartup()) {
-                $this->getApplication()->search($descriptor->getName());
             }
         }
     }
@@ -354,11 +406,21 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     /**
      * Returns the garbage collector instance.
      *
-     * @return \AppserverIo\Appserver\PersistenceContainer\StandardGarbageCollector The garbage collector instance
+     * @return \AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StandardGarbageCollector The garbage collector instance
      */
     public function getGarbageCollector()
     {
         return $this->garbageCollector;
+    }
+
+    /**
+     * Returns the startup bean task garbage collector instance.
+     *
+     * @return \AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StartupBeanTaskGarbageCollector The garbage collector instance
+     */
+    public function getStartupBeanTaskGarbageCollector()
+    {
+        return $this->startupBeanTaskGarbageCollector;
     }
 
     /**
@@ -369,6 +431,16 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     public function getRemoteProxyGenerator()
     {
         return $this->remoteProxyGenerator;
+    }
+
+    /**
+     * Return's the storage of the manager's post startup threads.
+     *
+     * @return \AppserverIo\Storage\GenericStackable The storage for the post startup threads
+     */
+    public function getStartupBeanTasks()
+    {
+        return $this->startupBeanTasks;
     }
 
     /**

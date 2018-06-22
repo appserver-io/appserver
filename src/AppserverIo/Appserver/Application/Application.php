@@ -774,6 +774,28 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
+     * Invokes the postStartup() method lifecycle callback of the registered managers.
+     *
+     * @return void
+     */
+    public function postStartupManagers()
+    {
+
+        // initialize the registered managers
+        /** @var \AppserverIo\Psr\Application\ManagerInterface $manager */
+        foreach ($this->getManagers() as $manager) {
+            // log the manager we want to invoke the postStartup() lifecycle callback
+            \debug(sprintf('Now invoke the postStartup() lifecycle callback of manager %s for application %s', get_class($manager), $this->getName()));
+
+            // invoke the manager's postStartup() lifecycle callback
+            $manager->postStartup($this);
+
+            // log the manager we've successfully invoked the postStartup() lifecycle callback
+            \debug(sprintf('Successfully invoked the postStartup() lifecycle callback of manager %s for application %s', get_class($manager), $this->getName()));
+        }
+    }
+
+    /**
      * Stops the application instance.
      *
      * @return void
@@ -861,13 +883,16 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
                 $profileLogger->appendThreadContext('application');
             }
 
-            // log a message that we has successfully been connected now
-            \info(sprintf('%s has successfully been connected', $this->getName()));
-
             // the application has successfully been initialized
             $this->synchronized(function ($self) {
                 $self->applicationState = ApplicationStateKeys::get(ApplicationStateKeys::INITIALIZATION_SUCCESSFUL);
             }, $this);
+
+            // log a message that we has successfully been connected now
+            \info(sprintf('%s has successfully been connected', $this->getName()));
+
+            // invoke the application's managers postStartup() lifecycle callbacks
+            $this->postStartupManagers();
 
             // initialize the flag to keep the application running
             $keepRunning = true;

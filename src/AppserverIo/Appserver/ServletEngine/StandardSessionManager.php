@@ -304,6 +304,18 @@ class StandardSessionManager implements SessionManagerInterface
     }
 
     /**
+     * Lifecycle callback that'll be invoked after the application has been started.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Application\ManagerInterface::postStartup()
+     */
+    public function postStartup(ApplicationInterface $application)
+    {
+    }
+
+    /**
      * Initializes the session manager.
      *
      * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
