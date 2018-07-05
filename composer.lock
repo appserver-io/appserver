@@ -1227,16 +1227,16 @@
         },
         {
             "name": "appserver-io/http",
-            "version": "2.2.0",
+            "version": "2.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/http.git",
-                "reference": "7cb99ac365c774a558b6cce637cba8155bb2c4b9"
+                "reference": "2bb681322496962f8b97a89fd6497ff0824d1f5d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/http/zipball/7cb99ac365c774a558b6cce637cba8155bb2c4b9",
-                "reference": "7cb99ac365c774a558b6cce637cba8155bb2c4b9",
+                "url": "https://api.github.com/repos/appserver-io/http/zipball/2bb681322496962f8b97a89fd6497ff0824d1f5d",
+                "reference": "2bb681322496962f8b97a89fd6497ff0824d1f5d",
                 "shasum": ""
             },
             "require": {
@@ -1294,7 +1294,7 @@
                 "protocol",
                 "server"
             ],
-            "time": "2017-05-13T14:28:02+00:00"
+            "time": "2018-07-05T13:21:27+00:00"
         },
         {
             "name": "appserver-io/lang",
