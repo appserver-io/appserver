@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "56025eb534b924d5f03ec46f241a8382",
+    "content-hash": "16264ca12c7c6c1ea766d92778e3b1ca",
     "packages": [
         {
             "name": "appserver-io-psr/application",
@@ -593,19 +593,20 @@
         },
         {
             "name": "appserver-io-psr/pms",
-            "version": "1.0.0",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io-psr/pms.git",
-                "reference": "083a2e5b74d95f7eb3895de2961d103e375ac34e"
+                "reference": "60b353afb4379d37fc7c3791d961941b31f6fc96"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io-psr/pms/zipball/083a2e5b74d95f7eb3895de2961d103e375ac34e",
-                "reference": "083a2e5b74d95f7eb3895de2961d103e375ac34e",
+                "url": "https://api.github.com/repos/appserver-io-psr/pms/zipball/60b353afb4379d37fc7c3791d961941b31f6fc96",
+                "reference": "60b353afb4379d37fc7c3791d961941b31f6fc96",
                 "shasum": ""
             },
             "require": {
+                "appserver-io-psr/application": "~1.0",
                 "php": ">=5.4.0"
             },
             "require-dev": {
@@ -637,7 +638,7 @@
             "keywords": [
                 "php enterprise messaging"
             ],
-            "time": "2015-02-13T16:25:42+00:00"
+            "time": "2018-07-04T15:02:30+00:00"
         },
         {
             "name": "appserver-io-psr/security",
@@ -1398,21 +1399,21 @@
         },
         {
             "name": "appserver-io/messaging",
-            "version": "3.0.0",
+            "version": "4.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/messaging.git",
-                "reference": "e56040b80c6b0be71d9f3792afd44cd460f01150"
+                "reference": "3a153e58c04c56a8fbf6a33d02d8cae7aba4b172"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/messaging/zipball/e56040b80c6b0be71d9f3792afd44cd460f01150",
-                "reference": "e56040b80c6b0be71d9f3792afd44cd460f01150",
+                "url": "https://api.github.com/repos/appserver-io/messaging/zipball/3a153e58c04c56a8fbf6a33d02d8cae7aba4b172",
+                "reference": "3a153e58c04c56a8fbf6a33d02d8cae7aba4b172",
                 "shasum": ""
             },
             "require": {
                 "appserver-io-psr/application": "~1.0",
-                "appserver-io-psr/pms": "~1.0",
+                "appserver-io-psr/pms": "~2.0",
                 "appserver-io-psr/socket": "~1.0",
                 "appserver-io/properties": "~2.0",
                 "guzzle/guzzle": "3.9.*",
@@ -1448,7 +1449,7 @@
             "keywords": [
                 "messaging pms components"
             ],
-            "time": "2018-04-11T19:37:06+00:00"
+            "time": "2018-07-04T15:31:48+00:00"
         },
         {
             "name": "appserver-io/microcron",
@@ -4134,7 +4135,7 @@
         },
         {
             "name": "symfony/config",
-            "version": "v2.8.41",
+            "version": "v2.8.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
@@ -4191,7 +4192,7 @@
         },
         {
             "name": "symfony/console",
-            "version": "v2.8.41",
+            "version": "v2.8.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
@@ -4309,7 +4310,7 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.8.41",
+            "version": "v2.8.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
@@ -4418,16 +4419,16 @@
         },
         {
             "name": "symfony/finder",
-            "version": "v2.8.41",
+            "version": "v2.8.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "79764d21163db295f0daf8bd9d9b91f97e65db6a"
+                "reference": "995cd7c28a0778cece02e2133b4d813dc509dfc3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/79764d21163db295f0daf8bd9d9b91f97e65db6a",
-                "reference": "79764d21163db295f0daf8bd9d9b91f97e65db6a",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/995cd7c28a0778cece02e2133b4d813dc509dfc3",
+                "reference": "995cd7c28a0778cece02e2133b4d813dc509dfc3",
                 "shasum": ""
             },
             "require": {
@@ -4463,7 +4464,7 @@
             ],
             "description": "Symfony Finder Component",
             "homepage": "https://symfony.com",
-            "time": "2018-05-15T21:17:45+00:00"
+            "time": "2018-06-19T11:07:17+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
@@ -4581,16 +4582,16 @@
         },
         {
             "name": "symfony/process",
-            "version": "v2.8.41",
+            "version": "v2.8.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "713952f2ccbcc8342ecdbe1cb313d3e2da8aad28"
+                "reference": "542d88b350c42750fdc14e73860ee96dd423e95d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/713952f2ccbcc8342ecdbe1cb313d3e2da8aad28",
-                "reference": "713952f2ccbcc8342ecdbe1cb313d3e2da8aad28",
+                "url": "https://api.github.com/repos/symfony/process/zipball/542d88b350c42750fdc14e73860ee96dd423e95d",
+                "reference": "542d88b350c42750fdc14e73860ee96dd423e95d",
                 "shasum": ""
             },
             "require": {
@@ -4626,7 +4627,7 @@
             ],
             "description": "Symfony Process Component",
             "homepage": "https://symfony.com",
-            "time": "2018-05-15T21:17:45+00:00"
+            "time": "2018-05-27T07:40:52+00:00"
         },
         {
             "name": "symfony/var-dumper",
@@ -7328,7 +7329,7 @@
         },
         {
             "name": "symfony/stopwatch",
-            "version": "v2.8.41",
+            "version": "v2.8.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/stopwatch.git",
@@ -7441,16 +7442,16 @@
         },
         {
             "name": "symfony/validator",
-            "version": "v2.8.41",
+            "version": "v2.8.42",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "96bbfd5534d2e07ba45255bad27ee90d3bc121a3"
+                "reference": "3fa2355675f1ebc074589b83478480745342c970"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/96bbfd5534d2e07ba45255bad27ee90d3bc121a3",
-                "reference": "96bbfd5534d2e07ba45255bad27ee90d3bc121a3",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/3fa2355675f1ebc074589b83478480745342c970",
+                "reference": "3fa2355675f1ebc074589b83478480745342c970",
                 "shasum": ""
             },
             "require": {
@@ -7511,7 +7512,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2018-05-07T06:57:27+00:00"
+            "time": "2018-06-19T08:02:14+00:00"
         },
         {
             "name": "theseer/fdomdocument",
@@ -8109,16 +8110,16 @@
         },
         {
             "name": "zendframework/zend-servicemanager",
-            "version": "2.7.10",
+            "version": "2.7.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-servicemanager.git",
-                "reference": "ba7069c94c9af93122be9fa31cddd37f7707d5b4"
+                "reference": "99ec9ed5d0f15aed9876433c74c2709eb933d4c7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/ba7069c94c9af93122be9fa31cddd37f7707d5b4",
-                "reference": "ba7069c94c9af93122be9fa31cddd37f7707d5b4",
+                "url": "https://api.github.com/repos/zendframework/zend-servicemanager/zipball/99ec9ed5d0f15aed9876433c74c2709eb933d4c7",
+                "reference": "99ec9ed5d0f15aed9876433c74c2709eb933d4c7",
                 "shasum": ""
             },
             "require": {
@@ -8157,7 +8158,7 @@
                 "servicemanager",
                 "zf2"
             ],
-            "time": "2017-12-05T16:27:36+00:00"
+            "time": "2018-06-22T14:49:54+00:00"
         },
         {
             "name": "zendframework/zend-stdlib",

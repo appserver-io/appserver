@@ -1,3 +1,14 @@
+Version 1.1.8
+
+## Bugfixes
+
+* Fixed issue with not replaced system properties in provisioning deployment descriptor
+
+## Features
+
+* Refactor MQ implementation with callbacks and optimized workflow handling
+* Refactor AbstractStep by adding configuratble retries
+
 Version 1.1.7
 
 ## Bugfixes
