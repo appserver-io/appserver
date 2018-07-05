@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\Provisioning\Steps;
 use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\Api\Node\StepNode;
 use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
+use AppserverIo\Appserver\Provisioning\Utilities\ParamKeys;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\ApplicationServer\ServiceInterface;
@@ -40,6 +41,13 @@ use AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInter
  */
 abstract class AbstractStep extends \Thread implements StepInterface
 {
+
+    /**
+     * The maximum number of retries.
+     *
+     * @var integer
+     */
+    const MAX_RETRIES = 0;
 
     /**
      * The provisioning service.
@@ -179,7 +187,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
      *
      * @return \AppserverIo\Psr\ApplicationServer\ServiceInterface The provisioning service
      */
-    public function getService()
+    protected function getService()
     {
         return $this->service;
     }
@@ -189,7 +197,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
      *
      * @return \AppserverIo\Appserver\Core\Api\Node\StepNode The step node data
      */
-    public function getStepNode()
+    protected function getStepNode()
     {
         return $this->stepNode;
     }
@@ -199,7 +207,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
      *
      * @return \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface The datasource node data
      */
-    public function getDatasourceNode()
+    protected function getDatasourceNode()
     {
         return $this->datasourceNode;
     }
@@ -209,7 +217,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
      *
      * @return \AppserverIo\Psr\ApplicationServer\ContextInterface The initial context
      */
-    public function getInitialContext()
+    protected function getInitialContext()
     {
         return $this->initialContext;
     }
@@ -219,7 +227,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
      *
      * @return string The absolute path to the appservers PHP executable
      */
-    public function getPhpExecutable()
+    protected function getPhpExecutable()
     {
         return $this->phpExecutable;
     }
@@ -229,7 +237,7 @@ abstract class AbstractStep extends \Thread implements StepInterface
      *
      * @return string The applications folder
      */
-    public function getWebappPath()
+    protected function getWebappPath()
     {
         return $this->webappPath;
     }
@@ -239,9 +247,143 @@ abstract class AbstractStep extends \Thread implements StepInterface
      *
      * @return \AppserverIo\Psr\Application\ApplicationInterface The application instance
      */
-    public function getApplication()
+    protected function getApplication()
     {
         return $this->application;
+    }
+
+    /**
+     * Will return the name of the application
+     *
+     * @return string
+     */
+    protected function getAppName()
+    {
+        return $this->getApplication()->getName();
+    }
+
+    /**
+     * Will return the name of the application environment
+     *
+     * @return string
+     */
+    protected function getAppEnvironment()
+    {
+        return $this->getApplication()->getEnvironmentName();
+    }
+
+    /**
+     * Return's the container instance the application is bound to.
+     *
+     * @return \AppserverIo\Psr\ApplicationServer\ContainerInterface The container instance
+     */
+    protected function getContainer()
+    {
+        return $this->getApplication()->getContainer();
+    }
+
+    /**
+     * Return's the container configuration instance.
+     *
+     * @return \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface The container configuration
+     */
+    protected function getContainerNode()
+    {
+        return $this->getContainer()->getContainerNode();
+    }
+
+    /**
+     * Return's the system properties.
+     *
+     * @return \AppserverIo\Properties\PropertiesInterface The system properties
+     */
+    protected function getSystemProperties()
+    {
+        return $this->getApplication()->getSystemProperties();
+    }
+
+    /**
+     * Return's the maximum number of retries.
+     *
+     * @return integer The maximum number
+     */
+    protected function getMaxRetries()
+    {
+
+        // try to load the number of maximum retries from the step configuration
+        $maxRetries = $this->getStepNode()->getParam(ParamKeys::MAX_RETRIES);
+
+        // return the number of maximum retries
+        return $maxRetries ? $maxRetries : AbstractStep::MAX_RETRIES;
+    }
+
+    /**
+     * Logs the start of the provisioning.
+     *
+     * @return void
+     */
+    protected function logStart()
+    {
+        \info(
+            sprintf(
+                'Now start to execute provisioning step %s for application %s (env %s)',
+                $this->getStepNode()->getType(),
+                $this->getAppName(),
+                $this->getAppEnvironment()
+            )
+        );
+    }
+
+    /**
+     * Logs the retry of the provisioning.
+     *
+     * @param integer $retry         The retry number
+     * @param string  $failureReason The reason the last try failed
+     *
+     * @return void
+     */
+    protected function logRetry($retry, $failureReason)
+    {
+        \info(
+            sprintf(
+                'Provisioning step %s of application %s (env %s) failed %d (of %d) times with message "%s"',
+                $this->getStepNode()->getType(),
+                $this->getAppName(),
+                $this->getAppEnvironment(),
+                $retry,
+                AbstractStep::MAX_RETRIES,
+                $failureReason
+            )
+        );
+    }
+
+    /**
+     * Logs the success of the provisioning.
+     *
+     * @return void
+     */
+    protected function logSuccess()
+    {
+        \info(
+            sprintf(
+                'Successfully executed provisioning step %s of application %s (env %s)',
+                $this->getStepNode()->getType(),
+                $this->getAppName(),
+                $this->getAppEnvironment()
+            )
+        );
+    }
+
+    /**
+     * Return's the param with the passed name.
+     *
+     * @param string $name The name of the param to return
+     *
+     * @return mixed The param value
+     */
+    protected function getParam($name)
+    {
+        return $this->getStepNode()->getParam($name);
     }
 
     /**
@@ -269,8 +411,39 @@ abstract class AbstractStep extends \Thread implements StepInterface
         Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
         Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
 
-        // execute the step functionality
-        $this->execute();
+        // initialize retry flag and counter
+        $retry = true;
+        $retryCount = 0;
+
+        // log a message that provisioning starts
+        $this->logStart();
+
+        do {
+            try {
+                // run the actual provisioning
+                $this->execute();
+
+                // log a message that provisioning has been successfull
+                $this->logSuccess();
+
+                // don't retry, because step has been successful
+                $retry = false;
+            } catch (\Exception $e) {
+                // raise the retry count
+                $retryCount++;
+                // query whether or not we've reached the maximum retry count
+                if ($retryCount < $this->getMaxRetries()) {
+                    // sleep for an increasing number of seconds
+                    sleep($retryCount + 1);
+                    // debug log the exception
+                    $this->logRetry($retryCount, $e->getMessage());
+                } else {
+                    // log a message and stop retrying
+                    \error($e);
+                    $retry = false;
+                }
+            }
+        } while ($retry);
     }
 
     /**

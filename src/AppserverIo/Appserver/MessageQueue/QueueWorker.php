@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\MessageQueue;
 
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Naming\InitialContext;
 use AppserverIo\Psr\Pms\JobInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Psr\Pms\PriorityKeyInterface;
@@ -246,8 +247,10 @@ class QueueWorker extends AbstractDaemonThread
             $maximumJobsToProcess = $this->getManagerSettings()->getMaximumJobsToProcess();
 
             // initialize the arrays for the message states and the jobs executing
-            $messageStates = array();
             $jobsExecuting = array();
+            $messagesFailed = array();
+            $retryCounter = array();
+            $callbacksToExecute = array();
 
             // keep the daemon running
             while ($this->keepRunning()) {
@@ -259,69 +262,109 @@ class QueueWorker extends AbstractDaemonThread
 
                         // check if we've a message found
                         if ($message instanceof MessageInterface) {
-                            // set the inital message state if not done
-                            if (isset($messageStates[$jobWrapper->jobId]) === false) {
-                                // initialize the default message state
-                                if ($state = $message->getState()) {
-                                    $messageStates[$jobWrapper->jobId] = $state->getState();
-                                } else {
-                                    $messageStates[$jobWrapper->jobId] = StateUnknown::KEY;
-                                }
-                            }
-
                             // check the message state
-                            switch ($messageStates[$jobWrapper->jobId]) {
+                            switch ($message->getState()->getState()) {
 
                                 // message is active and ready to be processed
                                 case StateActive::KEY:
 
                                     // set the new state now
-                                    $messageStates[$message->getMessageId()] = StateToProcess::KEY;
+                                    $message->setState(StateToProcess::get());
 
                                     break;
 
                                 // message is paused or in progress
                                 case StatePaused::KEY:
+
+                                    // invoke the callbacks for the state
+                                    if ($message->hasCallbacks($message->getState())) {
+                                        $callbacksToExecute[] = new Callback(clone $message, $application);
+                                    }
+
+                                    // log a message that we've a message that has been paused
+                                    \info(sprintf('Message %s has been paused', $message->getMessageId()));
+
+                                    break;
+
                                 case StateInProgress::KEY:
 
-                                    // make sure the job has been finished
-                                    if (isset($jobsExecuting[$message->getMessageId()]) &&
-                                        $jobsExecuting[$message->getMessageId()] instanceof JobInterface &&
-                                        $jobsExecuting[$message->getMessageId()]->isFinished()
-                                    ) {
-                                        // log a message that the job is still in progress
-                                        \info(sprintf('Job %s has been finished, remove it from job queue now', $message->getMessageId()));
+                                    // query whether or not the job is still available
+                                    if (isset($jobsExecuting[$message->getMessageId()])) {
+                                        // make sure the job has been finished
+                                        if ($jobsExecuting[$message->getMessageId()] instanceof JobInterface && $jobsExecuting[$message->getMessageId()]->isFinished()) {
+                                            // log a message that the job is still in progress
+                                            \info(sprintf('Job %s has been finished', $message->getMessageId()));
 
-                                        // set the new state now
-                                        $messageStates[$message->getMessageId()] = StateProcessed::KEY;
+                                            // set the new state now
+                                            $message->setState($jobsExecuting[$message->getMessageId()]->getMessage()->getState());
+
+                                        } else {
+                                            // log a message that the job is still in progress
+                                            \info(sprintf('Job %s is still in progress', $message->getMessageId()));
+                                        }
 
                                     } else {
                                         // log a message that the job is still in progress
-                                        \debug(sprintf('Job %s is still in progress', $message->getMessageId()));
+                                        \critical(sprintf('Message %s has been deleted, but should still be there', $message->getMessageId()));
                                     }
 
                                     break;
 
-                                // message processing failed or has been successfully processed
+                                // message failed
                                 case StateFailed::KEY:
-                                case StateProcessed::KEY:
 
-                                    // load the unique message-ID
-                                    $messageId = $message->getMessageId();
+                                    // remove the old job from the queue
+                                    unset($jobsExecuting[$message->getMessageId()]);
 
-                                    // remove the job from the queue with jobs that has to be executed
-                                    unset($jobsToExecute[$messageId]);
+                                    // query whether or not the message has to be processed again
+                                    if (isset($messagesFailed[$message->getMessageId()]) && $message->getRetryCounter() > 0) {
+                                        // query whether or not the message has to be processed now
+                                        if ($messagesFailed[$message->getMessageId()] < time() && $retryCounter[$message->getMessageId()] < $message->getRetryCounter()) {
+                                            // retry to process the message
+                                            $message->setState(StateToProcess::get());
 
-                                    // also remove the job
-                                    unset($jobsExecuting[$messageId]);
+                                            // update the execution time and raise the retry counter
+                                            $messagesFailed[$message->getMessageId()] = time() + $message->getRetryTimeout($retryCounter[$message->getMessageId()]);
+                                            $retryCounter[$message->getMessageId()]++;
 
-                                    // finally, remove the message states and the message from the queue
-                                    unset($messageStates[$messageId]);
-                                    unset($messages[$messageId]);
+                                        } elseif ($messagesFailed[$message->getMessageId()] < time() && $retryCounter[$message->getMessageId()] === $message->getRetryCounter()) {
+                                            // log a message that we've a message with a unknown state
+                                            \critical(sprintf('Message %s finally failed after %d retries', $message->getMessageId(), $retryCounter[$message->getMessageId()]));
+
+                                            // stop executing the job because we've reached the maximum number of retries
+                                            unset($jobsToExecute[$messageId = $message->getMessageId()]);
+                                            unset($messagesFailed[$messageId]);
+                                            unset($retryCounter[$messageId]);
+
+                                            // invoke the callbacks for the state
+                                            if ($message->hasCallbacks($message->getState())) {
+                                                $callbacksToExecute[] = new Callback(clone $message, $application);
+                                            }
+
+                                        } else {
+                                            // wait for the next try here
+                                        }
+
+                                    } elseif (!isset($messagesFailed[$message->getMessageId()]) && $message->getRetryCounter() > 0) {
+                                        // first retry, so we've to initialize the next execution time and the retry counter
+                                        $retryCounter[$message->getMessageId()] = 0;
+                                        $messagesFailed[$message->getMessageId()] = time() + $message->getRetryTimeout($retryCounter[$message->getMessageId()]);
+
+                                    } else {
+                                        // log a message that we've a message with a unknown state
+                                        \critical(sprintf('Message %s failed with NO retries', $message->getMessageId()));
+
+                                        // stop executing the job because we've reached the maximum number of retries
+                                        unset($jobsToExecute[$messageId = $message->getMessageId()]);
+
+                                        // invoke the callbacks for the state
+                                        if ($message->hasCallbacks($message->getState())) {
+                                            $callbacksToExecute[] = new Callback(clone $message, $application);
+                                        }
+                                    }
 
                                     break;
 
-                                // message has to be processed now
                                 case StateToProcess::KEY:
 
                                     // count messages in queue
@@ -329,11 +372,11 @@ class QueueWorker extends AbstractDaemonThread
 
                                     // we only process 200 jobs in parallel
                                     if ($inQueue < $maximumJobsToProcess) {
+                                        // set the new message state now
+                                        $message->setState(StateInProgress::get());
+
                                         // start the job and add it to the internal array
                                         $jobsExecuting[$message->getMessageId()] = new Job(clone $message, $application);
-
-                                        // set the new state now
-                                        $messageStates[$message->getMessageId()] = StateInProgress::KEY;
 
                                     } else {
                                         // log a message that queue is actually full
@@ -345,14 +388,31 @@ class QueueWorker extends AbstractDaemonThread
 
                                     break;
 
+                                // message processing has been successfully processed
+                                case StateProcessed::KEY:
+
+                                    // invoke the callbacks for the state
+                                    if ($message->hasCallbacks($message->getState())) {
+                                        $callbacksToExecute[] = new Callback(clone $message, $application);
+                                    }
+
+                                    // remove the job from the queue with jobs that has to be executed
+                                    unset($jobsToExecute[$messageId = $message->getMessageId()]);
+
+                                    // also remove the job + the message from the queue
+                                    unset($jobsExecuting[$messageId]);
+                                    unset($messages[$messageId]);
+
+                                    break;
+
                                 // message is in an unknown state -> this is weired and should never happen!
                                 case StateUnknown::KEY:
 
-                                    // set new state now
-                                    $messageStates[$message->getMessageId()] = StateFailed::KEY;
-
                                     // log a message that we've a message with a unknown state
-                                    \critical(sprintf('Message %s has state %s', $message->getMessageId(), StateFailed::KEY));
+                                    \critical(sprintf('Message %s has state %s', $message->getMessageId(), $message->getState()));
+
+                                    // set new state now
+                                    $message->setState(StateFailed::get());
 
                                     break;
 
@@ -360,13 +420,18 @@ class QueueWorker extends AbstractDaemonThread
                                 default:
 
                                     // set the failed message state
-                                    $messageStates[$message->getMessageId()] = StateFailed::KEY;
+                                    $message->setState(StateFailed::get());
 
                                     // log a message that we've a message with an invalid state
                                     \critical(sprintf('Message %s has an invalid state', $message->getMessageId()));
 
                                     break;
                             }
+                        }
+
+                        // add the message back to the stack (because we've a copy here)
+                        if (isset($messages[$message->getMessageId()])) {
+                            $messages[$jobWrapper->jobId] = $message;
                         }
 
                         // catch all exceptions

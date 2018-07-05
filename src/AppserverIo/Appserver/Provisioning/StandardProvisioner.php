@@ -119,6 +119,9 @@ class StandardProvisioner extends AbstractProvisioner
                      */
                     $provisionNode->reprovision($provisionFile);
 
+                    // we've to replace the system properties again
+                    $provisionNode->replaceProperties($properties);
+
                     // execute the provisioning workflow
                     $this->executeProvision($application, $provisionNode, new \SplFileInfo($webappPath));
 
@@ -158,10 +161,7 @@ class StandardProvisioner extends AbstractProvisioner
         // execute all steps found in the configuration
         foreach ($stepNodes as $stepNode) {
             try {
-                // create a new reflection class of the step
-                // $reflectionClass = new \ReflectionClass($stepNode->getType());
-                // $step = $reflectionClass->newInstance();
-
+                // load the step node instance
                 $step = $application->search($stepNode->getType());
 
                 // try to inject the datasource node if available
@@ -194,11 +194,17 @@ class StandardProvisioner extends AbstractProvisioner
      */
     public function getAbsolutPathToPhpExecutable()
     {
+
+        // initialize the default path to the PHP executable
         $executable = StandardProvisioner::PHP_EXECUTABLE_UNIX;
+
+        // query whether or not we're on Windows
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
             // we have a different executable on Windows systems
             $executable = StandardProvisioner::PHP_EXECUTABLE_WIN;
         }
+
+        // return the path to the PHP executable
         return $this->getService()->realpath($executable);
     }
 }

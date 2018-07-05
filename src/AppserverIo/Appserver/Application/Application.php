@@ -43,6 +43,8 @@ use AppserverIo\Psr\ApplicationServer\ContextInterface;
 use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Psr\Servlet\SessionUtils;
+use AppserverIo\Appserver\Core\Api\ConfigurationService;
+use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 
 /**
  * The application instance holds all information about the deployed application
@@ -382,6 +384,31 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     public function getContainer()
     {
         return $this->getNamingDirectory()->search(sprintf('php:services/%s/%s', $this->getContainerRunlevel(), $this->getContainerName()));
+    }
+
+    /**
+     * Return's the system properties enriched with the application specific properties like webapp.dir etc.
+     *
+     * @return \AppserverIo\Properties\PropertiesInterface The sytem properties
+     */
+    public function getSystemProperties()
+    {
+
+        // load the configuration service
+        $service = $this->newService(ConfigurationService::class);
+
+        // load the system properties
+        $systemProperties =  $service->getSystemProperties($this->getContainer()->getContainerNode());
+
+        // append the application specific properties
+        $systemProperties->add(SystemPropertyKeys::WEBAPP, $webappPath = $this->getWebappPath());
+        $systemProperties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+        $systemProperties->add(SystemPropertyKeys::WEBAPP_DATA, $this->getDataDir());
+        $systemProperties->add(SystemPropertyKeys::WEBAPP_CACHE, $this->getCacheDir());
+        $systemProperties->add(SystemPropertyKeys::WEBAPP_SESSION, $this->getSessionDir());
+
+        // return the system properties
+        return $systemProperties;
     }
 
     /**

@@ -20,19 +20,15 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Psr\Pms\JobInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
-use AppserverIo\Psr\Pms\QueueContextInterface;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Naming\InitialContext;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
-use AppserverIo\Messaging\Utils\StateFailed;
-use AppserverIo\Messaging\Utils\StateProcessed;
 
 /**
- * A simple job implementation.
+ * A simple callback implementation.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -40,7 +36,7 @@ use AppserverIo\Messaging\Utils\StateProcessed;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class Job extends \Thread implements JobInterface
+class Callback extends \Thread
 {
 
     /**
@@ -84,16 +80,6 @@ class Job extends \Thread implements JobInterface
     }
 
     /**
-     * Queries whether the timer task has been finished or not.
-     *
-     * @return boolean TRUE if the timer task has been finished, else FALSE
-     */
-    public function isFinished()
-    {
-        return $this->finished;
-    }
-
-    /**
      * We process the timer here.
      *
      * @return void
@@ -122,41 +108,21 @@ class Job extends \Thread implements JobInterface
         $message = $this->message;
 
         try {
-            // load class name and session ID from remote method
-            $queueProxy = $message->getDestination();
-            $sessionId = $message->getSessionId();
+            // create an intial context instance
+            $initialContext = new InitialContext();
+            $initialContext->injectApplication($application);
 
-            // lookup the queue and process the message
-            if ($queue = $application->search(QueueContextInterface::IDENTIFIER)->locate($queueProxy)) {
-                // the queues receiver type
-                $queueType = $queue->getType();
-
-                // create an intial context instance
-                $initialContext = new InitialContext();
-                $initialContext->injectApplication($application);
-
-                // lookup the bean instance
-                $instance = $initialContext->lookup($queueType);
-
-                // inject the application to the receiver and process the message
-                $instance->onMessage($message, $sessionId);
-
-                // set the new message state to processed
-                $message->setState(StateProcessed::get());
+            // load the callbacks for the actual message state
+            foreach ($message->getCallbacks($message->getState()) as $callback) {
+                // explode the lookup + method name
+                list ($lookupName, $methodName) = $callback;
+                // lookup the bean instance and invoke the callback
+                call_user_func(array($initialContext->lookup($lookupName), $methodName), $message);
             }
 
         } catch (\Exception $e) {
-            // log the exception
             \error($e->__toString());
-            // set the message state to failed
-            $message->setState(StateFailed::get());
         }
-
-        // mark the job finished
-        $this->finished = true;
-
-        // set the message back to the global context
-        $this->message = $message;
     }
 
     /**
@@ -180,8 +146,5 @@ class Job extends \Thread implements JobInterface
                 $this->getApplication()->getInitialContext()->getSystemLogger()->error($message);
             }
         }
-
-        // mark the job finished
-        $this->finished = true;
     }
 }
