@@ -1,3 +1,13 @@
+Version 1.1.9
+
+## Bugfixes
+
+* Fix multipart request issues for files which begin with null bytes in appserver-io/http library
+
+## Features
+
+* None
+
 Version 1.1.8
 
 ## Bugfixes
