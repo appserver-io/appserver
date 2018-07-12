@@ -2151,6 +2151,7 @@
             <xs:attribute name="interface" type="xs:string" use="required"/>
             <xs:attribute name="type" type="xs:string" use="required"/>
             <xs:attribute name="factory" type="xs:string" use="required"/>
+            <xs:attribute name="repositoryFactory" type="xs:string"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>

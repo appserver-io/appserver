@@ -96,12 +96,7 @@
                 <descriptor>AppserverIo\Description\StatefulSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\SingletonSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\StatelessSessionBeanDescriptor</descriptor>
-                <descriptor>AppserverIo\Routlt\Description\PathDescriptor</descriptor>
-                <descriptor>AppserverIo\Routlt\Description\ResultDescriptor</descriptor>
             </descriptors>
-            <directories>
-                <directory>${webapp.dir}/vendor/appserver-io/console/etc/appserver/conf.d</directory>
-            </directories>
         </manager>
         <manager name="ConsoleContextInterface" type="AppserverIo\Appserver\Console\ConsoleManager" factory="AppserverIo\Appserver\Console\ConsoleManagerFactory"/>
         <manager name="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
@@ -129,7 +124,6 @@
                 <param name="baseDirectory" type="string">WEB-INF</param>
             </params>
             <directories>
-                <directory>${vendor.dir}/appserver-io/routlt/src</directory>
                 <directory>${webapp.dir}/WEB-INF/classes</directory>
             </directories>
         </manager>

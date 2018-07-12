@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "16264ca12c7c6c1ea766d92778e3b1ca",
+    "content-hash": "eac8827966fb692d17ba5b17d981209f",
     "packages": [
         {
             "name": "appserver-io-psr/application",
@@ -1656,62 +1656,6 @@
             ],
             "description": "Some Robo (http://robo.li) tasks to improve the development process",
             "time": "2017-06-02T20:34:16+00:00"
-        },
-        {
-            "name": "appserver-io/routlt",
-            "version": "2.2.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/appserver-io/routlt.git",
-                "reference": "6df99b18fd6102faa6e95e25cccc8596d403e47e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/routlt/zipball/6df99b18fd6102faa6e95e25cccc8596d403e47e",
-                "reference": "6df99b18fd6102faa6e95e25cccc8596d403e47e",
-                "shasum": ""
-            },
-            "require": {
-                "appserver-io-psr/context": "~1.0",
-                "appserver-io-psr/deployment": "~2.0",
-                "appserver-io-psr/di": "~3.0",
-                "appserver-io-psr/epb": "~6.0",
-                "appserver-io-psr/mop": "~1.0",
-                "appserver-io-psr/naming": "~1.0",
-                "appserver-io-psr/servlet": "~3.0",
-                "appserver-io/description": "~11.0",
-                "appserver-io/http": "~2.0",
-                "appserver-io/lang": "~3.0",
-                "appserver-io/properties": "~2.0",
-                "php": ">=5.4.0"
-            },
-            "require-dev": {
-                "appserver-io/build": "~1.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "AppserverIo\\Routlt": [
-                        "src/",
-                        "tests/"
-                    ]
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "OSL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Tim Wagner",
-                    "email": "tw@techdivision.com",
-                    "homepage": "http://www.techdivision.com",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Servlet based micro router and controller implementation.",
-            "homepage": "https://github.com/appserver-io/routlt",
-            "time": "2018-05-24T09:59:30+00:00"
         },
         {
             "name": "appserver-io/routlt-project",
