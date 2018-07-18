@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait to handle security domain nodes.
  *
@@ -38,7 +40,7 @@ trait SecurityDomainsNodeTrait
      * The security domain configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="securityDomains/securityDomain", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SecurityDomainNode")
+     * @DI\Mapping(nodeName="securityDomains/securityDomain", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SecurityDomainNode")
      */
     protected $securityDomains = array();
 

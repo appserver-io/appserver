@@ -97,7 +97,8 @@ class EntityManagerFactory
      *
      * @return \Doctrine\Common\Cache\CacheProvider The cache instance
      */
-    protected function getCacheImpl(CacheConfigurationInterface $cacheConfiguration) {
+    protected function getCacheImpl(CacheConfigurationInterface $cacheConfiguration)
+    {
 
         // load the factory class
         $factory = $cacheConfiguration->getFactory();

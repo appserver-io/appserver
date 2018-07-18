@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
      * The extractors name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -46,7 +47,7 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
      * The extractors type.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -54,7 +55,7 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
      * The extractors factory class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $factory;
 
@@ -62,7 +63,7 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
      * The flag to create backups before deleting the application folder.
      *
      * @var string
-     * @AS\Mapping(nodeType="boolean")
+     * @DI\Mapping(nodeType="boolean")
      */
     protected $createBackups;
 
@@ -70,7 +71,7 @@ class ExtractorNode extends AbstractNode implements ExtractorNodeInterface
      * The flag to restore backups after extracting the archive to the application folder.
      *
      * @var string
-     * @AS\Mapping(nodeType="boolean")
+     * @DI\Mapping(nodeType="boolean")
      */
     protected $restoreBackups;
 

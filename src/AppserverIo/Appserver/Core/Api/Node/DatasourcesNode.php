@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class DatasourcesNode extends AbstractNode
      * The datasources.
      *
      * @var array
-     * @AS\Mapping(nodeName="datasource", nodeType="array", elementType="AppserverIo\Description\Api\Node\DatasourceNode")
+     * @DI\Mapping(nodeName="datasource", nodeType="array", elementType="AppserverIo\Description\Api\Node\DatasourceNode")
      */
     protected $datasources;
 

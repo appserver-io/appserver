@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class ListenerNode extends AbstractNode implements ListenerNodeInterface
      * The event the listner is bound to.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $event;
 
@@ -46,7 +47,7 @@ class ListenerNode extends AbstractNode implements ListenerNodeInterface
      * The listener's class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -54,7 +55,7 @@ class ListenerNode extends AbstractNode implements ListenerNodeInterface
      * The listener's priority.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $priority;
 

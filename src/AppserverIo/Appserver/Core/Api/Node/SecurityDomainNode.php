@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,14 +39,14 @@ class SecurityDomainNode extends AbstractNode implements SecurityDomainNodeInter
      * The security domain name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
     /**
      * The display name information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\AuthConfigNode
-     * @AS\Mapping(nodeName="authConfig", nodeType="AppserverIo\Appserver\Core\Api\Node\AuthConfigNode")
+     * @DI\Mapping(nodeName="authConfig", nodeType="AppserverIo\Appserver\Core\Api\Node\AuthConfigNode")
      */
     protected $authConfig;
 

@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ abstract class AbstractArgsNode extends AbstractNode
      * The script args to use.
      *
      * @var array
-     * @AS\Mapping(nodeName="args/arg", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ArgNode")
+     * @DI\Mapping(nodeName="args/arg", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ArgNode")
      */
     protected $args = array();
 

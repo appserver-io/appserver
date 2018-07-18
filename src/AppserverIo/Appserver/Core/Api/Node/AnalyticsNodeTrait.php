@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait which allows for the management of analytic nodes within another node.
  *
@@ -36,7 +38,7 @@ trait AnalyticsNodeTrait
      * The analytics specified within the parent node
      *
      * @var array
-     * @AS\Mapping(nodeName="analytics/analytic", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AnalyticNode")
+     * @DI\Mapping(nodeName="analytics/analytic", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AnalyticNode")
      */
     protected $analytics = array();
 

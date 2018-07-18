@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
@@ -46,7 +47,7 @@ class LoggerNode extends AbstractNode implements LoggerNodeInterface
      * The loggers name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -54,7 +55,7 @@ class LoggerNode extends AbstractNode implements LoggerNodeInterface
      * The loggers class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -62,7 +63,7 @@ class LoggerNode extends AbstractNode implements LoggerNodeInterface
      * The loggers channel name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $channelName;
 
@@ -70,7 +71,7 @@ class LoggerNode extends AbstractNode implements LoggerNodeInterface
      * Array with nodes for the registered processors.
      *
      * @var array
-     * @AS\Mapping(nodeName="processors/processor", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ProcessorNode")
+     * @DI\Mapping(nodeName="processors/processor", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ProcessorNode")
      */
     protected $processors = array();
 
@@ -78,7 +79,7 @@ class LoggerNode extends AbstractNode implements LoggerNodeInterface
      * Array with nodes for the registered handlers.
      *
      * @var array
-     * @AS\Mapping(nodeName="handlers/handler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\HandlerNode")
+     * @DI\Mapping(nodeName="handlers/handler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\HandlerNode")
      */
     protected $handlers = array();
 

@@ -334,7 +334,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
         if ($this->environment !== 'development') {
             $this->loadClassProductionNoOmit($className);
             if (class_exists($className, false) || interface_exists($className, false) || trait_exists($className, false)) {
-                return;
+                return true;
             }
         }
 

@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 use AppserverIo\Psr\Cli\Configuration\ConsoleConfigurationInterface;
@@ -47,7 +48,7 @@ class ConsoleNode extends AbstractNode implements ConsoleConfigurationInterface
      * The console's name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -55,7 +56,7 @@ class ConsoleNode extends AbstractNode implements ConsoleConfigurationInterface
      * The console's class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -63,7 +64,7 @@ class ConsoleNode extends AbstractNode implements ConsoleConfigurationInterface
      * The console's factory class name
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $factory;
 

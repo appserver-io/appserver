@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 use AppserverIo\Description\Api\Node\DirectoriesNodeTrait;
@@ -82,7 +83,7 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
      * The unique manager name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -90,7 +91,7 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
      * The manager class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -98,7 +99,7 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
      * The managers factory class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $factory;
 
@@ -106,7 +107,7 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
      * The context factory class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $contextFactory;
 

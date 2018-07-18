@@ -21,6 +21,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -40,7 +41,7 @@ class ContextParamNode extends AbstractNode implements ContextParamNodeInterface
      * The parameter name information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ParamNameNode
-     * @AS\Mapping(nodeName="param-name", nodeType="AppserverIo\Appserver\Core\Api\Node\ParamNameNode")
+     * @DI\Mapping(nodeName="param-name", nodeType="AppserverIo\Appserver\Core\Api\Node\ParamNameNode")
      */
     protected $paramName;
 
@@ -48,7 +49,7 @@ class ContextParamNode extends AbstractNode implements ContextParamNodeInterface
      * The parameter value information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ParamValueNode
-     * @AS\Mapping(nodeName="param-value", nodeType="AppserverIo\Appserver\Core\Api\Node\ParamValueNode")
+     * @DI\Mapping(nodeName="param-value", nodeType="AppserverIo\Appserver\Core\Api\Node\ParamValueNode")
      */
     protected $paramValue;
 

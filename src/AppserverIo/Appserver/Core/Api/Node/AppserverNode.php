@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\ParamNode;
 use AppserverIo\Description\Api\Node\NodeValue;
 use AppserverIo\Description\Api\Node\AbstractNode;
@@ -68,7 +69,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      * The node containing information about the initial context.
      *
      * @var \AppserverIo\Psr\ApplicationServer\Configuration\InitialContextConfigurationInterface
-     * @AS\Mapping(nodeName="initialContext", nodeType="AppserverIo\Appserver\Core\Api\Node\InitialContextNode")
+     * @DI\Mapping(nodeName="initialContext", nodeType="AppserverIo\Appserver\Core\Api\Node\InitialContextNode")
      */
     protected $initialContext;
 
@@ -76,7 +77,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      * Array with nodes for the registered loggers.
      *
      * @var array
-     * @AS\Mapping(nodeName="loggers/logger", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LoggerNode")
+     * @DI\Mapping(nodeName="loggers/logger", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LoggerNode")
      */
     protected $loggers = array();
 
@@ -84,7 +85,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      * Array with nodes for the registered extractors.
      *
      * @var array
-     * @AS\Mapping(nodeName="extractors/extractor", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ExtractorNode")
+     * @DI\Mapping(nodeName="extractors/extractor", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ExtractorNode")
      */
     protected $extractors = array();
 
@@ -92,7 +93,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      * Array with nodes for the registered containers.
      *
      * @var array
-     * @AS\Mapping(nodeName="containers/container", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContainerNode")
+     * @DI\Mapping(nodeName="containers/container", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContainerNode")
      */
     protected $containers = array();
 
@@ -100,7 +101,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      * Array with the information about the deployed applications.
      *
      * @var array
-     * @AS\Mapping(nodeName="apps/app", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AppNode")
+     * @DI\Mapping(nodeName="apps/app", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AppNode")
      */
     protected $apps = array();
 
@@ -108,7 +109,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      * Array with nodes for the registered datasources.
      *
      * @var array
-     * @AS\Mapping(nodeName="datasources/datasource", nodeType="array", elementType="AppserverIo\Description\Api\Node\DatasourceNode")
+     * @DI\Mapping(nodeName="datasources/datasource", nodeType="array", elementType="AppserverIo\Description\Api\Node\DatasourceNode")
      */
     protected $datasources = array();
 
@@ -116,7 +117,7 @@ class AppserverNode extends AbstractNode implements SystemConfigurationInterface
      * Array with nodes for the registered scanners.
      *
      * @var array
-     * @AS\Mapping(nodeName="scanners/scanner", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ScannerNode")
+     * @DI\Mapping(nodeName="scanners/scanner", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ScannerNode")
      */
     protected $scanners = array();
 

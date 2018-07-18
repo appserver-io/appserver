@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class EpbNode extends AbstractNode implements EpbNodeInterface
      * The enterprise beans information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\EnterpriseBeansNode
-     * @AS\Mapping(nodeName="enterprise-beans", nodeType="AppserverIo\Appserver\Core\Api\Node\EnterpriseBeansNode")
+     * @DI\Mapping(nodeName="enterprise-beans", nodeType="AppserverIo\Appserver\Core\Api\Node\EnterpriseBeansNode")
      */
     protected $enterpriseBeans;
 

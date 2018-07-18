@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class LoginConfigNode extends AbstractNode implements LoginConfigNodeInterface
      * The authentication method information, one of Basic, Digest, Form.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\AuthMethodNode
-     * @AS\Mapping(nodeName="auth-method", nodeType="AppserverIo\Appserver\Core\Api\Node\AuthMethodNode")
+     * @DI\Mapping(nodeName="auth-method", nodeType="AppserverIo\Appserver\Core\Api\Node\AuthMethodNode")
      */
     protected $authMethod;
 
@@ -46,7 +47,7 @@ class LoginConfigNode extends AbstractNode implements LoginConfigNodeInterface
      * The realm name information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\RealmNameNode
-     * @AS\Mapping(nodeName="realm-name", nodeType="AppserverIo\Appserver\Core\Api\Node\RealmNameNode")
+     * @DI\Mapping(nodeName="realm-name", nodeType="AppserverIo\Appserver\Core\Api\Node\RealmNameNode")
      */
     protected $realmName;
 
@@ -54,7 +55,7 @@ class LoginConfigNode extends AbstractNode implements LoginConfigNodeInterface
      * The login form configuration information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\FormLoginConfigNode
-     * @AS\Mapping(nodeName="form-login-config", nodeType="AppserverIo\Appserver\Core\Api\Node\FormLoginConfigNode")
+     * @DI\Mapping(nodeName="form-login-config", nodeType="AppserverIo\Appserver\Core\Api\Node\FormLoginConfigNode")
      */
     protected $formLoginConfig;
 

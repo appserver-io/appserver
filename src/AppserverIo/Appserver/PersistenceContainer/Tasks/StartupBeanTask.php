@@ -77,6 +77,9 @@ class StartupBeanTask extends AbstractExecutorThread
         $application = $this->application;
         $application->registerClassLoaders();
 
+        // register the applications annotation registries
+        $application->registerAnnotationRegistries();
+
         // add the application instance to the environment
         Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
 

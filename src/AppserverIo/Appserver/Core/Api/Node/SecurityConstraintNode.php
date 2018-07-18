@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Configuration\Interfaces\NodeValueInterface;
 
@@ -39,7 +40,7 @@ class SecurityConstraintNode extends AbstractNode implements SecurityConstraintN
      * The display name information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DisplayNameNode
-     * @AS\Mapping(nodeName="display-name", nodeType="AppserverIo\Appserver\Core\Api\Node\DisplayNameNode")
+     * @DI\Mapping(nodeName="display-name", nodeType="AppserverIo\Appserver\Core\Api\Node\DisplayNameNode")
      */
     protected $displayName;
 
@@ -47,7 +48,7 @@ class SecurityConstraintNode extends AbstractNode implements SecurityConstraintN
      * The web resource collection information.
      *
      * @var array
-     * @AS\Mapping(nodeName="web-resource-collection", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\WebResourceCollectionNode")
+     * @DI\Mapping(nodeName="web-resource-collection", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\WebResourceCollectionNode")
      */
     protected $webResourceCollections;
 
@@ -55,7 +56,7 @@ class SecurityConstraintNode extends AbstractNode implements SecurityConstraintN
      * The auth constraint information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\AuthConstraintNode
-     * @AS\Mapping(nodeName="auth-constraint", nodeType="AppserverIo\Appserver\Core\Api\Node\AuthConstraintNode")
+     * @DI\Mapping(nodeName="auth-constraint", nodeType="AppserverIo\Appserver\Core\Api\Node\AuthConstraintNode")
      */
     protected $authConstraint;
 

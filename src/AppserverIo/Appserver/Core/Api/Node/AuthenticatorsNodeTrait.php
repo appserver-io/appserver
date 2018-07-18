@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait to handle authenticator nodes.
  *
@@ -38,7 +40,7 @@ trait AuthenticatorsNodeTrait
      * The authenticator configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="authenticators/authenticator", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AuthenticatorNode")
+     * @DI\Mapping(nodeName="authenticators/authenticator", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AuthenticatorNode")
      */
     protected $authenticators = array();
 

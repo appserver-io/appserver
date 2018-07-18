@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class EnterpriseBeansNode extends AbstractNode implements EnterpriseBeansNodeInt
      * The session beans information.
      *
      * @var array
-     * @AS\Mapping(nodeName="session", nodeType="array", elementType="AppserverIo\Description\Api\Node\SessionNode")
+     * @DI\Mapping(nodeName="session", nodeType="array", elementType="AppserverIo\Description\Api\Node\SessionNode")
      */
     protected $sessions = array();
 
@@ -46,7 +47,7 @@ class EnterpriseBeansNode extends AbstractNode implements EnterpriseBeansNodeInt
      * The message driven beans information.
      *
      * @var array
-     * @AS\Mapping(nodeName="message-driven", nodeType="array", elementType="AppserverIo\Description\Api\Node\MessageDrivenNode")
+     * @DI\Mapping(nodeName="message-driven", nodeType="array", elementType="AppserverIo\Description\Api\Node\MessageDrivenNode")
      */
     protected $messageDrivens = array();
 

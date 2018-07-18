@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
@@ -46,7 +47,7 @@ class AuthenticationNode extends AbstractNode
      * The authentication uri to match for
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $uri;
 

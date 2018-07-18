@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class MessageQueuesNode extends AbstractNode
      * The datasources.
      *
      * @var array
-     * @AS\Mapping(nodeName="message-queue", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\MessageQueueNode")
+     * @DI\Mapping(nodeName="message-queue", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\MessageQueueNode")
      */
     protected $messageQueues;
 

@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Appserver\Core\Api\ExtensionInjectorParameterTrait;
 
@@ -41,7 +42,7 @@ class RewriteNode extends AbstractNode
      * The rewrite condition.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $condition;
 
@@ -49,7 +50,7 @@ class RewriteNode extends AbstractNode
      * The rule target.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $target;
 
@@ -57,7 +58,7 @@ class RewriteNode extends AbstractNode
      * The rewrite flat.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $flag;
 

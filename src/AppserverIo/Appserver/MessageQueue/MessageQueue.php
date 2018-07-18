@@ -254,6 +254,9 @@ class MessageQueue extends AbstractDaemonThread implements QueueInterface
         $application = $this->application;
         $application->registerClassLoaders();
 
+        // register the applications annotation registries
+        $application->registerAnnotationRegistries();
+
         // create a reference to the workers/messages
         $workers = $this->workers;
         $messages = $this->messages;

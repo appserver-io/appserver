@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Psr\ApplicationServer\Configuration\StorageConfigurationInterface;
 
@@ -39,7 +40,7 @@ class StorageNode extends AbstractNode implements StorageConfigurationInterface
      * The storage class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -47,7 +48,7 @@ class StorageNode extends AbstractNode implements StorageConfigurationInterface
      * Array with the servers used by the storage.
      *
      * @var array
-     * @AS\Mapping(nodeName="storageServers/storageServer", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\StorageServerNode")
+     * @DI\Mapping(nodeName="storageServers/storageServer", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\StorageServerNode")
      */
     protected $storageServers = array();
 

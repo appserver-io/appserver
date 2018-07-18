@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class SystemLoggerNode extends AbstractNode
      * The system logger's class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -46,7 +47,7 @@ class SystemLoggerNode extends AbstractNode
      * the logger's name
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -54,7 +55,7 @@ class SystemLoggerNode extends AbstractNode
      * The system logger's channel name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $channelName;
 
@@ -62,7 +63,7 @@ class SystemLoggerNode extends AbstractNode
      * Array with nodes for the registered processors.
      *
      * @var array
-     * @AS\Mapping(nodeName="processors/processor", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ProcessorNode")
+     * @DI\Mapping(nodeName="processors/processor", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ProcessorNode")
      */
     protected $processors = array();
 
@@ -70,7 +71,7 @@ class SystemLoggerNode extends AbstractNode
      * Array with nodes for the registered handlers.
      *
      * @var array
-     * @AS\Mapping(nodeName="handlers/handler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\HandlerNode")
+     * @DI\Mapping(nodeName="handlers/handler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\HandlerNode")
      */
     protected $handlers = array();
 

@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait which allows for the management of connector nodes within another node.
  *
@@ -36,7 +38,7 @@ trait ConnectorsNodeTrait
      * The connectors specified within the parent node
      *
      * @var array
-     * @AS\Mapping(nodeName="connectors/connector", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ConnectorNode")
+     * @DI\Mapping(nodeName="connectors/connector", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ConnectorNode")
      */
     protected $connectors = array();
 

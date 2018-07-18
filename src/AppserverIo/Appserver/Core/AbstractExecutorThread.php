@@ -135,7 +135,7 @@ abstract class AbstractExecutorThread extends \Thread
      */
     public function getDefaultShutdownMethod()
     {
-        return array(&$this, AbstractExecutorThread::DEFAULT_SHUTDOWN_METHOD);
+        return array(&$this, self::DEFAULT_SHUTDOWN_METHOD);
     }
 
     /**
@@ -145,7 +145,7 @@ abstract class AbstractExecutorThread extends \Thread
      */
     public function getDefaultLogFormat()
     {
-        return AbstractExecutorThread::LOG_FORMAT;
+        return self::LOG_FORMAT;
     }
 
     /**

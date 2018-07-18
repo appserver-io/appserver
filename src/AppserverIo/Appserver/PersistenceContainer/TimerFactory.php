@@ -141,6 +141,9 @@ class TimerFactory extends AbstractDaemonThread implements TimerFactoryInterface
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
+        // register the applications annotation registries
+        $application->registerAnnotationRegistries();
+
         // try to load the profile logger
         if (isset($this->loggers[LoggerUtils::PROFILE])) {
             $this->profileLogger = $this->loggers[LoggerUtils::PROFILE];

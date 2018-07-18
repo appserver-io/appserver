@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class PersistenceNode extends AbstractNode
      * The application's entity manager configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="persistenceUnits/persistenceUnit", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNode")
+     * @DI\Mapping(nodeName="persistenceUnits/persistenceUnit", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\PersistenceUnitNode")
      */
     protected $persistenceUnits = array();
 

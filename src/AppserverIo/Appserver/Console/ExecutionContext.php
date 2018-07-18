@@ -101,6 +101,9 @@ class ExecutionContext extends \Thread
             // register the applications class loaders
             $application->registerClassLoaders();
 
+            // register the applications annotation registries
+            $application->registerAnnotationRegistries();
+
             // load input/output instances
             $input = $this->input;
             $output = $this->output;

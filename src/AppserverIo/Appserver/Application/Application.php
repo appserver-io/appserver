@@ -45,6 +45,7 @@ use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
  * The application instance holds all information about the deployed application
@@ -639,6 +640,9 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     public function prepare(ContainerInterface $container, ContextNode $context)
     {
 
+
+        $this->context = $context;
+
         // load the unique application name + the naming directory
         $uniqueName = $this->getUniqueName();
         $namingDirectory = $this->getNamingDirectory();
@@ -753,6 +757,26 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             $this->getInitialContext()->getSystemLogger()->debug(
                 sprintf('Successfully registered classloader %s for application %s', get_class($classLoader), $this->getName())
             );
+        }
+    }
+
+    /**
+     * Register's additional annotation registries defined in the configuration.
+     *
+     * @return void
+     */
+    public function registerAnnotationRegistries()
+    {
+
+        // reset the annotation registry
+        AnnotationRegistry::reset();
+
+        // register additional annotation libraries
+        foreach ($this->context->getAnnotationRegistries() as $annotationRegistry) {
+            // register the annotations specified by the annotation registery
+            $annotationRegistryType = $annotationRegistry->getType();
+            $registry = new $annotationRegistryType();
+            $registry->register($annotationRegistry);
         }
     }
 
@@ -894,6 +918,9 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
             // register the class loaders
             $this->registerClassLoaders();
+
+            // register the annotation registries
+            $this->registerAnnotationRegistries();
 
             // initialize the managers
             $this->initializeManagers();

@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 use AppserverIo\Description\Api\Node\DirectoriesNodeTrait;
@@ -54,7 +55,7 @@ class ScannerNode extends AbstractNode implements ScannerNodeInterface
      * The scanner name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -62,7 +63,7 @@ class ScannerNode extends AbstractNode implements ScannerNodeInterface
      * The scanner type.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -70,7 +71,7 @@ class ScannerNode extends AbstractNode implements ScannerNodeInterface
      * The scanner factory class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $factory;
 

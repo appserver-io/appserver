@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -37,7 +38,7 @@ class CertificateNode extends AbstractNode
      * The domain on which the certificate should be used
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $domain;
 
@@ -45,7 +46,7 @@ class CertificateNode extends AbstractNode
      * The path to the certification file
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $certPath;
 

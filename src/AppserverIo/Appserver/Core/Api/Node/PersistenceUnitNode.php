@@ -21,6 +21,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use Doctrine\ORM\Repository\DefaultRepositoryFactory;
 use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Description\Api\Node\QueryCacheConfigurationNode;
@@ -46,7 +47,7 @@ class PersistenceUnitNode extends \AppserverIo\Description\Api\Node\PersistenceU
      * The class loaders factory class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $repositoryFactory;
 
@@ -54,7 +55,7 @@ class PersistenceUnitNode extends \AppserverIo\Description\Api\Node\PersistenceU
      * The default repository class name to use.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $defaultRepositoryClassName;
 

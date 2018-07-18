@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that serves nodes having a locations/location child.
  *
@@ -37,7 +39,7 @@ trait LocationsNodeTrait
      * The locations.
      *
      * @var array
-     * @AS\Mapping(nodeName="locations/location", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LocationNode")
+     * @DI\Mapping(nodeName="locations/location", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LocationNode")
      */
     protected $locations = array();
 

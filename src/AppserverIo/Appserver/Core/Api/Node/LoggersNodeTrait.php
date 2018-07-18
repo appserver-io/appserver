@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that a contexts logger nodes.
  *
@@ -38,7 +40,7 @@ trait LoggersNodeTrait
      * The context's logger configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="loggers/logger", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LoggerNode")
+     * @DI\Mapping(nodeName="loggers/logger", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LoggerNode")
      */
     protected $loggers = array();
 

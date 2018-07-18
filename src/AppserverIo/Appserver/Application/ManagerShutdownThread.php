@@ -60,9 +60,10 @@ class ManagerShutdownThread extends \Thread
         // create a local copy of the manager instance
         $manager = $this->manager;
 
-        // query whether the manager has an application with class loaders to be registered
+        // query whether the manager has an application with class loaders/annotation registries to be registered
         if (method_exists($manager, 'getApplication') && $application = $manager->getApplication()) {
             $application->registerClassLoaders();
+            $application->registerAnnotationRegistries();
         }
 
         // stop the manager if an apropriate method exists

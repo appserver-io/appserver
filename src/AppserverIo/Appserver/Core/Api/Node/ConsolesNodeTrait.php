@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  *
  * Trait that provides functionality to handle console nodes.
@@ -37,7 +39,7 @@ trait ConsolesNodeTrait
      * The application servers console configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="consoles/console", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ConsoleNode")
+     * @DI\Mapping(nodeName="consoles/console", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ConsoleNode")
      */
     protected $consoles = array();
 

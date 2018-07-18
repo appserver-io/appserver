@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  *
  * Abstract node that a contexts class loader nodes.
@@ -39,7 +41,7 @@ trait ClassLoadersNodeTrait
      * The contexts class loader configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="classLoaders/classLoader", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode")
+     * @DI\Mapping(nodeName="classLoaders/classLoader", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ClassLoaderNode")
      */
     protected $classLoaders = array();
 

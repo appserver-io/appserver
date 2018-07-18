@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class MessageQueueNode extends AbstractNode implements MessageQueueNodeInterface
      * The type of the message queue receiver.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -46,7 +47,7 @@ class MessageQueueNode extends AbstractNode implements MessageQueueNodeInterface
      * The message queue destination information.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="destination", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="destination", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $destination;
 

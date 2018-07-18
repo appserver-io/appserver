@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait to handle session handler nodes.
  *
@@ -38,7 +40,7 @@ trait SessionHandlersNodeTrait
      * The session handler configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="sessionHandlers/sessionHandler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SessionHandlerNode")
+     * @DI\Mapping(nodeName="sessionHandlers/sessionHandler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SessionHandlerNode")
      */
     protected $sessionHandlers = array();
 

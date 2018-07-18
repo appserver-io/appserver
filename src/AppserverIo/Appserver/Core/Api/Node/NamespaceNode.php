@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractValueNode;
 
 /**
@@ -38,7 +39,7 @@ class NamespaceNode extends AbstractValueNode
      * Used to tell design-by-contract if this namespace should be omitted for autoloading
      *
      * @var boolean
-     * @AS\Mapping(nodeType="boolean")
+     * @DI\Mapping(nodeType="boolean")
      */
     protected $omitAutoLoading;
 
@@ -46,7 +47,7 @@ class NamespaceNode extends AbstractValueNode
      * Used to tell design-by-contract if this namespace should be omitted for enforcement
      *
      * @var boolean
-     * @AS\Mapping(nodeType="boolean")
+     * @DI\Mapping(nodeType="boolean")
      */
     protected $omitEnforcement;
 

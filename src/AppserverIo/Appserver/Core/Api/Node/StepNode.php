@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
@@ -46,7 +47,7 @@ class StepNode extends AbstractNode
      * The step type
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -54,7 +55,7 @@ class StepNode extends AbstractNode
      * The node containing the information to execute something like a script.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ExecuteNode
-     * @AS\Mapping(nodeName="execute", nodeType="AppserverIo\Appserver\Core\Api\Node\ExecuteNode")
+     * @DI\Mapping(nodeName="execute", nodeType="AppserverIo\Appserver\Core\Api\Node\ExecuteNode")
      */
     protected $execute;
 

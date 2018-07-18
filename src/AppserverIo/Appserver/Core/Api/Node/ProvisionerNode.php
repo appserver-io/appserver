@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class ProvisionerNode extends AbstractNode implements ProvisionerNodeInterface
      * The provisioner name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -46,7 +47,7 @@ class ProvisionerNode extends AbstractNode implements ProvisionerNodeInterface
      * The provisioner type.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -54,7 +55,7 @@ class ProvisionerNode extends AbstractNode implements ProvisionerNodeInterface
      * The managers factory class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $factory;
 

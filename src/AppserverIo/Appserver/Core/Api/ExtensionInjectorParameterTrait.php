@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * This trait enables the usage of extensionType attributes on any node
  *
@@ -35,7 +37,7 @@ trait ExtensionInjectorParameterTrait
      * The extension type string we have to get our injector from
      *
      * @var string $extensionType
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $extensionType;
 

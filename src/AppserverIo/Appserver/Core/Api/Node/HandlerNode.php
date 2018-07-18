@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
@@ -46,7 +47,7 @@ class HandlerNode extends AbstractNode
      * The handler's class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -54,7 +55,7 @@ class HandlerNode extends AbstractNode
      * The handler's formatter configuration.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\FormatterNode
-     * @AS\Mapping(nodeName="formatter", nodeType="AppserverIo\Appserver\Core\Api\Node\FormatterNode")
+     * @DI\Mapping(nodeName="formatter", nodeType="AppserverIo\Appserver\Core\Api\Node\FormatterNode")
      */
     protected $formatter;
 

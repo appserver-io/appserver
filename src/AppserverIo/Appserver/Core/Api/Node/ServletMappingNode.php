@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class ServletMappingNode extends AbstractNode implements ServletMappingNodeInter
      * The servlet name information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ServletNameNode
-     * @AS\Mapping(nodeName="servlet-name", nodeType="AppserverIo\Appserver\Core\Api\Node\ServletNameNode")
+     * @DI\Mapping(nodeName="servlet-name", nodeType="AppserverIo\Appserver\Core\Api\Node\ServletNameNode")
      */
     protected $servletName;
 
@@ -46,7 +47,7 @@ class ServletMappingNode extends AbstractNode implements ServletMappingNodeInter
      * The URL pattern information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\UrlPatternNode
-     * @AS\Mapping(nodeName="url-pattern", nodeType="AppserverIo\Appserver\Core\Api\Node\UrlPatternNode")
+     * @DI\Mapping(nodeName="url-pattern", nodeType="AppserverIo\Appserver\Core\Api\Node\UrlPatternNode")
      */
     protected $urlPattern;
 

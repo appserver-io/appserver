@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  *
  * Trait handling listeners nodes.
@@ -39,7 +41,7 @@ trait ListenersNodeTrait
      * The contexts class loader configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="listeners/listener", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ListenerNode")
+     * @DI\Mapping(nodeName="listeners/listener", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ListenerNode")
      */
     protected $listeners = array();
 

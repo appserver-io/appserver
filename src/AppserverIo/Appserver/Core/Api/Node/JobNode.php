@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class JobNode extends AbstractNode implements JobNodeInterface
      * The job name
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -46,7 +47,7 @@ class JobNode extends AbstractNode implements JobNodeInterface
      * The node containing the schedule information for the job.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ScheduleNode
-     * @AS\Mapping(nodeName="schedule", nodeType="AppserverIo\Appserver\Core\Api\Node\ScheduleNode")
+     * @DI\Mapping(nodeName="schedule", nodeType="AppserverIo\Appserver\Core\Api\Node\ScheduleNode")
      */
     protected $schedule;
 
@@ -54,7 +55,7 @@ class JobNode extends AbstractNode implements JobNodeInterface
      * The node containing the information to execute something like a script.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ExecuteNode
-     * @AS\Mapping(nodeName="execute", nodeType="AppserverIo\Appserver\Core\Api\Node\ExecuteNode")
+     * @DI\Mapping(nodeName="execute", nodeType="AppserverIo\Appserver\Core\Api\Node\ExecuteNode")
      */
     protected $execute;
 

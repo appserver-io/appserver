@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that serves nodes having a jobs/job child.
  *
@@ -38,7 +40,7 @@ trait JobsNodeTrait
      * The jobs.
      *
      * @var array
-     * @AS\Mapping(nodeName="jobs/job", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\JobNode")
+     * @DI\Mapping(nodeName="jobs/job", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\JobNode")
      */
     protected $jobs = array();
 

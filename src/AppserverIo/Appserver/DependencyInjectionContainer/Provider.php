@@ -27,27 +27,11 @@ use AppserverIo\Lang\Reflection\ReflectionMethod;
 use AppserverIo\Lang\Reflection\AnnotationInterface;
 use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
-use AppserverIo\Psr\Servlet\Annotations\Route;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\Deployment\DescriptorInterface;
 use AppserverIo\Psr\Di\ProviderInterface;
 use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Psr\Di\DependencyInjectionException;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Inject;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\MessageDriven;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PreDestroy;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PostConstruct;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PreAttach;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PostDetach;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Startup;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateful;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Schedule;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Timeout;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\EnterpriseBean;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\Resource;
-use AppserverIo\Psr\EnterpriseBeans\Annotations\PersistenceUnit;
 use AppserverIo\Psr\EnterpriseBeans\Description\ReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\BeanReferenceDescriptorInterface;
 use AppserverIo\Psr\EnterpriseBeans\Description\NameAwareDescriptorInterface;
@@ -207,42 +191,7 @@ class Provider extends GenericStackable implements ProviderInterface
      */
     public function newReflectionClass($className)
     {
-
-        // initialize the array with the annotations we want to ignore
-        $annotationsToIgnore = array(
-            'author',
-            'package',
-            'license',
-            'copyright',
-            'param',
-            'return',
-            'throws',
-            'see',
-            'link'
-        );
-
-        // initialize the array with the aliases for the enterprise bean annotations
-        $annotationAliases = array(
-            Route::ANNOTATION           => Route::__getClass(),
-            Inject::ANNOTATION          => Inject::__getClass(),
-            Resource::ANNOTATION        => Resource::__getClass(),
-            Timeout::ANNOTATION         => Timeout::__getClass(),
-            Stateless::ANNOTATION       => Stateless::__getClass(),
-            Stateful::ANNOTATION        => Stateful::__getClass(),
-            Startup::ANNOTATION         => Startup::__getClass(),
-            Singleton::ANNOTATION       => Singleton::__getClass(),
-            Schedule::ANNOTATION        => Schedule::__getClass(),
-            PreAttach::ANNOTATION       => PreAttach::__getClass(),
-            PostDetach::ANNOTATION      => PostDetach::__getClass(),
-            PreDestroy::ANNOTATION      => PreDestroy::__getClass(),
-            PostConstruct::ANNOTATION   => PostConstruct::__getClass(),
-            MessageDriven::ANNOTATION   => MessageDriven::__getClass(),
-            EnterpriseBean::ANNOTATION  => EnterpriseBean::__getClass(),
-            PersistenceUnit::ANNOTATION => PersistenceUnit::__getClass()
-        );
-
-        // return the reflection class instance
-        return new ReflectionClass($className, $annotationsToIgnore, $annotationAliases);
+        return new ReflectionClass($className);
     }
 
     /**
