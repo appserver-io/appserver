@@ -1,3 +1,14 @@
+Version 1.1.10
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add configuration option for Doctrine repository factory + repository default class
+* Remove appserver-io/routlt library (has to be addes as dependency to your project)
+
 Version 1.1.9
 
 ## Bugfixes

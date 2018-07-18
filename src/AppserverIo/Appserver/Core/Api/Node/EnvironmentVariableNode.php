@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -37,7 +38,7 @@ class EnvironmentVariableNode extends AbstractNode
      * The condition under which the definition should take place
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $condition;
 
@@ -45,7 +46,7 @@ class EnvironmentVariableNode extends AbstractNode
      * The definition to perform
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $definition;
 

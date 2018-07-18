@@ -31,6 +31,7 @@ use AppserverIo\Psr\EnterpriseBeans\TimerServiceInterface;
 use AppserverIo\Psr\EnterpriseBeans\TimedObjectInvokerInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Schedule;
 use AppserverIo\Psr\EnterpriseBeans\ServiceProviderInterface;
+use Doctrine\Common\Annotations\AnnotationReader;
 
 /**
  * The timer service implementation providing functionality to handle timers.
@@ -338,15 +339,11 @@ class TimerService extends GenericStackable implements TimerServiceInterface, Se
         foreach ($this->getTimedObjectInvoker()->getTimeoutMethods() as $timeoutMethod) {
             // make sure we've a timeout method
             if ($timeoutMethod instanceof MethodInterface) {
-                // create the schedule expression from the timeout methods @Schedule annotation
-                $reflectionAnnotation = $timeoutMethod->getAnnotation(Schedule::ANNOTATION);
-
-                // load the data to create the schedule annotation instance
-                $annotationName = $reflectionAnnotation->getAnnotationName();
-                $values = $reflectionAnnotation->getValues();
+                // load the Doctrine annotation reader
+                $annatationReader = new AnnotationReader();
 
                 // create the schedule annotation instance with the loaded data
-                $schedule = $reflectionAnnotation->newInstance($annotationName, $values)->toScheduleExpression();
+                $schedule = $annatationReader->getMethodAnnotation($timeoutMethod->toPhpReflectionMethod(), Schedule::class)->toScheduleExpression();
 
                 // create and add a new calendar timer
                 $this->createCalendarTimer($schedule, null, true, $timeoutMethod);

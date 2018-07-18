@@ -557,6 +557,7 @@
                 <xs:element ref="appserver:classLoaders"/>
                 <xs:element ref="appserver:managers"/>
                 <xs:element ref="appserver:provisioners"/>
+                <xs:element ref="appserver:annotationRegistries"/>
             </xs:choice>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="type" type="xs:string" use="optional"/>
@@ -2144,13 +2145,13 @@
                 <xs:element ref="appserver:metadataCacheConfiguration" minOccurs="0"/>
                 <xs:element ref="appserver:resultCacheConfiguration" minOccurs="0"/>
                 <xs:element ref="appserver:queryCacheConfiguration" minOccurs="0"/>
-                <xs:element ref="appserver:annotationRegistries" minOccurs="0"/>
                 <xs:element ref="appserver:ignoredAnnotations" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="name" type="xs:string" use="required"/>
             <xs:attribute name="interface" type="xs:string" use="required"/>
             <xs:attribute name="type" type="xs:string" use="required"/>
             <xs:attribute name="factory" type="xs:string" use="required"/>
+            <xs:attribute name="repositoryFactory" type="xs:string"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>

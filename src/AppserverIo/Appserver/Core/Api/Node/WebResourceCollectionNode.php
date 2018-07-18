@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Configuration\Interfaces\NodeValueInterface;
 
@@ -39,7 +40,7 @@ class WebResourceCollectionNode extends AbstractNode implements WebResourceColle
      * The web resource name information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\WebResourceNameNode
-     * @AS\Mapping(nodeName="web-resource-name", nodeType="AppserverIo\Appserver\Core\Api\Node\WebResourceNameNode")
+     * @DI\Mapping(nodeName="web-resource-name", nodeType="AppserverIo\Appserver\Core\Api\Node\WebResourceNameNode")
      */
     protected $webResourceName;
 
@@ -47,7 +48,7 @@ class WebResourceCollectionNode extends AbstractNode implements WebResourceColle
      * The description information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
+     * @DI\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
      */
     protected $description;
 
@@ -55,7 +56,7 @@ class WebResourceCollectionNode extends AbstractNode implements WebResourceColle
      * The URL pattern information.
      *
      * @var array
-     * @AS\Mapping(nodeName="url-pattern", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\UrlPatternNode")
+     * @DI\Mapping(nodeName="url-pattern", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\UrlPatternNode")
      */
     protected $urlPatterns = array();
 
@@ -63,7 +64,7 @@ class WebResourceCollectionNode extends AbstractNode implements WebResourceColle
      * The HTTP method information.
      *
      * @var array
-     * @AS\Mapping(nodeName="http-method", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\HttpMethodNode")
+     * @DI\Mapping(nodeName="http-method", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\HttpMethodNode")
      */
     protected $httpMethods = array();
 
@@ -71,7 +72,7 @@ class WebResourceCollectionNode extends AbstractNode implements WebResourceColle
      * The HTTP method omission information.
      *
      * @var array
-     * @AS\Mapping(nodeName="http-method-omission", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\HttpMethodOmissionNode")
+     * @DI\Mapping(nodeName="http-method-omission", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\HttpMethodOmissionNode")
      */
     protected $httpMethodOmissions = array();
 

@@ -319,7 +319,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
     public function loadClass($className)
     {
 
-        // Might the class be a omitted one? If so we can require the original.
+        // might the class be a omitted one? If so we can require the original.
         if ($this->autoloaderOmit) {
             $omittedNamespaces = $this->config->getValue('autoloader/omit');
             foreach ($omittedNamespaces as $omitted) {
@@ -330,30 +330,27 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
             }
         }
 
-        // Do we have the file in our cache dir? If we are in development mode we have to ignore this.
+        // do we have the file in our cache dir? If we are in development mode we have to ignore this.
         if ($this->environment !== 'development') {
             $this->loadClassProductionNoOmit($className);
             if (class_exists($className, false) || interface_exists($className, false) || trait_exists($className, false)) {
-                return;
+                return true;
             }
         }
 
-        // If we are loading something of our own library we can skip to composer
+        // if we are loading something of our own library we can skip to composer
         if (strpos($className, 'AppserverIo\Doppelgaenger') === 0 || strpos($className, 'AppserverIo\Appserver\Core\StackableStructureMap') !== false) {
             return;
         }
 
-        // Get the file from the map
+        // get the file from the map
         $file = $this->structureMap->getEntry($className);
 
-        // Did we get something? If so we have to load it
+        // did we get something? If so we have to load it
         if ($file instanceof Structure) {
             require $file->getPath();
-            return;
+            return true;
         }
-
-        // Still here? That sounds like bad news!
-        return;
     }
 
     /**
@@ -372,7 +369,7 @@ class DgClassLoader extends \Stackable implements ClassLoaderInterface
             }
         }
 
-        // Lets create the definitions anew
+        // lets create the definitions anew
         return $this->createDefinitions();
     }
 

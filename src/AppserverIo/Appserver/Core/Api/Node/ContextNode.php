@@ -21,9 +21,11 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\ParamNode;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
+use AppserverIo\Description\Api\Node\AnnotationRegistriesNodeTrait;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
 /**
@@ -75,10 +77,17 @@ class ContextNode extends AbstractNode
     use ParamsNodeTrait;
 
     /**
+     * A annotation registries node trait.
+     *
+     * @var \AppserverIo\Appserver\Core\Api\Node\AnnotationRegistriesNodeTrait
+     */
+    use AnnotationRegistriesNodeTrait;
+
+    /**
      * The context name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -93,7 +102,7 @@ class ContextNode extends AbstractNode
      * The context type.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -101,7 +110,7 @@ class ContextNode extends AbstractNode
      * The context factory class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $factory;
 
@@ -109,7 +118,7 @@ class ContextNode extends AbstractNode
      * The path to the web application.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $webappPath;
 
@@ -305,6 +314,18 @@ class ContextNode extends AbstractNode
 
         // set the params back to the context
         $this->setParams($localParams);
+
+        // load the annotation registries defined of this context
+        $localAnnotationRegistries = $this->getAnnotationRegistries();
+
+        // append the annotation registries
+        /**  @var \AppserverIo\Description\Api\Node\AnnotationRegistryNode $additionalAnnotationRegistry */
+        foreach ($contextNode->getAnnotationRegistries() as $additionalAnnotationRegistry) {
+            $localAnnotationRegistries[] = $additionalAnnotationRegistry;
+        }
+
+        // set the annotation registries back to the context
+        $this->setAnnotationRegistries($localAnnotationRegistries);
 
         // load the managers defined of this context
         $localManagers = $this->getManagers();

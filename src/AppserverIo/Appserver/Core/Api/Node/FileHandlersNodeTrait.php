@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait that serves nodes having a fileHandlers/fileHandler child.
  *
@@ -36,7 +38,7 @@ trait FileHandlersNodeTrait
      * The file handlers.
      *
      * @var array
-     * @AS\Mapping(nodeName="fileHandlers/fileHandler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\FileHandlerNode")
+     * @DI\Mapping(nodeName="fileHandlers/fileHandler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\FileHandlerNode")
      */
     protected $fileHandlers = array();
 

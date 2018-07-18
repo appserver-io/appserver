@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 use AppserverIo\Description\Api\Node\DirectoriesNodeTrait;
@@ -62,7 +63,7 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
      * The interface name the class loader has.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $interface;
 
@@ -70,7 +71,7 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
      * The unique class loader name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -78,7 +79,7 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
      * The class loaders class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -86,7 +87,7 @@ class ClassLoaderNode extends AbstractNode implements ClassLoaderNodeInterface
      * The class loaders factory class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $factory;
 

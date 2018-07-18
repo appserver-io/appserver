@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class DiNode extends AbstractNode implements DiNodeInterface
      * The beans information.
      *
      * @var array
-     * @AS\Mapping(nodeName="beans/bean", nodeType="array", elementType="AppserverIo\Description\Api\Node\BeanNode")
+     * @DI\Mapping(nodeName="beans/bean", nodeType="array", elementType="AppserverIo\Description\Api\Node\BeanNode")
      */
     protected $beans;
 
@@ -46,7 +47,7 @@ class DiNode extends AbstractNode implements DiNodeInterface
      * The beans information.
      *
      * @var array
-     * @AS\Mapping(nodeName="preferences/preference", nodeType="array", elementType="AppserverIo\Description\Api\Node\PreferenceNode")
+     * @DI\Mapping(nodeName="preferences/preference", nodeType="array", elementType="AppserverIo\Description\Api\Node\PreferenceNode")
      */
     protected $preferences;
 

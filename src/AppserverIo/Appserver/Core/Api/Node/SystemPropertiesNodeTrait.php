@@ -21,6 +21,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\NodeValue;
 
 /**
@@ -39,7 +40,7 @@ trait SystemPropertiesNodeTrait
      * The system properties to use.
      *
      * @var array
-     * @AS\Mapping(nodeName="systemProperties/systemProperty", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SystemPropertyNode")
+     * @DI\Mapping(nodeName="systemProperties/systemProperty", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SystemPropertyNode")
      */
     protected $systemProperties = array();
 

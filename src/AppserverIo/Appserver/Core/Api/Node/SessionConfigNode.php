@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Psr\Servlet\ServletSessionInterface;
 
@@ -39,7 +40,7 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
      * The session name information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionNameNode
-     * @AS\Mapping(nodeName="session-name", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionNameNode")
+     * @DI\Mapping(nodeName="session-name", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionNameNode")
      */
     protected $sessionName;
 
@@ -47,7 +48,7 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
      * The session file prefix information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionFilePrefixNode
-     * @AS\Mapping(nodeName="session-file-prefix", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionFilePrefixNode")
+     * @DI\Mapping(nodeName="session-file-prefix", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionFilePrefixNode")
      */
     protected $sessionFilePrefix;
 
@@ -55,7 +56,7 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
      * The session save path information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionSavePathNode
-     * @AS\Mapping(nodeName="session-save-path", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionSavePathNode")
+     * @DI\Mapping(nodeName="session-save-path", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionSavePathNode")
      */
     protected $sessionSavePath;
 
@@ -63,7 +64,7 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
      * The garbage collection probability information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\GarbageCollectionProbabilityNode
-     * @AS\Mapping(nodeName="garbage-collection-probability", nodeType="AppserverIo\Appserver\Core\Api\Node\GarbageCollectionProbabilityNode")
+     * @DI\Mapping(nodeName="garbage-collection-probability", nodeType="AppserverIo\Appserver\Core\Api\Node\GarbageCollectionProbabilityNode")
      */
     protected $garbageCollectionProbability;
 
@@ -71,7 +72,7 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
      * The session maximum age information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionMaximumAgeNode
-     * @AS\Mapping(nodeName="session-maximum-age", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionMaximumAgeNode")
+     * @DI\Mapping(nodeName="session-maximum-age", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionMaximumAgeNode")
      */
     protected $sessionMaximumAge;
 
@@ -79,7 +80,7 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
      * The session inactivity timeout information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionInactivityTimeoutNode
-     * @AS\Mapping(nodeName="session-inactivity-timeout", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionInactivityTimeoutNode")
+     * @DI\Mapping(nodeName="session-inactivity-timeout", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionInactivityTimeoutNode")
      */
     protected $sessionInactivityTimeout;
 
@@ -87,7 +88,7 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
      * The session cookie lifetime information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionCookieLifetimeNode
-     * @AS\Mapping(nodeName="session-cookie-lifetime", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionCookieLifetimeNode")
+     * @DI\Mapping(nodeName="session-cookie-lifetime", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionCookieLifetimeNode")
      */
     protected $sessionCookieLifetime;
 
@@ -95,7 +96,7 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
      * The session cookie domain information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionCookieDomainNode
-     * @AS\Mapping(nodeName="session-cookie-domain", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionCookieDomainNode")
+     * @DI\Mapping(nodeName="session-cookie-domain", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionCookieDomainNode")
      */
     protected $sessionCookieDomain;
 
@@ -103,7 +104,7 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
      * The session cookie path information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionCookiePathNode
-     * @AS\Mapping(nodeName="session-cookie-path", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionCookiePathNode")
+     * @DI\Mapping(nodeName="session-cookie-path", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionCookiePathNode")
      */
     protected $sessionCookiePath;
 
@@ -111,7 +112,7 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
      * The session cookie secure information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionCookieSecureNode
-     * @AS\Mapping(nodeName="session-cookie-secure", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionCookieSecureNode")
+     * @DI\Mapping(nodeName="session-cookie-secure", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionCookieSecureNode")
      */
     protected $sessionCookieSecure;
 
@@ -119,7 +120,7 @@ class SessionConfigNode extends AbstractNode implements SessionConfigNodeInterfa
      * The session HTTP only information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionCookieHttpOnlyNode
-     * @AS\Mapping(nodeName="session-cookie-http-only", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionCookieHttpOnlyNode")
+     * @DI\Mapping(nodeName="session-cookie-http-only", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionCookieHttpOnlyNode")
      */
     protected $sessionCookieHttpOnly;
 

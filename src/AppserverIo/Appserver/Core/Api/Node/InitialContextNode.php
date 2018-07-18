@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Psr\ApplicationServer\Configuration\InitialContextConfigurationInterface;
 
@@ -39,7 +40,7 @@ class InitialContextNode extends AbstractNode implements InitialContextConfigura
      * The initial context's class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -47,7 +48,7 @@ class InitialContextNode extends AbstractNode implements InitialContextConfigura
      * Description for the initial context configuration.
      *
      * @var  \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
+     * @DI\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
      */
     protected $description;
 
@@ -55,7 +56,7 @@ class InitialContextNode extends AbstractNode implements InitialContextConfigura
      * Node containing information about the storage implementation used by the inital context.
      *
      * @var \AppserverIo\Psr\ApplicationServer\Configuration\StorageConfigurationInterface
-     * @AS\Mapping(nodeName="storage", nodeType="AppserverIo\Appserver\Core\Api\Node\StorageNode")
+     * @DI\Mapping(nodeName="storage", nodeType="AppserverIo\Appserver\Core\Api\Node\StorageNode")
      */
     protected $storage;
 

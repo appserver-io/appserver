@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait which allows for the management of analytic nodes within another node.
  *
@@ -37,7 +39,7 @@ trait VirtualHostsNodeTrait
      * The virtual hosts.
      *
      * @var array
-     * @AS\Mapping(nodeName="virtualHosts/virtualHost", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\VirtualHostNode")
+     * @DI\Mapping(nodeName="virtualHosts/virtualHost", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\VirtualHostNode")
      */
     protected $virtualHosts = array();
 

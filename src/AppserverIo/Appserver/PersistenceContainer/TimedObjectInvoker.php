@@ -19,6 +19,7 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
@@ -57,6 +58,43 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
      * @var \AppserverIo\Appserver\Core\Environment
      */
     public static $environment;
+
+    /**
+     * The annotation reader instance singleton.
+     *
+     * @var \Doctrine\Common\Annotations\AnnotationReader
+     */
+    public static $annotationReaderInstance;
+
+    /**
+     * Return's the annotation reader instance.
+     *
+     * @return \Doctrine\Common\Annotations\AnnotationReader
+     */
+    public function getAnnotationReader()
+    {
+
+        // query whether or not an instance already exists
+        if (TimedObjectInvoker::$annotationReaderInstance === null) {
+            TimedObjectInvoker::$annotationReaderInstance = new AnnotationReader();
+        }
+
+        // return the instance
+        return TimedObjectInvoker::$annotationReaderInstance;
+    }
+
+    /**
+     * Return's the method annotation with the passed name, if available.
+     *
+     * @param \AppserverIo\Lang\Reflection\MethodInterface $reflectionMethod The reflection method to return the annotation for
+     * @param string                                       $annotationName   The name of the annotation to return
+     *
+     * @return object|null The method annotation, or NULL if not available
+     */
+    public function getMethodAnnotation(MethodInterface $reflectionMethod, $annotationName)
+    {
+        return $this->getAnnotationReader()->getMethodAnnotation($reflectionMethod->toPhpReflectionMethod(), $annotationName);
+    }
 
     /**
      * Injects the timed object instance.
@@ -154,6 +192,9 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
             $application = $this->getApplication();
             $application->registerClassLoaders();
 
+            // register the applications annotation registries
+            $application->registerAnnotationRegistries();
+
             // initialize the initial context instance
             $initialContext = new InitialContext();
             $initialContext->injectApplication($application);
@@ -214,12 +255,12 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
         /** @var \AppserverIo\Lang\Reflection\MethodInterface $timeoutMethod */
         foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $timeoutMethod) {
             // check if the timed object instance has @Timeout annotation => default timeout method
-            if ($timeoutMethod->hasAnnotation(Timeout::ANNOTATION)) {
+            if ($this->getMethodAnnotation($timeoutMethod, Timeout::class)) {
                 $this->defaultTimeoutMethod = $timeoutMethod;
             }
 
             // check if the timed object instance has @Schedule annotation
-            if ($timeoutMethod->hasAnnotation(Schedule::ANNOTATION)) {
+            if ($this->getMethodAnnotation($timeoutMethod, Schedule::class)) {
                 $this->timeoutMethods[$timeoutMethod->getMethodName()] = $timeoutMethod;
             }
         }

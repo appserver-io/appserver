@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that serves nodes having a descriptors/descriptor child.
  *
@@ -36,7 +38,7 @@ trait DescriptorsNodeTrait
      * The descriptors.
      *
      * @var array
-     * @AS\Mapping(nodeName="descriptors/descriptor", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\DescriptorNode")
+     * @DI\Mapping(nodeName="descriptors/descriptor", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\DescriptorNode")
      */
     protected $descriptors = array();
 

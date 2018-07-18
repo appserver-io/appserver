@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class FormLoginConfigNode extends AbstractNode implements FormLoginConfigNodeInt
      * The form login page information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\FormLoginPageNode
-     * @AS\Mapping(nodeName="form-login-page", nodeType="AppserverIo\Appserver\Core\Api\Node\FormLoginPageNode")
+     * @DI\Mapping(nodeName="form-login-page", nodeType="AppserverIo\Appserver\Core\Api\Node\FormLoginPageNode")
      */
     protected $formLoginPage;
 
@@ -46,7 +47,7 @@ class FormLoginConfigNode extends AbstractNode implements FormLoginConfigNodeInt
      * The form error page information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\FormErrorPageNode
-     * @AS\Mapping(nodeName="form-error-page", nodeType="AppserverIo\Appserver\Core\Api\Node\FormErrorPageNode")
+     * @DI\Mapping(nodeName="form-error-page", nodeType="AppserverIo\Appserver\Core\Api\Node\FormErrorPageNode")
      */
     protected $formErrorPage;
 

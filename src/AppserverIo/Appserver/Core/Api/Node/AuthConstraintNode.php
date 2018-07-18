@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Configuration\Interfaces\NodeValueInterface;
 
@@ -39,7 +40,7 @@ class AuthConstraintNode extends AbstractNode implements AuthConstraintNodeInter
      * The description information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
+     * @DI\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
      */
     protected $description;
 
@@ -47,7 +48,7 @@ class AuthConstraintNode extends AbstractNode implements AuthConstraintNodeInter
      * The role name information.
      *
      * @var array
-     * @AS\Mapping(nodeName="role-name", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\RoleNameNode")
+     * @DI\Mapping(nodeName="role-name", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\RoleNameNode")
      */
     protected $roleNames;
 

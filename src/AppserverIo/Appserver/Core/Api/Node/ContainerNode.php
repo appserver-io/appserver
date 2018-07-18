@@ -21,6 +21,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
 
@@ -48,7 +49,7 @@ class ContainerNode extends AbstractNode implements ContainerConfigurationInterf
      * The container's name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -56,7 +57,7 @@ class ContainerNode extends AbstractNode implements ContainerConfigurationInterf
      * The container's class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -64,7 +65,7 @@ class ContainerNode extends AbstractNode implements ContainerConfigurationInterf
      * The container's factory class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $factory;
 
@@ -72,7 +73,7 @@ class ContainerNode extends AbstractNode implements ContainerConfigurationInterf
      * The thread class name that start's the container.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $threadType;
 
@@ -80,7 +81,7 @@ class ContainerNode extends AbstractNode implements ContainerConfigurationInterf
      * En-/Disables application application provisioning.
      *
      * @var boolean
-     * @AS\Mapping(nodeType="boolean")
+     * @DI\Mapping(nodeType="boolean")
      */
     protected $provisioning = true;
 
@@ -88,7 +89,7 @@ class ContainerNode extends AbstractNode implements ContainerConfigurationInterf
      * Container description
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
+     * @DI\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
      */
     protected $description;
 
@@ -96,7 +97,7 @@ class ContainerNode extends AbstractNode implements ContainerConfigurationInterf
      * The receiver used to start the container's socket.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ReceiverNode
-     * @AS\Mapping(nodeName="receiver", nodeType="AppserverIo\Appserver\Core\Api\Node\ReceiverNode")
+     * @DI\Mapping(nodeName="receiver", nodeType="AppserverIo\Appserver\Core\Api\Node\ReceiverNode")
      */
     protected $receiver;
 
@@ -104,7 +105,7 @@ class ContainerNode extends AbstractNode implements ContainerConfigurationInterf
      * The upstreams used in container
      *
      * @var array
-     * @AS\Mapping(nodeName="upstreams/upstream", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\UpstreamNode")
+     * @DI\Mapping(nodeName="upstreams/upstream", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\UpstreamNode")
      */
     protected $upstreams;
 
@@ -112,7 +113,7 @@ class ContainerNode extends AbstractNode implements ContainerConfigurationInterf
      * The servers used in container
      *
      * @var array
-     * @AS\Mapping(nodeName="servers/server", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ServerNode")
+     * @DI\Mapping(nodeName="servers/server", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ServerNode")
      */
     protected $servers;
 
@@ -120,7 +121,7 @@ class ContainerNode extends AbstractNode implements ContainerConfigurationInterf
      * The host configuration information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\HostNode
-     * @AS\Mapping(nodeName="host", nodeType="AppserverIo\Appserver\Core\Api\Node\HostNode")
+     * @DI\Mapping(nodeName="host", nodeType="AppserverIo\Appserver\Core\Api\Node\HostNode")
      */
     protected $host;
 
@@ -128,7 +129,7 @@ class ContainerNode extends AbstractNode implements ContainerConfigurationInterf
      * The deployment configuration information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DeploymentNode
-     * @AS\Mapping(nodeName="deployment", nodeType="AppserverIo\Appserver\Core\Api\Node\DeploymentNode")
+     * @DI\Mapping(nodeName="deployment", nodeType="AppserverIo\Appserver\Core\Api\Node\DeploymentNode")
      */
     protected $deployment;
 

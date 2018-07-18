@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait that serves nodes having a headers/header child.
  *
@@ -36,7 +38,7 @@ trait HeadersNodeTrait
      * The file headers.
      *
      * @var array
-     * @AS\Mapping(nodeName="headers/header", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\HeaderNode")
+     * @DI\Mapping(nodeName="headers/header", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\HeaderNode")
      */
     protected $headers = array();
 

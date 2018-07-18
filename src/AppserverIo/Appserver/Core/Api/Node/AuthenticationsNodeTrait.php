@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * This trait is used to give any node class the possibility to manage authentication nodes
  * which might be child elements of it.
@@ -37,7 +39,7 @@ trait AuthenticationsNodeTrait
      * The authentications specified within the parent node
      *
      * @var array
-     * @AS\Mapping(nodeName="authentications/authentication", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AuthenticationNode")
+     * @DI\Mapping(nodeName="authentications/authentication", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AuthenticationNode")
      */
     protected $authentications = array();
 

@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  *
  * Abstract node that serves a hosts context nodes.
@@ -39,7 +41,7 @@ trait ContextsNodeTrait
      * The servers context configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="contexts/context", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContextNode")
+     * @DI\Mapping(nodeName="contexts/context", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContextNode")
      */
     protected $contexts = array();
 

@@ -136,6 +136,9 @@ class RequestHandler extends \Thread
             $application = $this->application;
             $application->registerClassLoaders();
 
+            // register the applications annotation registries
+            $application->registerAnnotationRegistries();
+
             // synchronize the valves, servlet request/response
             $valves = $this->valves;
             $servletRequest = $this->servletRequest;

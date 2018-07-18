@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait which allows for the management of connection handler nodes within another node.
  *
@@ -36,7 +38,7 @@ trait ConnectionHandlersNodeTrait
      * The connection handlers.
      *
      * @var array
-     * @AS\Mapping(nodeName="connectionHandlers/connectionHandler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ConnectionHandlerNode")
+     * @DI\Mapping(nodeName="connectionHandlers/connectionHandler", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ConnectionHandlerNode")
      */
     protected $connectionHandlers = array();
 

@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait for upstream server nodes
  *
@@ -35,7 +37,7 @@ trait UpstreamServersNodeTrait
      * The upstream servers
      *
      * @var array
-     * @AS\Mapping(nodeName="servers/server", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\UpstreamServerNode")
+     * @DI\Mapping(nodeName="servers/server", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\UpstreamServerNode")
      */
     protected $upstreamServers = array();
 

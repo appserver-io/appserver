@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * DTO to transfer information about a script that has to be executed.
  *
@@ -36,7 +38,7 @@ class ExecuteNode extends AbstractArgsNode
      * The script to be executed.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $script;
 
@@ -44,7 +46,7 @@ class ExecuteNode extends AbstractArgsNode
      * The directory to execute the script from.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $directory;
 

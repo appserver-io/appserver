@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that serves nodes having a rewriteMaps/rewriteMap child.
  *
@@ -35,7 +37,7 @@ trait RewriteMapsNodeTrait
      * The rewriteMaps definitions
      *
      * @var array
-     * @AS\Mapping(nodeName="rewriteMaps/rewriteMap", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\RewriteMapNode")
+     * @DI\Mapping(nodeName="rewriteMaps/rewriteMap", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\RewriteMapNode")
      */
     protected $rewriteMaps = array();
 

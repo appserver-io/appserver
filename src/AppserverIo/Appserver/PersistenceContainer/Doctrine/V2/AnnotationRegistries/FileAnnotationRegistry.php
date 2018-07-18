@@ -42,9 +42,14 @@ class FileAnnotationRegistry implements AnnotationRegistryInterface
      * @param \AppserverIo\Description\Configuration\AnnotationRegistryConfigurationInterface $annotationRegistry The configuration node
      *
      * @return void
+     * @throws \InvalidArgumentException Is thrown, if the file with the annotations that have to be registerd is not available
      */
     public function register(AnnotationRegistryConfigurationInterface $annotationRegistry)
     {
-        AnnotationRegistry::registerFile($annotationRegistry->getFile());
+        if (is_file($filename = $annotationRegistry->getFile())) {
+            AnnotationRegistry::registerFile($filename);
+        } else {
+            throw new \InvalidArgumentException(sprintf('Annotation Registry can\'t register file "%s" containing Doctrine Annotations', $filename));
+        }
     }
 }

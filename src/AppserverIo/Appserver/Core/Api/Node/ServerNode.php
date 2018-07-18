@@ -21,6 +21,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 use AppserverIo\Appserver\Core\Utilities\SslOptionKeys;
@@ -156,7 +157,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * The servers type.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -164,7 +165,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * The servers name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -172,7 +173,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * The worker to use.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $worker;
 
@@ -180,7 +181,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * The socket to use.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $socket;
 
@@ -188,7 +189,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * The loggers name to use.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $loggerName;
 
@@ -196,7 +197,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * The server context to use.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $serverContext;
 
@@ -204,7 +205,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * The request context to use.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $requestContext;
 
@@ -212,7 +213,7 @@ class ServerNode extends AbstractNode implements ServerNodeInterface
      * The stream context to use.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $streamContext;
 

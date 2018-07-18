@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  *
  * Abstract node that a context's provisioner nodes.
@@ -39,7 +41,7 @@ trait ProvisionersNodeTrait
      * The context's provisioner configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="provisioners/provisioner", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ProvisionerNode")
+     * @DI\Mapping(nodeName="provisioners/provisioner", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ProvisionerNode")
      */
     protected $provisioners = array();
 

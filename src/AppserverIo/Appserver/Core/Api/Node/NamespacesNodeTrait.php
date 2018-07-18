@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that serves nodes having a namespaces/namespace child.
  *
@@ -36,7 +38,7 @@ trait NamespacesNodeTrait
      * The namespaces.
      *
      * @var array
-     * @AS\Mapping(nodeName="namespaces/namespace", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\NamespaceNode")
+     * @DI\Mapping(nodeName="namespaces/namespace", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\NamespaceNode")
      */
     protected $namespaces = array();
 

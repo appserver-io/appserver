@@ -79,6 +79,9 @@ class StartupBeanTaskGarbageCollector extends AbstractDaemonThread
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
+        // register the applications annotation registries
+        $application->registerAnnotationRegistries();
+
         // try to load the profile logger
         if ($this->profileLogger = $this->getApplication()->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
             $this->profileLogger->appendThreadContext('startup-bean-task-garbage-collector');

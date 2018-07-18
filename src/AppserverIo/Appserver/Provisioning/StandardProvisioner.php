@@ -25,6 +25,7 @@ use AppserverIo\Configuration\ConfigurationException;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Appserver\Core\Api\Node\ProvisionNode;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
  * Standard provisioning functionality.
@@ -66,6 +67,9 @@ class StandardProvisioner extends AbstractProvisioner
         if (is_dir($webappPath = $application->getWebappPath())) {
             // prepare the glob expression with the application's directories to parse
             $applicationDirectories = AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, '{WEB-INF,META-INF}/provision', GLOB_BRACE);
+
+            // reset the annotation registry
+            AnnotationRegistry::reset();
 
             // load the service instance
             /** @var \AppserverIo\Appserver\Core\Api\ProvisioningService $service */

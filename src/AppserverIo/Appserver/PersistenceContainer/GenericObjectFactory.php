@@ -144,6 +144,9 @@ class GenericObjectFactory extends AbstractDaemonThread implements ObjectFactory
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
+        // register the applications annotation registries
+        $application->registerAnnotationRegistries();
+
         // try to load the profile logger
         if ($this->profileLogger = $this->getApplication()->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
             $this->profileLogger->appendThreadContext('generic-object-factory');

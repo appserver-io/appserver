@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface;
 
@@ -39,7 +40,7 @@ class ProvisionNode extends AbstractNode
      * The node containing datasource information.
      *
      * @var \AppserverIo\Psr\ApplicationServer\Configuration\DatasourceConfigurationInterface
-     * @AS\Mapping(nodeName="datasource", nodeType="AppserverIo\Description\Api\Node\DatasourceNode")
+     * @DI\Mapping(nodeName="datasource", nodeType="AppserverIo\Description\Api\Node\DatasourceNode")
      */
     protected $datasource;
 
@@ -47,7 +48,7 @@ class ProvisionNode extends AbstractNode
      * The node containing installation information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\InstallationNode
-     * @AS\Mapping(nodeName="installation", nodeType="AppserverIo\Appserver\Core\Api\Node\InstallationNode")
+     * @DI\Mapping(nodeName="installation", nodeType="AppserverIo\Appserver\Core\Api\Node\InstallationNode")
      */
     protected $installation;
 

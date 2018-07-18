@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that serves nodes having a rewrites/rewrite child.
  *
@@ -36,7 +38,7 @@ trait AccessesNodeTrait
      * The access definitions
      *
      * @var array
-     * @AS\Mapping(nodeName="accesses/access", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AccessNode")
+     * @DI\Mapping(nodeName="accesses/access", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\AccessNode")
      */
     protected $accesses = array();
 

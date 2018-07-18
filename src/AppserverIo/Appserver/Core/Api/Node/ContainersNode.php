@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -37,7 +38,7 @@ class ContainersNode extends AbstractNode
     /**
      * Array with nodes for the registered containers.
      *
-     * @var array @AS\Mapping(nodeName="container", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContainerNode")
+     * @var array @DI\Mapping(nodeName="container", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContainerNode")
      */
     protected $containers = array();
 

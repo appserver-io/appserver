@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Psr\ApplicationServer\Configuration\HostConfigurationInterface;
@@ -47,7 +48,7 @@ class HostNode extends AbstractNode implements HostConfigurationInterface
      * The host name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -55,7 +56,7 @@ class HostNode extends AbstractNode implements HostConfigurationInterface
      * The application base directory.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $appBase;
 
@@ -63,7 +64,7 @@ class HostNode extends AbstractNode implements HostConfigurationInterface
      * The temporary base directory.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $tmpBase;
 
@@ -71,7 +72,7 @@ class HostNode extends AbstractNode implements HostConfigurationInterface
      * The deployment base directory.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $deployBase;
 

@@ -5,6 +5,16 @@
     <!--  GENERIC BEAN DEFINITIONS                                                            -->
     <!-- ==================================================================================== -->
 
-    <beans/>
+    <beans>
+
+        <!-- ================================================================================ -->
+        <!--  DOCTRINE CONFIGURATION BEAN DEFINITIONS                                         -->
+        <!-- ================================================================================ -->
+
+        <bean>
+            <name>DefaultRepositoryFactory</name>
+            <class>Doctrine\ORM\Repository\DefaultRepositoryFactory</class>
+        </bean>
+    </beans>
 
 </di>

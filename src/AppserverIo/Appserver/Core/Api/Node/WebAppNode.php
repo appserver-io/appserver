@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Psr\HttpMessage\Protocol;
 use AppserverIo\Authenticator\Utils\FormKeys;
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\NodeValue;
 use AppserverIo\Description\Api\Node\ValueNode;
 use AppserverIo\Description\Api\Node\AbstractNode;
@@ -42,7 +43,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * The description of the web application.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
+     * @DI\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
      */
     protected $description;
 
@@ -50,7 +51,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * The display name information of the web application.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DisplayNameNode
-     * @AS\Mapping(nodeName="display-name", nodeType="AppserverIo\Appserver\Core\Api\Node\DisplayNameNode")
+     * @DI\Mapping(nodeName="display-name", nodeType="AppserverIo\Appserver\Core\Api\Node\DisplayNameNode")
      */
     protected $displayName;
 
@@ -58,7 +59,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * The session configuration information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionConfigNode
-     * @AS\Mapping(nodeName="session-config", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionConfigNode")
+     * @DI\Mapping(nodeName="session-config", nodeType="AppserverIo\Appserver\Core\Api\Node\SessionConfigNode")
      */
     protected $sessionConfig;
 
@@ -66,7 +67,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * The servlet informations.
      *
      * @var array
-     * @AS\Mapping(nodeName="servlet", nodeType="array", elementType="AppserverIo\Description\Api\Node\ServletNode")
+     * @DI\Mapping(nodeName="servlet", nodeType="array", elementType="AppserverIo\Description\Api\Node\ServletNode")
      */
     protected $servlets = array();
 
@@ -74,7 +75,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * The servlet mapping informations.
      *
      * @var array
-     * @AS\Mapping(nodeName="servlet-mapping", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ServletMappingNode")
+     * @DI\Mapping(nodeName="servlet-mapping", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ServletMappingNode")
      */
     protected $servletMappings = array();
 
@@ -82,7 +83,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * The login configuration informations.
      *
      * @var array
-     * @AS\Mapping(nodeName="login-config", nodeType="AppserverIo\Appserver\Core\Api\Node\LoginConfigNode")
+     * @DI\Mapping(nodeName="login-config", nodeType="AppserverIo\Appserver\Core\Api\Node\LoginConfigNode")
      */
     protected $loginConfig;
 
@@ -91,7 +92,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      *
      * @var array
      * @deprecated Since 1.2.0
-     * @AS\Mapping(nodeName="security", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SecurityNode")
+     * @DI\Mapping(nodeName="security", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SecurityNode")
      */
     protected $securities = array();
 
@@ -99,7 +100,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * The security constraint informations.
      *
      * @var array
-     * @AS\Mapping(nodeName="security-constraint", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SecurityConstraintNode")
+     * @DI\Mapping(nodeName="security-constraint", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SecurityConstraintNode")
      */
     protected $securityConstraints = array();
 
@@ -107,7 +108,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * The error page informations.
      *
      * @var array
-     * @AS\Mapping(nodeName="error-page", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ErrorPageNode")
+     * @DI\Mapping(nodeName="error-page", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ErrorPageNode")
      */
     protected $errorPages = array();
 
@@ -115,7 +116,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * The security role informations.
      *
      * @var array
-     * @AS\Mapping(nodeName="security-role", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SecurityRoleNode")
+     * @DI\Mapping(nodeName="security-role", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\SecurityRoleNode")
      */
     protected $securityRoles = array();
 
@@ -123,7 +124,7 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
      * The initialization parameter of the web application.
      *
      * @var array
-     * @AS\Mapping(nodeName="context-param", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContextParamNode")
+     * @DI\Mapping(nodeName="context-param", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ContextParamNode")
      */
     protected $contextParams = array();
 

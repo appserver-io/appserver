@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Trait which allows for the management of module nodes within another node.
  *
@@ -36,7 +38,7 @@ trait ModulesNodeTrait
      * The modules.
      *
      * @var array
-     * @AS\Mapping(nodeName="modules/module", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ModuleNode")
+     * @DI\Mapping(nodeName="modules/module", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ModuleNode")
      */
     protected $modules = array();
 

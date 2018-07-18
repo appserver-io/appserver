@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class InstallationNode extends AbstractNode
      * The installation steps.
      *
      * @var array
-     * @AS\Mapping(nodeName="steps/step", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\StepNode")
+     * @DI\Mapping(nodeName="steps/step", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\StepNode")
      */
     protected $steps;
 

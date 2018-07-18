@@ -112,6 +112,9 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
+        // register the applications annotation registries
+        $application->registerAnnotationRegistries();
+
         // try to load the system logger
         $this->systemLogger = $this->getLogger(LoggerUtils::SYSTEM);
 

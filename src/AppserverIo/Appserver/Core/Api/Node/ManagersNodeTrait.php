@@ -21,6 +21,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that a contexts manager nodes.
  *
@@ -38,7 +40,7 @@ trait ManagersNodeTrait
      * The contexts manager configuration.
      *
      * @var array
-     * @AS\Mapping(nodeName="managers/manager", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ManagerNode")
+     * @DI\Mapping(nodeName="managers/manager", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\ManagerNode")
      */
     protected $managers = array();
 

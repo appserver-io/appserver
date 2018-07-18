@@ -51,6 +51,7 @@ use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDes
 use AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StandardGarbageCollector;
 use AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface;
 use AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StartupBeanTaskGarbageCollector;
+use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
  * The bean manager handles the message and session beans registered for the application.

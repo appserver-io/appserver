@@ -404,6 +404,9 @@ abstract class AbstractStep extends \Thread implements StepInterface
         $application = $this->getApplication();
         $application->registerClassLoaders();
 
+        // register the applications annotation registries
+        $application->registerAnnotationRegistries();
+
         // add the application instance to the environment
         Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
 

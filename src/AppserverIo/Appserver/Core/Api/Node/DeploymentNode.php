@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Psr\ApplicationServer\Configuration\DeploymentConfigurationInterface;
 
@@ -39,7 +40,7 @@ class DeploymentNode extends AbstractNode implements DeploymentConfigurationInte
      * The deployment's class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 

@@ -20,7 +20,9 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer;
 
+use Doctrine\Common\Annotations\AnnotationReader;
 use AppserverIo\Storage\StackableStorage;
+use AppserverIo\Lang\Reflection\ClassInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Stateless;
 use AppserverIo\Psr\EnterpriseBeans\Annotations\Singleton;
@@ -31,37 +33,57 @@ use AppserverIo\Psr\EnterpriseBeans\TimerServiceContextInterface;
 use AppserverIo\Psr\EnterpriseBeans\ServiceAlreadyRegisteredException;
 
 /**
- * The timer service registry handles an applications timer services.
+ * The timer service registry handles an application's timer services.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
+ *
+ * @property  \AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface                 $timerServiceExecutor     The timer service executor
+ * @property  \AppserverIo\Appserver\PersistenceContainer\TimerFactoryInterface         $timerFactory             The timer factory
+ * @property  \AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactoryInterface $calendarTimerFactory     The calendar timer factory
  */
 class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContextInterface
 {
 
     /**
-     * The timer service executor.
+     * The annotation reader instance singleton.
      *
-     * @var \AppserverIo\Psr\EnterpriseBeans\ServiceExecutorInterface
+     * @var \Doctrine\Common\Annotations\AnnotationReader
      */
-    protected $timerServiceExecutor;
+    public static $annotationReaderInstance;
 
     /**
-     * The timer factory.
+     * Return's the annotation reader instance.
      *
-     * @var \AppserverIo\Appserver\PersistenceContainer\TimerFactoryInterface
+     * @return \Doctrine\Common\Annotations\AnnotationReader
      */
-    protected $timerFactory;
+    public function getAnnotationReader()
+    {
+
+        // query whether or not an instance already exists
+        if (TimerServiceRegistry::$annotationReaderInstance === null) {
+            TimerServiceRegistry::$annotationReaderInstance = new AnnotationReader();
+        }
+
+        // return the instance
+        return TimerServiceRegistry::$annotationReaderInstance;
+    }
 
     /**
-     * The calendar timer factory.
+     * Return's the class annotation with the passed name, if available.
      *
-     * @var \AppserverIo\Appserver\PersistenceContainer\CalendarTimerFactoryInterface
+     * @param \AppserverIo\Lang\Reflection\ClassInterface $reflectionClass The reflection class to return the annotation for
+     * @param string                                      $annotationName  The name of the annotation to return
+     *
+     * @return object|null The class annotation, or NULL if not available
      */
-    protected $calendarTimerFactory;
+    public function getClassAnnotation(ClassInterface $reflectionClass, $annotationName)
+    {
+        return $this->getAnnotationReader()->getClassAnnotation($reflectionClass->toPhpReflectionClass(), $annotationName);
+    }
 
     /**
      * Injects the service executor for the timer service registry.
@@ -176,45 +198,43 @@ class TimerServiceRegistry extends ServiceRegistry implements TimerServiceContex
                 $timedObject = TimedObject::fromPhpReflectionClass($reflectionClass);
 
                 // check if we have a bean with a @Stateless, @Singleton or @MessageDriven annotation
-                if ($timedObject->hasAnnotation(Stateless::ANNOTATION) === false &&
-                    $timedObject->hasAnnotation(Singleton::ANNOTATION) === false &&
-                    $timedObject->hasAnnotation(MessageDriven::ANNOTATION) === false
+                if ($this->getClassAnnotation($timedObject, Stateless::class) ||
+                    $this->getClassAnnotation($timedObject, Singleton::class) ||
+                    $this->getClassAnnotation($timedObject, MessageDriven::class)
                 ) {
-                    continue; // if not, we don't care here!
+                    // initialize the stackable for the timeout methods
+                    $timeoutMethods = new StackableStorage();
+
+                    // create the timed object invoker
+                    $timedObjectInvoker = new TimedObjectInvoker();
+                    $timedObjectInvoker->injectApplication($application);
+                    $timedObjectInvoker->injectTimedObject($timedObject);
+                    $timedObjectInvoker->injectTimeoutMethods($timeoutMethods);
+                    $timedObjectInvoker->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
+
+                    // initialize the stackable for the timers
+                    $timers = new StackableStorage();
+
+                    // initialize the timer service
+                    $timerService = new TimerService();
+                    $timerService->injectTimers($timers);
+                    $timerService->injectTimerFactory($timerFactory);
+                    $timerService->injectTimedObjectInvoker($timedObjectInvoker);
+                    $timerService->injectCalendarTimerFactory($calendarTimerFactory);
+                    $timerService->injectTimerServiceExecutor($timerServiceExecutor);
+                    $timerService->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
+
+                    // register the initialized timer service
+                    $this->register($timerService);
+
+                    // log a message that the timer service has been registered
+                    $application->getInitialContext()->getSystemLogger()->debug(
+                        sprintf(
+                            'Successfully registered timer service for bean %s',
+                            $reflectionClass->getName()
+                        )
+                    );
                 }
-
-                // initialize the stackable for the timeout methods
-                $timeoutMethods = new StackableStorage();
-
-                // create the timed object invoker
-                $timedObjectInvoker = new TimedObjectInvoker();
-                $timedObjectInvoker->injectApplication($application);
-                $timedObjectInvoker->injectTimedObject($timedObject);
-                $timedObjectInvoker->injectTimeoutMethods($timeoutMethods);
-                $timedObjectInvoker->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
-
-                // initialize the stackable for the timers
-                $timers = new StackableStorage();
-
-                // initialize the timer service
-                $timerService = new TimerService();
-                $timerService->injectTimers($timers);
-                $timerService->injectTimerFactory($timerFactory);
-                $timerService->injectTimedObjectInvoker($timedObjectInvoker);
-                $timerService->injectCalendarTimerFactory($calendarTimerFactory);
-                $timerService->injectTimerServiceExecutor($timerServiceExecutor);
-                $timerService->start(PTHREADS_INHERIT_NONE|PTHREADS_INHERIT_CONSTANTS);
-
-                // register the initialized timer service
-                $this->register($timerService);
-
-                // log a message that the timer service has been registered
-                $application->getInitialContext()->getSystemLogger()->debug(
-                    sprintf(
-                        'Successfully registered timer service for bean %s',
-                        $reflectionClass->getName()
-                    )
-                );
 
             // if class can not be reflected continue with next class
             } catch (\Exception $e) {

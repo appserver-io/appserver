@@ -93,6 +93,9 @@ class TimerTask extends \Thread
         $application = $this->application;
         $application->registerClassLoaders();
 
+        // register the applications annotation registries
+        $application->registerAnnotationRegistries();
+
         // sychronize timer instance
         $timer = $this->timer;
 

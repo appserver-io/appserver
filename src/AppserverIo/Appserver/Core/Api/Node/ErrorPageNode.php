@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Configuration\Interfaces\NodeValueInterface;
 
@@ -39,7 +40,7 @@ class ErrorPageNode extends AbstractNode implements ErrorPageNodeInterface
      * The HTTP response code pattern the error page is defined for.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="error-code-pattern", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="error-code-pattern", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $errorCodePattern;
 
@@ -47,7 +48,7 @@ class ErrorPageNode extends AbstractNode implements ErrorPageNodeInterface
      * The location to redirect to.
      *
      * @var \AppserverIo\Description\Api\Node\ValueNode
-     * @AS\Mapping(nodeName="error-location", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     * @DI\Mapping(nodeName="error-location", nodeType="AppserverIo\Description\Api\Node\ValueNode")
      */
     protected $errorLocation;
 

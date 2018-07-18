@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class StorageServerNode extends AbstractNode
      * The server's IP address.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $address;
 
@@ -46,7 +47,7 @@ class StorageServerNode extends AbstractNode
      * The server's port.
      *
      * @var integer
-     * @AS\Mapping(nodeType="integer")
+     * @DI\Mapping(nodeType="integer")
      */
     protected $port;
 
@@ -54,7 +55,7 @@ class StorageServerNode extends AbstractNode
      * The server's weight.
      *
      * @var integer
-     * @AS\Mapping(nodeType="integer")
+     * @DI\Mapping(nodeType="integer")
      */
     protected $weight;
 

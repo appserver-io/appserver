@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\ApplicationServer\Configuration\AppConfigurationInterface;
@@ -64,7 +65,7 @@ class AppNode extends AbstractNode implements AppConfigurationInterface
      * The unique application name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $name;
 
@@ -72,7 +73,7 @@ class AppNode extends AbstractNode implements AppConfigurationInterface
      * The application's path.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $webappPath;
 

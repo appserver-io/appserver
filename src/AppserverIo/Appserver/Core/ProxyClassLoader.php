@@ -42,12 +42,32 @@ class ProxyClassLoader implements ClassLoaderInterface
      */
     const IDENTIFIER = 'ProxyClassLoader';
 
+    /**
+     * The include path to use.
+     *
+     * @var string
+     */
     protected $includePath = null;
 
+    /**
+     * The namespace to use.
+     *
+     * @var string
+     */
     protected $namespace = null;
 
+    /**
+     * The namespace separator to use.
+     *
+     * @var string
+     */
     protected $namespaceSeparator = '\\';
 
+    /**
+     * The file extension to use.
+     *
+     * @var string
+     */
     protected $fileExtension = '.php';
 
     /**
@@ -116,15 +136,16 @@ class ProxyClassLoader implements ClassLoaderInterface
             $toRequire = $this->includePath . DIRECTORY_SEPARATOR . $fileName;
             $psr4FileName = $this->includePath . DIRECTORY_SEPARATOR . ltrim(strstr(ltrim(strstr($fileName, DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR), DIRECTORY_SEPARATOR);
 
+            // query whether or tno the file exsists
             if (file_exists($toRequire)) {
                 // require the file and return TRUE
                 require $toRequire;
-                return;
+                return true;
 
             } elseif (file_exists($psr4FileName) && !is_dir($psr4FileName)) {
                 // require the file and return TRUE
                 require $psr4FileName;
-                return;
+                return true;
             }
         }
     }

@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * Abstract node that serves nodes having a rewrites/rewrite child.
  *
@@ -35,7 +37,7 @@ trait RewritesNodeTrait
      * The virtual host specific rewrite rules.
      *
      * @var array
-     * @AS\Mapping(nodeName="rewrites/rewrite", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\RewriteNode")
+     * @DI\Mapping(nodeName="rewrites/rewrite", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\RewriteNode")
      */
     protected $rewrites = array();
 

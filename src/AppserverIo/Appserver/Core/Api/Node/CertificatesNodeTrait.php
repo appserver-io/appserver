@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
+
 /**
  * This trait is used to give any node class the possibility to manage certificates nodes
  *
@@ -36,7 +38,7 @@ trait CertificatesNodeTrait
      * The certificates specified within the parent node
      *
      * @var array
-     * @AS\Mapping(nodeName="certificates/certificate", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\CertificateNode")
+     * @DI\Mapping(nodeName="certificates/certificate", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\CertificateNode")
      */
     protected $certificates = array();
 

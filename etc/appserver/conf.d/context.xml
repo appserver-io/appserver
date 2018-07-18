@@ -55,6 +55,26 @@
         </classLoader>
     </classLoaders>
 
+    <annotationRegistries>
+        <annotationRegistry
+            type="AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries\FileAnnotationRegistry"
+            file="${webapp.dir}/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php" />
+        <annotationRegistry 
+            type="AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries\NamespaceAnnotationRegistry"
+            namespace="AppserverIo\Psr\EnterpriseBeans\Annotations">
+            <directories>
+                <directory>${webapp.dir}/vendor/appserver-io-psr/epb/src</directory>
+            </directories>
+        </annotationRegistry>
+        <annotationRegistry 
+            type="AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries\NamespaceAnnotationRegistry"
+            namespace="AppserverIo\Psr\Servlet\Annotations">
+            <directories>
+                <directory>${webapp.dir}/vendor/appserver-io-psr/servlet/src</directory>
+            </directories>
+        </annotationRegistry>
+    </annotationRegistries>
+
     <loggers>
         <logger channelName="system" name="SystemLogger" type="\AppserverIo\Logger\Logger">
             <handlers>
@@ -96,12 +116,7 @@
                 <descriptor>AppserverIo\Description\StatefulSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\SingletonSessionBeanDescriptor</descriptor>
                 <descriptor>AppserverIo\Description\StatelessSessionBeanDescriptor</descriptor>
-                <descriptor>AppserverIo\Routlt\Description\PathDescriptor</descriptor>
-                <descriptor>AppserverIo\Routlt\Description\ResultDescriptor</descriptor>
             </descriptors>
-            <directories>
-                <directory>${webapp.dir}/vendor/appserver-io/console/etc/appserver/conf.d</directory>
-            </directories>
         </manager>
         <manager name="ConsoleContextInterface" type="AppserverIo\Appserver\Console\ConsoleManager" factory="AppserverIo\Appserver\Console\ConsoleManagerFactory"/>
         <manager name="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
@@ -129,7 +144,6 @@
                 <param name="baseDirectory" type="string">WEB-INF</param>
             </params>
             <directories>
-                <directory>${vendor.dir}/appserver-io/routlt/src</directory>
                 <directory>${webapp.dir}/WEB-INF/classes</directory>
             </directories>
         </manager>

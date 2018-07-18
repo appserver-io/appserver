@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 
 /**
@@ -38,7 +39,7 @@ class SecurityRoleNode extends AbstractNode implements SecurityRoleNodeInterface
      * The role name information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\RoleNameNode
-     * @AS\Mapping(nodeName="role-name", nodeType="AppserverIo\Appserver\Core\Api\Node\RoleNameNode")
+     * @DI\Mapping(nodeName="role-name", nodeType="AppserverIo\Appserver\Core\Api\Node\RoleNameNode")
      */
     protected $roleName;
 
@@ -46,7 +47,7 @@ class SecurityRoleNode extends AbstractNode implements SecurityRoleNodeInterface
      * The description information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\DescriptionNode
-     * @AS\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
+     * @DI\Mapping(nodeName="description", nodeType="AppserverIo\Appserver\Core\Api\Node\DescriptionNode")
      */
     protected $description;
 

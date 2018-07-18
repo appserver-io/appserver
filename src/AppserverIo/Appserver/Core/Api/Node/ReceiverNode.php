@@ -20,6 +20,7 @@
 
 namespace AppserverIo\Appserver\Core\Api\Node;
 
+use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
@@ -46,7 +47,7 @@ class ReceiverNode extends AbstractNode
      * The receiver's class name.
      *
      * @var string
-     * @AS\Mapping(nodeType="string")
+     * @DI\Mapping(nodeType="string")
      */
     protected $type;
 
@@ -54,7 +55,7 @@ class ReceiverNode extends AbstractNode
      * The thread configuration the receiver uses.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\ThreadNode
-     * @AS\Mapping(nodeName="thread", nodeType="AppserverIo\Appserver\Core\Api\Node\ThreadNode")
+     * @DI\Mapping(nodeName="thread", nodeType="AppserverIo\Appserver\Core\Api\Node\ThreadNode")
      */
     protected $thread;
 
@@ -62,7 +63,7 @@ class ReceiverNode extends AbstractNode
      * The worker configuration the receiver uses.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\WorkerNode
-     * @AS\Mapping(nodeName="worker", nodeType="AppserverIo\Appserver\Core\Api\Node\WorkerNode")
+     * @DI\Mapping(nodeName="worker", nodeType="AppserverIo\Appserver\Core\Api\Node\WorkerNode")
      */
     protected $worker;
 
