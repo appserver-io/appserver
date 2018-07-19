@@ -1,3 +1,13 @@
+Version 1.1.11
+
+## Bugfixes
+
+* Remove configuration for application specific Doctrine Annotation registries from context.xml
+
+## Features
+
+* None
+
 Version 1.1.10
 
 ## Bugfixes

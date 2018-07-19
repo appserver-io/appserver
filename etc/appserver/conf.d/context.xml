@@ -55,26 +55,6 @@
         </classLoader>
     </classLoaders>
 
-    <annotationRegistries>
-        <annotationRegistry
-            type="AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries\FileAnnotationRegistry"
-            file="${webapp.dir}/vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php" />
-        <annotationRegistry 
-            type="AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries\NamespaceAnnotationRegistry"
-            namespace="AppserverIo\Psr\EnterpriseBeans\Annotations">
-            <directories>
-                <directory>${webapp.dir}/vendor/appserver-io-psr/epb/src</directory>
-            </directories>
-        </annotationRegistry>
-        <annotationRegistry 
-            type="AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\AnnotationRegistries\NamespaceAnnotationRegistry"
-            namespace="AppserverIo\Psr\Servlet\Annotations">
-            <directories>
-                <directory>${webapp.dir}/vendor/appserver-io-psr/servlet/src</directory>
-            </directories>
-        </annotationRegistry>
-    </annotationRegistries>
-
     <loggers>
         <logger channelName="system" name="SystemLogger" type="\AppserverIo\Logger\Logger">
             <handlers>
