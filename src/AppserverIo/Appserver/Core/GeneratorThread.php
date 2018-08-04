@@ -20,6 +20,7 @@
 namespace AppserverIo\Appserver\Core;
 
 use AppserverIo\Doppelgaenger\Generator;
+use Psr\Log\LogLevel;
 
 /**
  * Simple thread for parallel creation of contract-enabled structure definitions.
@@ -32,6 +33,7 @@ use AppserverIo\Doppelgaenger\Generator;
  */
 class GeneratorThread extends \Thread
 {
+
     /**
      * Generator instance to use for creation
      *
@@ -66,12 +68,56 @@ class GeneratorThread extends \Thread
     public function run()
     {
 
+        // register a shutdown function
+        register_shutdown_function(array($this, 'shutdown'));
+
         // register the default autoloader
         require SERVER_AUTOLOADER;
 
-        // iterate over all structures and generate them
-        foreach ($this->structures as $structure) {
-            $this->generator->create($structure);
+        try {
+            // iterate over all structures and generate them
+            foreach ($this->structures as $structure) {
+                $this->generator->create($structure);
+            }
+
+        } catch (\Exception $e) {
+            $this->log(LogLevel::ERROR, $e->__toString());
         }
+    }
+
+    /**
+     * The shutdown method implementation.
+     *
+     *@return void
+     */
+    public function shutdown()
+    {
+
+        // check if there was a fatal error caused shutdown
+        if ($lastError = error_get_last()) {
+            // initialize error type and message
+            $type = 0;
+            $message = '';
+            // extract the last error values
+            extract($lastError);
+            // query whether we've a fatal/user error
+            if ($type === E_ERROR || $type === E_USER_ERROR) {
+                $this->log(LogLevel::ERROR, $message);
+            }
+        }
+    }
+
+    /**
+     * This is a very basic method to log some stuff by using the error_log() method of PHP.
+     *
+     * @param mixed  $level   The log level to use
+     * @param string $message The message we want to log
+     * @param array  $context The context we of the message
+     *
+     * @return void
+     */
+    public function log($level, $message, array $context = array())
+    {
+        error_log(sprintf($this->getDefaultLogFormat(), date('Y-m-d H:i:s'), gethostname(), $level, $message, json_encode($context)));
     }
 }

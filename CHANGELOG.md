@@ -1,4 +1,16 @@
-Version 1.1.11
+# Version 1.1.12
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Add member contextNode and getter to Application class
+* Add improved error handling the appserver-io/doppelgaenger GeneratorThread
+* Refactor StandardSessionMarshaller to use array instead of \stdClass when persisting session data
+
+# Version 1.1.11
 
 ## Bugfixes
 
@@ -8,7 +20,7 @@ Version 1.1.11
 
 * None
 
-Version 1.1.10
+# Version 1.1.10
 
 ## Bugfixes
 
@@ -19,7 +31,7 @@ Version 1.1.10
 * Add configuration option for Doctrine repository factory + repository default class
 * Remove appserver-io/routlt library (has to be addes as dependency to your project)
 
-Version 1.1.9
+# Version 1.1.9
 
 ## Bugfixes
 
@@ -29,7 +41,7 @@ Version 1.1.9
 
 * None
 
-Version 1.1.8
+# Version 1.1.8
 
 ## Bugfixes
 
@@ -40,7 +52,7 @@ Version 1.1.8
 * Refactor MQ implementation with callbacks and optimized workflow handling
 * Refactor AbstractStep by adding configuratble retries
 
-Version 1.1.7
+# Version 1.1.7
 
 ## Bugfixes
 
@@ -51,7 +63,7 @@ Version 1.1.7
 * Switch to appserver-io/logger version 2.0.* and appserver-io/application version 1.5.*
 * Add postStartup() lifecycle callback to managers to allow actions after the application has been connected
 
-Version 1.1.6
+# Version 1.1.6
 
 ## Bugfixes
 
@@ -61,7 +73,7 @@ Version 1.1.6
 
 * None
 
-Version 1.1.5
+# Version 1.1.5
 
 ## Bugfixes
 
@@ -71,7 +83,7 @@ Version 1.1.5
 
 * Release version 1.1.5
 
-Version 1.1.5-beta12
+# Version 1.1.5-beta12
 
 ## Bugfixes
 
@@ -81,7 +93,7 @@ Version 1.1.5-beta12
 
 * Refactor logger integration, switch to function usage instead of loading logger instances via application or initial context
 
-Version 1.1.5-beta11
+# Version 1.1.5-beta11
 
 ## Bugfixes
 
@@ -93,7 +105,7 @@ Version 1.1.5-beta11
 * Switch to latest runtime with PHP version 5.6.35
 * Register environment in BeanManager::initialize() and Job::run() methods to allow usage of short logging functions
 
-Version 1.1.5-beta10
+# Version 1.1.5-beta10
 
 ## Bugfixes
 
@@ -106,7 +118,7 @@ Version 1.1.5-beta10
 * Move descriptor configuration to appserver-io-psr/epb and implementation to appserver-io/description
 * Extract interfaces from appserver-io/appserver to appserver-io-psr/cli and appserver-io-psr/application-server
 
-Version 1.1.5-beta9
+# Version 1.1.5-beta9
 
 ## Bugfixes
 
@@ -116,7 +128,7 @@ Version 1.1.5-beta9
 
 * Refactor StandardSecurityManager to make configuration of security constraints simpler
 
-Version 1.1.5-beta8
+# Version 1.1.5-beta8
 
 ## Bugfixes
 
@@ -126,7 +138,7 @@ Version 1.1.5-beta8
 
 * None
 
-Version 1.1.5-beta7
+# Version 1.1.5-beta7
 
 ## Bugfixes
 
@@ -137,7 +149,7 @@ Version 1.1.5-beta7
 * Switch to appserver-io/console 3.0 to add command to load Doctrine Fixtures
 * Temporary persist entity manager names in PersistenceManager instance to allow loading an applications default entity manager by name
 
-Version 1.1.5-beta6
+# Version 1.1.5-beta6
 
 ## Bugfixes
 
@@ -147,7 +159,7 @@ Version 1.1.5-beta6
 
 * None
 
-Version 1.1.5-beta5
+# Version 1.1.5-beta5
 
 ## Bugfixes
 
@@ -157,7 +169,7 @@ Version 1.1.5-beta5
 
 * Switch to latest appserver-io/console version 2.0.0
 
-Version 1.1.5-beta4
+# Version 1.1.5-beta4
 
 ## Bugfixes
 
@@ -168,7 +180,7 @@ Version 1.1.5-beta4
 * Integrate Doctrine ORM, DBAL and Migrations console commands
 * Extend DI functionality for method invocation on instanciated objects
 
-Version 1.1.5-beta3
+# Version 1.1.5-beta3
 
 ## Bugfixes
 
@@ -178,7 +190,7 @@ Version 1.1.5-beta3
 
 * None
 
-Version 1.1.5-beta2
+# Version 1.1.5-beta2
 
 ## Bugfixes
 
@@ -193,7 +205,7 @@ Version 1.1.5-beta2
 * Switch to VarDumpertFormatter for system logger to allow logging ALL instances, including recursive ones and passing objects without converting them to strings
 * Add helper functions for all log levels (alert, info, debug etc.) to make logging more comfortable
 
-Version 1.1.5-beta1
+# Version 1.1.5-beta1
 
 ## Bugfixes
 

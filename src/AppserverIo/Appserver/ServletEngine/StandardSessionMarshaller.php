@@ -35,6 +35,76 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
 {
 
     /**
+     * The key for the session attribute 'id'.
+     *
+     * @var string
+     */
+    const ID = 'id';
+
+    /**
+     * The key for the session attribute 'name'.
+     *
+     * @var string
+     */
+    const NAME = 'name';
+
+    /**
+     * The key for the session attribute 'lifetime'.
+     *
+     * @var string
+     */
+    const LIFETIME = 'lifetime';
+
+    /**
+     * The key for the session attribute 'maximumAge'.
+     *
+     * @var string
+     */
+    const MAXIMUM_AGE = 'maximumAge';
+
+    /**
+     * The key for the session attribute 'domain'.
+     *
+     * @var string
+     */
+    const DOMAIN = 'domain';
+
+    /**
+     * The key for the session attribute 'path'.
+     *
+     * @var string
+     */
+    const PATH = 'path';
+
+    /**
+     * The key for the session attribute 'secure'.
+     *
+     * @var string
+     */
+    const SECURE = 'secure';
+
+    /**
+     * The key for the session attribute 'httpOnly'.
+     *
+     * @var string
+     */
+    const HTTP_ONLY = 'httpOnly';
+
+    /**
+     * The key for the session attribute 'lastActivityTimestamp'.
+     *
+     * @var string
+     */
+    const LAST_ACTIVITY_TIMESTAMP = 'lastActivityTimestamp';
+
+    /**
+     * The key for the session attribute 'data'.
+     *
+     * @var string
+     */
+    const DATA = 'data';
+
+    /**
      * Transforms the passed session instance into a JSON encoded string. If the data contains
      * objects, each of them will be serialized before store them to the persistence layer.
      *
@@ -47,25 +117,25 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
     {
 
         // create the stdClass (that can easy be transformed into an JSON object)
-        $stdClass = new \stdClass();
+        $stdClass = array();
 
         // copy the values to the stdClass
-        $stdClass->id = $servletSession->getId();
-        $stdClass->name = $servletSession->getName();
-        $stdClass->lifetime = $servletSession->getLifetime();
-        $stdClass->maximumAge = $servletSession->getMaximumAge();
-        $stdClass->domain = $servletSession->getDomain();
-        $stdClass->path = $servletSession->getPath();
-        $stdClass->secure = $servletSession->isSecure();
-        $stdClass->httpOnly = $servletSession->isHttpOnly();
-        $stdClass->lastActivityTimestamp = $servletSession->getLastActivityTimestamp();
+        $stdClass[StandardSessionMarshaller::ID] = $servletSession->getId();
+        $stdClass[StandardSessionMarshaller::NAME] = $servletSession->getName();
+        $stdClass[StandardSessionMarshaller::LIFETIME] = $servletSession->getLifetime();
+        $stdClass[StandardSessionMarshaller::MAXIMUM_AGE] = $servletSession->getMaximumAge();
+        $stdClass[StandardSessionMarshaller::DOMAIN] = $servletSession->getDomain();
+        $stdClass[StandardSessionMarshaller::PATH] = $servletSession->getPath();
+        $stdClass[StandardSessionMarshaller::SECURE] = $servletSession->isSecure();
+        $stdClass[StandardSessionMarshaller::HTTP_ONLY] = $servletSession->isHttpOnly();
+        $stdClass[StandardSessionMarshaller::LAST_ACTIVITY_TIMESTAMP] = $servletSession->getLastActivityTimestamp();
 
         // initialize the array for the session data
-        $stdClass->data = array();
+        $stdClass[StandardSessionMarshaller::DATA] = array();
 
         // append the session data
         foreach ($servletSession->data as $key => $value) {
-            $stdClass->data[$key] = serialize($value);
+            $stdClass[StandardSessionMarshaller::DATA][$key] = serialize($value);
         }
 
         // returns the JSON encoded session instance
@@ -88,7 +158,7 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
     {
 
         // try to decode the string
-        $decodedSession = json_decode($marshalled);
+        $decodedSession = json_decode($marshalled, true);
 
         // query whether or not the session data has been decoded successfully
         switch (json_last_error()) {
@@ -116,16 +186,16 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
         }
 
         // extract the values
-        $id = $decodedSession->id;
-        $name = $decodedSession->name;
-        $lifetime = $decodedSession->lifetime;
-        $maximumAge = $decodedSession->maximumAge;
-        $domain = $decodedSession->domain;
-        $path = $decodedSession->path;
-        $secure = $decodedSession->secure;
-        $httpOnly = $decodedSession->httpOnly;
-        $data = $decodedSession->data;
-        $lastActivityTimestamp = $decodedSession->lastActivityTimestamp;
+        $id = $decodedSession[StandardSessionMarshaller::ID];
+        $name = $decodedSession[StandardSessionMarshaller::NAME];
+        $lifetime = $decodedSession[StandardSessionMarshaller::LIFETIME];
+        $maximumAge = $decodedSession[StandardSessionMarshaller::MAXIMUM_AGE];
+        $domain = $decodedSession[StandardSessionMarshaller::DOMAIN];
+        $path = $decodedSession[StandardSessionMarshaller::PATH];
+        $secure = $decodedSession[StandardSessionMarshaller::SECURE];
+        $httpOnly = $decodedSession[StandardSessionMarshaller::HTTP_ONLY];
+        $data = $decodedSession[StandardSessionMarshaller::DATA];
+        $lastActivityTimestamp = $decodedSession[StandardSessionMarshaller::LAST_ACTIVITY_TIMESTAMP];
 
         // initialize the instance
         $servletSession->init($id, $name, $lifetime, $maximumAge, $domain, $path, $secure, $httpOnly, $lastActivityTimestamp);

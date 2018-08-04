@@ -33,7 +33,6 @@ use AppserverIo\Appserver\ServletEngine\DependencyInjection\DirectoryParser;
 use AppserverIo\Appserver\ServletEngine\DependencyInjection\DeploymentDescriptorParser;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 
 /**
  * The servlet manager handles the servlets registered for the application.
@@ -195,6 +194,7 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
             return;
         }
 
+        // register the annotation registries
         $application->registerAnnotationRegistries();
 
         // initialize the directory parser and parse the web application's base directory for annotated servlets
