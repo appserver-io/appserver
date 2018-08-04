@@ -70,6 +70,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
  * @property string                                                         $containerName     Name of the container the application is bound to
  * @property string                                                         $containerRunlevel Runlevel of the container the application is bound to
  * @property \AppserverIo\Psr\Naming\NamingDirectoryInterface               $namingDirectory   The naming directory instance
+ * @property \AppserverIo\Appserver\Core\Api\Node\ContextNode               $contextNode       The application configuration instance
  */
 class Application extends \Thread implements ApplicationInterface, DirectoryAwareInterface, FilesystemAwareInterface, \AppserverIo\Psr\Context\ContextInterface
 {
@@ -269,6 +270,16 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     public function getNamingDirectory()
     {
         return $this->namingDirectory;
+    }
+
+    /**
+     * Return's the application configuration.
+     *
+     * @return \AppserverIo\Appserver\Core\Api\Node\ContextNode The application configuration
+     */
+    public function getContextNode()
+    {
+        return $this->contextNode;
     }
 
     /**
@@ -632,16 +643,16 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      * Prepares the application with the specific data found in the
      * passed context node.
      *
-     * @param \AppserverIo\Psr\ApplicationServer\ContainerInterface $container The container instance bind the application to
-     * @param \AppserverIo\Appserver\Core\Api\Node\ContextNode      $context   The application configuration
+     * @param \AppserverIo\Psr\ApplicationServer\ContainerInterface $container   The container instance bind the application to
+     * @param \AppserverIo\Appserver\Core\Api\Node\ContextNode      $contextNode The application configuration
      *
      * @return void
      */
-    public function prepare(ContainerInterface $container, ContextNode $context)
+    public function prepare(ContainerInterface $container, ContextNode $contextNode)
     {
 
-
-        $this->context = $context;
+        // set the application configuration
+        $this->contextNode = $contextNode;
 
         // load the unique application name + the naming directory
         $uniqueName = $this->getUniqueName();
@@ -662,9 +673,9 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
         // prepare the application specific directories
         $webappPath = sprintf('%s/%s', $this->getAppBase(), $this->getName());
         $tmpDirectory = sprintf('%s/%s', $container->getTmpDir(), $this->getName());
-        $dataDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::DATA), '/'));
-        $cacheDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::CACHE), '/'));
-        $sessionDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($context->getParam(DirectoryKeys::SESSION), '/'));
+        $dataDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($contextNode->getParam(DirectoryKeys::DATA), '/'));
+        $cacheDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($contextNode->getParam(DirectoryKeys::CACHE), '/'));
+        $sessionDirectory = sprintf('%s/%s', $tmpDirectory, ltrim($contextNode->getParam(DirectoryKeys::SESSION), '/'));
 
         // prepare the application specific environment variables
         $namingDirectory->bind(sprintf('php:env/%s/webappPath', $uniqueName), $webappPath);
@@ -772,7 +783,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
         AnnotationRegistry::reset();
 
         // register additional annotation libraries
-        foreach ($this->context->getAnnotationRegistries() as $annotationRegistry) {
+        foreach ($this->getContextNode()->getAnnotationRegistries() as $annotationRegistry) {
             // register the annotations specified by the annotation registery
             $annotationRegistryType = $annotationRegistry->getType();
             $registry = new $annotationRegistryType();
