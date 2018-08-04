@@ -2,13 +2,14 @@
 
 ## Bugfixes
 
-* None
-
-## Features
-
 * Add member contextNode and getter to Application class
 * Add improved error handling the appserver-io/doppelgaenger GeneratorThread
 * Refactor StandardSessionMarshaller to use array instead of \stdClass when persisting session data
+* Servlets will now be initialized in ServletManager::postStartup() instead of ServletManager::registerServlet() method
+
+## Features
+
+* None
 
 # Version 1.1.11
 

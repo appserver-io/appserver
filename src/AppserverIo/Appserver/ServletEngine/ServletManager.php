@@ -232,39 +232,59 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
     {
 
         try {
-            // load servlet name
-            $servletName = $descriptor->getName();
-
             // prepend the url-pattern - servlet mapping to the servlet mappings
             foreach ($descriptor->getUrlPatterns() as $pattern) {
-                $this->addServletMapping($pattern, $servletName);
+                $this->addServletMapping($pattern, $descriptor->getName());
             }
 
             // register's the servlet's references
             $this->registerReferences($descriptor);
 
-            // instantiate the servlet
-            $instance = $this->get($descriptor->getName());
-
-            // initialize the servlet configuration
-            $servletConfig = new ServletConfiguration();
-            $servletConfig->injectServletContext($this);
-            $servletConfig->injectServletName($servletName);
-
-            // append the init params to the servlet configuration
-            foreach ($descriptor->getInitParams() as $paramName => $paramValue) {
-                $servletConfig->addInitParameter($paramName, $paramValue);
-            }
-
-            // initialize the servlet
-            $instance->init($servletConfig);
-
-            // the servlet is added to the dictionary using the complete request path as the key
-            $this->addServlet($servletName, $instance);
-
         } catch (\Exception $e) {
             // log the exception
             $this->getApplication()->getInitialContext()->getSystemLogger()->critical($e->__toString());
+        }
+    }
+
+    /**
+     * Lifecycle callback that'll be invoked after the application has been started.
+     *
+     * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
+     *
+     * @return void
+     * @see \AppserverIo\Psr\Application\ManagerInterface::postStartup()
+     */
+    public function postStartup(ApplicationInterface $application)
+    {
+
+        // load the object manager
+        /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
+        $objectManager = $application->search(ObjectManagerInterface::IDENTIFIER);
+
+        // register the beans found by annotations and the XML configuration
+        /** \AppserverIo\Psr\Deployment\DescriptorInterface $objectDescriptor */
+        foreach ($objectManager->getObjectDescriptors() as $descriptor) {
+            // if we found a singleton session bean with a startup callback instanciate it
+            if ($descriptor instanceof ServletDescriptorInterface) {
+                // instantiate the servlet
+                $instance = $this->get($servletName = $descriptor->getName());
+
+                // initialize the servlet configuration
+                $servletConfig = new ServletConfiguration();
+                $servletConfig->injectServletContext($this);
+                $servletConfig->injectServletName($servletName);
+
+                // append the init params to the servlet configuration
+                foreach ($descriptor->getInitParams() as $paramName => $paramValue) {
+                    $servletConfig->addInitParameter($paramName, $paramValue);
+                }
+
+                // initialize the servlet
+                $instance->init($servletConfig);
+
+                // the servlet is added to the dictionary using the complete request path as the key
+                $this->addServlet($servletName, $instance);
+            }
         }
     }
 
