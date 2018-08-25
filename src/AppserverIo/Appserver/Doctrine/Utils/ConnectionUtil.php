@@ -103,7 +103,7 @@ class ConnectionUtil
 
         // initialize the path/memory to the database when we use sqlite for example
         if ($pathNode = $databaseNode->getPath()) {
-            $connectionParameters['path'] = $this->getApplication()->getWebappPath() . DIRECTORY_SEPARATOR . $pathNode->getNodeValue()->__toString();
+            $connectionParameters['path'] = $pathNode->getNodeValue()->__toString();
         } elseif ($memoryNode = $databaseNode->getMemory()) {
             $connectionParameters['memory'] = Boolean::valueOf(new String($memoryNode->getNodeValue()->__toString()))->booleanValue();
         } else {

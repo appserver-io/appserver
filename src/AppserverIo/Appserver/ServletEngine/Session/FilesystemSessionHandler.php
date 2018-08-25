@@ -92,7 +92,7 @@ class FilesystemSessionHandler extends AbstractSessionHandler
      * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $session The session to save
      *
      * @return void
-     * @throws \AppserverIo\Appserver\ServletEngine\SessionCanNotBeSavedException Is thrown if the session can't be saved
+     * @throws \AppserverIo\Appserver\ServletEngine\SessionCanNotBeSavedException Is thrown if the session can't be saved or no lock for the session file can be obtained
      */
     public function save(ServletSessionInterface $session)
     {
@@ -105,12 +105,72 @@ class FilesystemSessionHandler extends AbstractSessionHandler
         // prepare the session filename
         $sessionFilename = $this->getSessionSavePath($this->getSessionSettings()->getSessionFilePrefix() . $session->getId());
 
-        // update the checksum and the file that stores the session data
-        if (file_put_contents($sessionFilename, $this->marshall($session)) === false) {
-            throw new SessionCanNotBeSavedException(
-                sprintf('Session with ID %s can\'t be saved')
-            );
+        // marshall the session
+        $marshalledSession = $this->marshall($session);
+
+        // decode the session from the filesystem
+        $fh = fopen($sessionFilename, 'w+');
+
+        // try to lock the session file
+        if (flock($fh, LOCK_EX) === false) {
+            throw new SessionCanNotBeSavedException(sprintf('Can\'t get lock to save session data to file "%s"', $sessionFilename));
         }
+
+        // finally try to write the session data to the file
+        if (fwrite($fh, $marshalledSession) === false) {
+            throw new SessionCanNotBeSavedException(sprintf('Session with ID "%s" can\'t be saved', $session->getId()));
+        }
+
+        // try to unlock the session file
+        if (flock($fh, LOCK_UN) === false) {
+            throw new SessionCanNotBeSavedException(sprintf('Can\'t unlock session file "%s" after saving data', $sessionFilename));
+        }
+    }
+
+    /**
+     * Tries to load the session data from the passed filename.
+     *
+     * @param string $pathname The path of the file to load the session data from
+     *
+     * @return \AppserverIo\Psr\Servlet\Http\HttpSessionInterface The unmarshalled session
+     * @throws \AppserverIo\Appserver\ServletEngine\SessionDataNotReadableException Is thrown if the file containing the session data is not readable or no lock for the session file can be obtained
+     */
+    protected function unpersist($pathname)
+    {
+
+        // the requested session file is not a valid file
+        if ($this->sessionFileExists($pathname) === false) {
+            return;
+        }
+
+        // initialize the variable for the marshalled session data
+        $marshalled = null;
+
+        // decode the session from the filesystem
+        $fh = fopen($pathname, 'r');
+
+        // try to lock the session file
+        if (flock($fh, LOCK_EX) === false) {
+            throw new SessionDataNotReadableException(sprintf('Can\'t get lock to load session data from file "%s"', $pathname));
+        }
+
+        // read the marshalled session data from the file
+        while (feof($fh) === false) {
+            $marshalled .= fread($fh, 1024);
+        }
+
+        // try to unlock the session file
+        if (flock($fh, LOCK_UN) === false) {
+            throw new SessionDataNotReadableException(sprintf('Can\'t unlock session file "%s" after reading data', $pathname));
+        }
+
+        // query whether or not the session has been unmarshalled successfully
+        if ($marshalled === null) {
+            throw new SessionDataNotReadableException(sprintf('Can\'t load any session data from file %s', $pathname));
+        }
+
+        // unmarshall and return the session data
+        return $this->unmarshall($marshalled);
     }
 
     /**
@@ -148,31 +208,6 @@ class FilesystemSessionHandler extends AbstractSessionHandler
 
         // return the number of removed sessions
         return $sessionRemovalCount;
-    }
-
-    /**
-     * Tries to load the session data from the passed filename.
-     *
-     * @param string $pathname The path of the file to load the session data from
-     *
-     * @return \AppserverIo\Psr\Servlet\Http\HttpSessionInterface The unmarshalled session
-     * @throws \AppserverIo\Appserver\ServletEngine\SessionDataNotReadableException Is thrown if the file containing the session data is not readable
-     */
-    protected function unpersist($pathname)
-    {
-
-        // the requested session file is not a valid file
-        if ($this->sessionFileExists($pathname) === false) {
-            return;
-        }
-
-        // decode the session from the filesystem
-        if (($marshalled = file_get_contents($pathname)) === false) {
-            throw new SessionDataNotReadableException(sprintf('Can\'t load session data from file %s', $pathname));
-        }
-
-        // create a new session instance from the marshaled object representation
-        return $this->unmarshall($marshalled);
     }
 
     /**

@@ -176,6 +176,9 @@ class RequestHandler extends \Thread
                 }
             }
 
+            // flush the session manager
+            $sessionManager->flush();
+
             // profile the request if the profile logger is available
             if ($profileLogger = $application->getInitialContext()->getLogger(LoggerUtils::PROFILE)) {
                 $profileLogger->appendThreadContext('request-handler');
