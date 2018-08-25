@@ -102,14 +102,6 @@ class StandardSessionManager implements SessionManagerInterface
     }
 
     /**
-     * Save the sessions back to the persistence layer.
-     */
-    public function __destruct()
-    {
-        $this->flush();
-    }
-
-    /**
      * Inject the application instance.
      *
      * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance

@@ -111,35 +111,44 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
      * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $servletSession The session to be transformed
      *
      * @return string The JSON encoded session representation
+     * @throws \AppserverIo\Appserver\ServletEngine\DataNotSerializableException Is thrown, if the session can't be encoded
      * @see \AppserverIo\Appserver\ServletEngine\SessionMarshallerInterface::marshall()
      */
     public function marshall(ServletSessionInterface $servletSession)
     {
 
         // create the stdClass (that can easy be transformed into an JSON object)
-        $stdClass = array();
+        $sessionData = array();
 
         // copy the values to the stdClass
-        $stdClass[StandardSessionMarshaller::ID] = $servletSession->getId();
-        $stdClass[StandardSessionMarshaller::NAME] = $servletSession->getName();
-        $stdClass[StandardSessionMarshaller::LIFETIME] = $servletSession->getLifetime();
-        $stdClass[StandardSessionMarshaller::MAXIMUM_AGE] = $servletSession->getMaximumAge();
-        $stdClass[StandardSessionMarshaller::DOMAIN] = $servletSession->getDomain();
-        $stdClass[StandardSessionMarshaller::PATH] = $servletSession->getPath();
-        $stdClass[StandardSessionMarshaller::SECURE] = $servletSession->isSecure();
-        $stdClass[StandardSessionMarshaller::HTTP_ONLY] = $servletSession->isHttpOnly();
-        $stdClass[StandardSessionMarshaller::LAST_ACTIVITY_TIMESTAMP] = $servletSession->getLastActivityTimestamp();
+        $sessionData[StandardSessionMarshaller::ID] = $servletSession->getId();
+        $sessionData[StandardSessionMarshaller::NAME] = $servletSession->getName();
+        $sessionData[StandardSessionMarshaller::LIFETIME] = $servletSession->getLifetime();
+        $sessionData[StandardSessionMarshaller::MAXIMUM_AGE] = $servletSession->getMaximumAge();
+        $sessionData[StandardSessionMarshaller::DOMAIN] = $servletSession->getDomain();
+        $sessionData[StandardSessionMarshaller::PATH] = $servletSession->getPath();
+        $sessionData[StandardSessionMarshaller::SECURE] = $servletSession->isSecure();
+        $sessionData[StandardSessionMarshaller::HTTP_ONLY] = $servletSession->isHttpOnly();
+        $sessionData[StandardSessionMarshaller::LAST_ACTIVITY_TIMESTAMP] = $servletSession->getLastActivityTimestamp();
 
         // initialize the array for the session data
-        $stdClass[StandardSessionMarshaller::DATA] = array();
+        $sessionData[StandardSessionMarshaller::DATA] = array();
 
         // append the session data
         foreach ($servletSession->data as $key => $value) {
-            $stdClass[StandardSessionMarshaller::DATA][$key] = serialize($value);
+            $sessionData[StandardSessionMarshaller::DATA][$key] = serialize($value);
         }
 
-        // returns the JSON encoded session instance
-        return json_encode($stdClass);
+        // JSON encode the session instance
+        $encodedSession = json_encode($sessionData);
+
+        // query whether or not the session data has been decoded successfully
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new SessionDataNotReadableException(json_last_error_msg());
+        }
+
+        // return the JSON encoded session data
+        return $encodedSession;
     }
 
     /**
@@ -160,29 +169,9 @@ class StandardSessionMarshaller implements SessionMarshallerInterface
         // try to decode the string
         $decodedSession = json_decode($marshalled, true);
 
-        // query whether or not the session data has been decoded successfully
-        switch (json_last_error()) {
-            case JSON_ERROR_NONE:
-                // do nothing here, everything went fine
-                break;
-            case JSON_ERROR_DEPTH:
-                throw new SessionDataNotReadableException('Maximum stack depth exceeded');
-                break;
-            case JSON_ERROR_STATE_MISMATCH:
-                throw new SessionDataNotReadableException('Underflow or the modes mismatch');
-                break;
-            case JSON_ERROR_CTRL_CHAR:
-                throw new SessionDataNotReadableException('Unexpected control character found');
-                break;
-            case JSON_ERROR_SYNTAX:
-                throw new SessionDataNotReadableException('Syntax error, malformed JSON');
-                break;
-            case JSON_ERROR_UTF8:
-                throw new SessionDataNotReadableException('Malformed UTF-8 characters, possibly incorrectly encoded');
-                break;
-            default:
-                throw new SessionDataNotReadableException('Unknown error');
-                break;
+        // query whether or not the session data has been encoded successfully
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new SessionDataNotReadableException(json_last_error_msg());
         }
 
         // extract the values

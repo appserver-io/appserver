@@ -951,11 +951,15 @@
     <xs:element name="servlet">
         <xs:complexType>
             <xs:choice maxOccurs="unbounded">
-                <xs:element ref="appserver:description" minOccurs="0"/>
-                <xs:element ref="appserver:display-name" minOccurs="0"/>
                 <xs:element ref="appserver:servlet-name"/>
                 <xs:element ref="appserver:servlet-class"/>
                 <xs:element ref="appserver:init-param"/>
+                <xs:element ref="appserver:description" minOccurs="0"/>
+                <xs:element ref="appserver:display-name" minOccurs="0"/>
+                <xs:element ref="appserver:epb-ref" minOccurs="0"/>
+                <xs:element ref="appserver:res-ref" minOccurs="0"/>
+                <xs:element ref="appserver:bean-ref" minOccurs="0"/>
+                <xs:element ref="appserver:persistence-unit-ref" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>

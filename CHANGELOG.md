@@ -1,3 +1,14 @@
+# Version 1.1.13
+
+## Bugfixes
+
+* Add missing session file locking
+* Fix error in session handling that forces unneccessary multiple session persisting
+
+## Features
+
+* None
+
 # Version 1.1.12
 
 ## Bugfixes

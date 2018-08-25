@@ -168,26 +168,6 @@ class EntityManagerFactory
     }
 
     /**
-     * Register's additional annotation registries defined in the configuration.
-     *
-     * @return void
-     */
-    protected function registerAnnotationRegistries()
-    {
-
-        // load the persistence unit configuration
-        $persistenceUnitNode = $this->getPersistenceUnitNode();
-
-        // register additional annotation libraries
-        foreach ($persistenceUnitNode->getAnnotationRegistries() as $annotationRegistry) {
-            // register the annotations specified by the annotation registery
-            $annotationRegistryType = $annotationRegistry->getType();
-            $registry = new $annotationRegistryType();
-            $registry->register($annotationRegistry);
-        }
-    }
-
-    /**
      * Creates a new entity manager instance based on the given configuration.
      *
      * @return \Doctrine\ORM\EntityManagerInterface The entity manager instance
@@ -198,9 +178,6 @@ class EntityManagerFactory
         // load the application and persistence unit configuration
         $application = $this->getApplication();
         $persistenceUnitNode = $this->getPersistenceUnitNode();
-
-        // register additional annotation libraries
-        $this->registerAnnotationRegistries();
 
         // create a new Doctrine ORM configuration instance
         $configuration = $this->createConfiguration();
