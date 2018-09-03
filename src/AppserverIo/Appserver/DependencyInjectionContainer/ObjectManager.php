@@ -39,9 +39,7 @@ use AppserverIo\Psr\Application\ApplicationInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property array                                 $directories           The additional directories to be parsed for available deployment descriptors
- * @property array                                 $configuredDescriptors Descriptors used to parse deployment descriptors and annotations from the managers configuration
- * @property \AppserverIo\Storage\StorageInterface $objectDescriptors     Storage for our collected object descriptors
+ * @property \AppserverIo\Storage\StorageInterface $objectDescriptors Storage for our collected object descriptors
  */
 class ObjectManager extends AbstractManager implements ObjectManagerInterface
 {
@@ -59,31 +57,6 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
     }
 
     /**
-     * Inject the descriptors used to parse deployment descriptors and annotations
-     * from the managers configuration.
-     *
-     * @param array $configuredDescriptors The descriptors to use
-     *
-     * @return void
-     */
-    public function injectConfiguredDescriptors(array $configuredDescriptors)
-    {
-        $this->configuredDescriptors = $configuredDescriptors;
-    }
-
-    /**
-     * Injects the additional directories to be parsed when looking for servlets.
-     *
-     * @param array $directories The additional directories to be parsed
-     *
-     * @return void
-     */
-    public function injectDirectories(array $directories)
-    {
-        $this->directories = $directories;
-    }
-
-    /**
      * Returns the storage with the object descriptors.
      *
      * @return \AppserverIo\Storage\StorageInterface The storage with the object descriptors
@@ -91,26 +64,6 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
     public function getObjectDescriptors()
     {
         return $this->objectDescriptors;
-    }
-
-    /**
-     * Returns the descriptors used to parse deployment descriptors and annotations.
-     *
-     * @return array The descriptors to use
-     */
-    public function getConfiguredDescriptors()
-    {
-        return $this->configuredDescriptors;
-    }
-
-    /**
-     * Returns all the additional directories to be parsed for servlets.
-     *
-     * @return array The additional directories
-     */
-    public function getDirectories()
-    {
-        return $this->directories;
     }
 
     /**
@@ -125,10 +78,8 @@ class ObjectManager extends AbstractManager implements ObjectManagerInterface
     public function initialize(ApplicationInterface $application)
     {
 
-        // initialize the deployment descriptor parser and parse the web application's deployment descriptor for beans
-        $deploymentDescriptorParser = new DeploymentDescriptorParser();
-        $deploymentDescriptorParser->injectObjectManager($this);
-        $deploymentDescriptorParser->parse();
+        // parse the object descriptors
+        $this->parseObjectDescriptors();
     }
 
     /**

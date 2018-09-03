@@ -63,7 +63,6 @@ use AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StartupBeanTask
  * @link      http://www.appserver.io
  *
  * @property array                                                                                         $requestContext                  The request context to cache the beans
- * @property array                                                                                         $directories                     The additional directories to be parsed
  * @property \AppserverIo\Psr\EnterpriseBeans\ResourceLocatorInterface                                     $resourceLocator                 The resource locator
  * @property \AppserverIo\Storage\StorageInterface                                                         $statefulSessionBeans            The storage for the stateful session beans
  * @property \AppserverIo\Storage\StorageInterface                                                         $singletonSessionBeans           The storage for the singleton session beans
@@ -88,18 +87,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     public function injectRequestContext(array $requestContext)
     {
         $this->requestContext = $requestContext;
-    }
-
-    /**
-     * Injects the additional directories to be parsed when looking for servlets.
-     *
-     * @param array $directories The additional directories to be parsed
-     *
-     * @return void
-     */
-    public function injectDirectories(array $directories)
-    {
-        $this->directories = $directories;
     }
 
     /**
@@ -273,15 +260,8 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
             return;
         }
 
-        // initialize the directory parser and parse the web application's base directory for annotated beans
-        $directoryParser = new DirectoryParser();
-        $directoryParser->injectBeanContext($this);
-        $directoryParser->parse();
-
-        // initialize the deployment descriptor parser and parse the web application's deployment descriptor for beans
-        $deploymentDescriptorParser = new DeploymentDescriptorParser();
-        $deploymentDescriptorParser->injectBeanContext($this);
-        $deploymentDescriptorParser->parse();
+        // parse the object descriptors
+        $this->parseObjectDescriptors();
 
         // load the object manager
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
@@ -341,16 +321,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     public function newAnnotationInstance(AnnotationInterface $annotation)
     {
         return $this->getApplication()->search('ProviderInterface')->newAnnotationInstance($annotation);
-    }
-
-    /**
-     * Returns all the additional directories to be parsed for servlets.
-     *
-     * @return array The additional directories
-     */
-    public function getDirectories()
-    {
-        return $this->directories;
     }
 
     /**

@@ -39,6 +39,13 @@ class StandardGarbageCollector extends AbstractDaemonThread
 {
 
     /**
+     * The timeout to wait inside the garbage collector's while() loop.
+     *
+     * @var integer
+     */
+    const GARBAGE_COLLECTION_TIMEOUT = 5000000;
+
+    /**
      * Injects the application instance.
      *
      * @param \AppserverIo\Psr\Application\ApplicationInterface $application The application instance
@@ -127,8 +134,8 @@ class StandardGarbageCollector extends AbstractDaemonThread
         // load the map with the SFSB lifetime data
         $lifetimeMap = $statefulSessionBeans->getLifetime();
 
-        // write a log message with size of SFSBs to be garbage collected
-        $this->log(LogLevel::DEBUG, sprintf('Found %d SFSBs be garbage collected', sizeof($lifetimeMap)));
+        // initialize the counter for the SFSBs
+        $counter = 0;
 
         // iterate over the applications sessions with stateful session beans
         foreach ($lifetimeMap as $identifier => $lifetime) {
@@ -141,10 +148,15 @@ class StandardGarbageCollector extends AbstractDaemonThread
                 // reduce CPU load
                 usleep(1000);
             } else {
+                // raise the counter
+                $counter++;
                 // write a log message
                 $this->log(LogLevel::DEBUG, sprintf('Lifetime %s of SFSB %s is > %s', $lifetime, $identifier, $actualTime));
             }
         }
+
+        // write a log message with size of SFSBs to be garbage collected
+        $this->log(LogLevel::DEBUG, sprintf('Found %d SFSBs be garbage collected', $counter));
 
         // profile the size of the sessions
         /** @var \Psr\Log\LoggerInterface $this->profileLogger */
@@ -153,6 +165,16 @@ class StandardGarbageCollector extends AbstractDaemonThread
                 sprintf('Processed standard garbage collector, handling %d SFSBs', sizeof($statefulSessionBeans))
             );
         }
+    }
+
+    /**
+     * Returns the default timeout.
+     *
+     * @return integer The default timeout in microseconds
+     */
+    public function getDefaultTimeout()
+    {
+        return StandardGarbageCollector::GARBAGE_COLLECTION_TIMEOUT;
     }
 
     /**

@@ -23,7 +23,6 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
-use AppserverIo\Description\Api\Node\DirectoriesNodeTrait;
 
 /**
  * DTO to transfer a manager.
@@ -45,20 +44,6 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
     use ParamsNodeTrait;
 
     /**
-     * A params node trait.
-     *
-     * @var \AppserverIo\Description\Api\Node\DirectoriesNodeTrait
-     */
-    use DirectoriesNodeTrait;
-
-    /**
-     * A descriptors node trait.
-     *
-     * @var \AppserverIo\Appserver\Core\Api\Node\DescriptorsNodeTrait
-     */
-    use DescriptorsNodeTrait;
-
-    /**
      * A security domains node trait.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\SecurityDomainsNodeTrait
@@ -78,6 +63,14 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
      * @var \AppserverIo\Appserver\Core\Api\Node\SessionHandlersNodeTrait
      */
     use SessionHandlersNodeTrait;
+
+    /**
+     * The object description configuration.
+     *
+     * @var array
+     * @DI\Mapping(nodeName="objectDescription", nodeType="AppserverIo\Appserver\Core\Api\Node\ObjectDescriptionNode")
+     */
+    protected $objectDescription;
 
     /**
      * The unique manager name.
@@ -114,17 +107,19 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
     /**
      * Initializes the manager configuration with the passed values.
      *
-     * @param string $name           The unique manager name
-     * @param string $type           The manager class name
-     * @param string $factory        The managers factory class name
-     * @param string $contextFactory The context factory class name
+     * @param string                                                     $name              The unique manager name
+     * @param string                                                     $type              The manager class name
+     * @param string                                                     $factory           The managers factory class name
+     * @param string                                                     $contextFactory    The context factory class name
+     * @param \AppserverIo\Appserver\Core\Api\Node\ObjectDescriptionNode $objectDescription The object description configuration
      */
-    public function __construct($name = '', $type = '', $factory = '', $contextFactory = '')
+    public function __construct($name = '', $type = '', $factory = '', $contextFactory = '', $objectDescription = null)
     {
         $this->name = $name;
         $this->type = $type;
         $this->factory = $factory;
         $this->contextFactory = $contextFactory;
+        $this->objectDescription = $objectDescription;
     }
 
     /**
@@ -168,6 +163,16 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
     }
 
     /**
+     * Returns the manager's object description configuration.
+     *
+     * @return array|\AppserverIo\Appserver\Core\Api\Node\ObjectDescriptionNode The object description configuration
+     */
+    public function getObjectDescription()
+    {
+        return $this->objectDescription;
+    }
+
+    /**
      * This method merges the configuration of the passed manager node
      * into this one.
      *
@@ -187,6 +192,7 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
         $this->type = $managerNode->getType();
         $this->factory = $managerNode->getFactory();
         $this->contextFactory = $managerNode->getContextFactory();
+        $this->objectDescription = $managerNode->getObjectDescription();
 
         // load the authenticators of this manager node
         $localAuthenticators = $this->getAuthenticators();
@@ -207,16 +213,6 @@ class ManagerNode extends AbstractNode implements ManagerNodeInterface
 
         // override the authenticators with the merged mones
         $this->authenticators = $localAuthenticators;
-
-        // override the descriptors if available
-        if (sizeof($descriptors = $managerNode->getDescriptors()) > 0) {
-            $this->descriptors = $descriptors;
-        }
-
-        // override the directories if available
-        if (sizeof($directories = $managerNode->getDirectories()) > 0) {
-            $this->directories = $directories;
-        }
 
         // override the params if available
         if (sizeof($params = $managerNode->getParams()) > 0) {

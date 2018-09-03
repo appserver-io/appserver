@@ -70,6 +70,7 @@ class QueueManagerFactory implements ManagerFactoryInterface
         $queueManager->injectApplication($application);
         $queueManager->injectResourceLocator($queueLocator);
         $queueManager->injectManagerSettings($queueManagerSettings);
+        $queueManager->injectManagerConfiguration($managerConfiguration);
 
         // attach the instance
         $application->addManager($queueManager, $managerConfiguration);

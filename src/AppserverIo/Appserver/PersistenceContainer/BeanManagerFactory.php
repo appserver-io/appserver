@@ -103,8 +103,8 @@ class BeanManagerFactory implements ManagerFactoryInterface
         $beanManager->injectManagerSettings($beanManagerSettings);
         $beanManager->injectRemoteProxyGenerator($remoteProxyGenerator);
         $beanManager->injectStatefulSessionBeans($statefulSessionBeans);
+        $beanManager->injectManagerConfiguration($managerConfiguration);
         $beanManager->injectSingletonSessionBeans($singletonSessionBeans);
-        $beanManager->injectDirectories($managerConfiguration->getDirectories());
         $beanManager->injectStartupBeanTaskGarbageCollector($startupBeanTaskGarbageCollector);
 
         // create the naming context and add it the manager

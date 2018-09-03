@@ -130,6 +130,11 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
      */
     public function initialize(ApplicationInterface $application)
     {
+
+        // parse the object descriptors
+        $this->parseObjectDescriptors();
+
+        // register the message queues
         $this->registerMessageQueues($application);
     }
 

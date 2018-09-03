@@ -36,22 +36,6 @@ interface ManagerNodeInterface extends ManagerConfigurationInterface, NodeInterf
 {
 
     /**
-     * Array with the directories.
-     *
-     * @param array $directories The directories
-     *
-     * @return void
-     */
-    public function setDirectories(array $directories);
-
-    /**
-     * Array with the directories.
-     *
-     * @return \AppserverIo\Appserver\Core\Api\Node\DirectoryNode[]
-     */
-    public function getDirectories();
-
-    /**
      * Sets the security domain configuration.
      *
      * @param array $securityDomains The security domain configuration
@@ -66,22 +50,6 @@ interface ManagerNodeInterface extends ManagerConfigurationInterface, NodeInterf
      * @return array The security domain configuration
      */
     public function getSecurityDomains();
-
-    /**
-     * Array with the descriptors.
-     *
-     * @param array $descriptors The descriptors
-     *
-     * @return void
-     */
-    public function setDescriptors(array $descriptors);
-
-    /**
-     * Array with the descriptors.
-     *
-     * @return array
-     */
-    public function getDescriptors();
 
     /**
      * Sets the authenticator configuration.
@@ -119,6 +87,13 @@ interface ManagerNodeInterface extends ManagerConfigurationInterface, NodeInterf
      * @return string The context factory class name
      */
     public function getContextFactory();
+
+    /**
+     * Returns the manager's object description configuration.
+     *
+     * @return array|\AppserverIo\Appserver\Core\Api\Node\ObjectDescriptionNode The object description configuration
+     */
+    public function getObjectDescription();
 
     /**
      * Array with the handler params to use.
