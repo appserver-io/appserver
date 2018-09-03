@@ -1,3 +1,13 @@
+# Version 1.1.14
+
+## Bugfixes
+
+* Fixed invalid logging for SFSBs garbage collector
+
+## Features
+
+* Strictly separated parsing classes and deployment descriptors into common, META-INF and WEB-INF directory
+
 # Version 1.1.13
 
 ## Bugfixes

@@ -1,7 +1,7 @@
 <?php
 
 /**
- * \AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DirectoryParser
+ * \AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser
  *
  * NOTICE OF LICENSE
  *
@@ -18,14 +18,13 @@
  * @link      http://www.appserver.io
  */
 
-namespace AppserverIo\Appserver\PersistenceContainer\DependencyInjection;
+namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
 use AppserverIo\Psr\Di\ObjectManagerInterface;
-use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 
 /**
- * Parser to parse a directory for annotated beans.
+ * Generic parser to parse a directory for annotated beans.
  *
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
@@ -33,47 +32,8 @@ use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DirectoryParser
+class DirectoryParser extends AbstractParser
 {
-
-    /**
-     * The bean context we want to parse the directories for.
-     *
-     * @var \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface
-     */
-    protected $beanContext;
-
-    /**
-     * Inject the bean context instance.
-     *
-     * @param \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface $beanContext The bean context instance
-     *
-     * @return void
-     */
-    public function injectBeanContext(BeanContextInterface $beanContext)
-    {
-        $this->beanContext = $beanContext;
-    }
-
-    /**
-     * Returns the bean context instance.
-     *
-     * @return \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface The bean context instance
-     */
-    public function getBeanContext()
-    {
-        return $this->beanContext;
-    }
-
-    /**
-     * Returns the application context instance the bean context is bound to.
-     *
-     * @return \AppserverIo\Psr\Application\ApplicationInterface The application context instance
-     */
-    public function getApplication()
-    {
-        return $this->getBeanContext()->getApplication();
-    }
 
     /**
      * Parses the bean context's web application base directory for beans
@@ -85,10 +45,9 @@ class DirectoryParser
     {
 
         // parse the directories from the servlet managers configuration
-        /** @var \AppserverIo\Appserver\Core\Api\Node\DirectoryNode $directoryNode */
-        foreach ($this->getBeanContext()->getDirectories() as $directoryNode) {
+        foreach ($this->getDirectories() as $directory) {
             // parse the directories for annotated servlets
-            $this->parseDirectory(DirectoryKeys::realpath($directoryNode->getNodeValue()->getValue()));
+            $this->parseDirectory(DirectoryKeys::realpath($directory));
         }
     }
 
@@ -120,7 +79,7 @@ class DirectoryParser
         // iterate all php files
         foreach ($phpFiles as $phpFile) {
             // iterate over all configured descriptors and try to load object description
-            foreach ($objectManager->getConfiguredDescriptors() as $descriptor) {
+            foreach ($this->getDescriptors() as $descriptor) {
                 try {
                     // cut off the META-INF directory and replace OS specific directory separators
                     $relativePathToPhpFile = str_replace(DIRECTORY_SEPARATOR, '\\', str_replace($directory, '', $phpFile));

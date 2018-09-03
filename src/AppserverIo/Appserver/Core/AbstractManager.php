@@ -24,6 +24,7 @@ namespace AppserverIo\Appserver\Core;
 use Psr\Container\ContainerInterface;
 use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Lang\Reflection\ReflectionClass;
 use AppserverIo\Psr\Di\ProviderInterface;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -326,6 +327,56 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
      */
     public function postStartup(ApplicationInterface $application)
     {
+    }
+
+    /**
+     * Parse the manager's object descriptors.
+     *
+     * @return void
+     */
+    public function parseObjectDescriptors()
+    {
+
+        // load the manager configuration
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface $managerConfiguration */
+        $managerConfiguration = $this->getManagerConfiguration();
+
+        // load the object description configuration
+        $objectDescription = $managerConfiguration->getObjectDescription();
+
+        // initialize the parsers and start initializing the object descriptors
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ParserNodeInterface */
+        foreach ($objectDescription->getParsers() as $parserConfiguration) {
+            // query whether or not a factory has been configured
+            if ($parserFactoryConfiguration = $parserConfiguration->getFactory()) {
+                // create a reflection class from the parser factory
+                $reflectionClass = new ReflectionClass($parserFactoryConfiguration);
+                $factory = $reflectionClass->newInstance();
+
+                // create the parser instance and start parsing
+                $parser = $factory->createParser($parserConfiguration, $this);
+                $parser->parse();
+            }
+        }
+    }
+
+    /**
+     * Returns the managers object descriptors to use.
+     *
+     * @return array The object descriptors
+     */
+    public function getDescriptors()
+    {
+
+        // load the manager configuration
+        /** @var \AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface $managerConfiguration */
+        $managerConfiguration = $this->getManagerConfiguration();
+
+        // load the object description configuration
+        $objectDescription = $managerConfiguration->getObjectDescription();
+
+        // return the configured object descriptors
+        return $objectDescription->getDescriptors();
     }
 
     /**

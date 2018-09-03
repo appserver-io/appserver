@@ -20,11 +20,10 @@
 
 namespace AppserverIo\Appserver\PersistenceContainer\DependencyInjection;
 
-use AppserverIo\Appserver\Core\Api\Node\EpbNode;
-use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
-use AppserverIo\Configuration\Interfaces\NodeInterface;
 use AppserverIo\Psr\Di\ObjectManagerInterface;
-use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
+use AppserverIo\Appserver\Core\Api\Node\EpbNode;
+use AppserverIo\Configuration\Interfaces\NodeInterface;
+use AppserverIo\Appserver\DependencyInjectionContainer\AbstractDeploymentDescriptorParser;
 
 /**
  * Parser to parse a deployment descriptor for beans.
@@ -35,47 +34,8 @@ use AppserverIo\Psr\EnterpriseBeans\BeanContextInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DeploymentDescriptorParser
+class DeploymentDescriptorParser extends AbstractDeploymentDescriptorParser
 {
-
-    /**
-     * The bean context we want to parse the deployment descriptor for.
-     *
-     * @var \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface
-     */
-    protected $beanContext;
-
-    /**
-     * Inject the bean context instance.
-     *
-     * @param \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface $beanContext The bean context instance
-     *
-     * @return void
-     */
-    public function injectBeanContext(BeanContextInterface $beanContext)
-    {
-        $this->beanContext = $beanContext;
-    }
-
-    /**
-     * Returns the bean context instance.
-     *
-     * @return \AppserverIo\Psr\EnterpriseBeans\BeanContextInterface The bean context instance
-     */
-    public function getBeanContext()
-    {
-        return $this->beanContext;
-    }
-
-    /**
-     * Returns the application context instance the bean context is bound to.
-     *
-     * @return \AppserverIo\Psr\Application\ApplicationInterface The application context instance
-     */
-    public function getApplication()
-    {
-        return $this->getBeanContext()->getApplication();
-    }
 
     /**
      * Parses the bean context's deployment descriptor file for beans
@@ -86,38 +46,38 @@ class DeploymentDescriptorParser
     public function parse()
     {
 
-        // load the web application base directory
-        $webappPath = $this->getBeanContext()->getWebappPath();
+        // load the deployment descriptors that has to be parsed
+        $deploymentDescriptors = $this->loadDeploymentDescriptors();
 
-        // prepare the deployment descriptor
-        $deploymentDescriptor = AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, 'META-INF' . DIRECTORY_SEPARATOR . 'epb');
-
-        // query whether we found epb.xml deployment descriptor file
-        if (file_exists($deploymentDescriptor) === false) {
-            return;
-        }
-
-        // validate the passed configuration file
-        /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
-        $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
-        $configurationService->validateFile($deploymentDescriptor, null, true);
-
-        // prepare and initialize the configuration node
-        $epbNode = new EpbNode();
-        $epbNode->initFromFile($deploymentDescriptor);
-
-        // query whether or not the deployment descriptor contains any beans
-        /** @var \AppserverIo\Appserver\Core\Api\Node\EnterpriseBeansNode $enterpriseBeans */
-        if ($enterpriseBeans = $epbNode->getEnterpriseBeans()) {
-            // parse the session beans of the deployment descriptor
-            /** @var \AppserverIo\Appserver\Core\Api\Node\SessionNode $sessionNode */
-            foreach ($enterpriseBeans->getSessions() as $sessionNode) {
-                $this->processConfigurationNode($sessionNode);
+        // parse the deployment descriptors from the conf.d and the application's META-INF directory
+        foreach ($deploymentDescriptors as $deploymentDescriptor) {
+            // query whether we found epb.xml deployment descriptor file
+            if (file_exists($deploymentDescriptor) === false) {
+                continue;
             }
-            // parse the message driven beans from the deployment descriptor
-            /** @var \AppserverIo\Appserver\Core\Api\Node\MessageDrivenNode $messageDrivenNode */
-            foreach ($enterpriseBeans->getMessageDrivens() as $messageDrivenNode) {
-                $this->processConfigurationNode($messageDrivenNode);
+
+            // validate the passed configuration file
+            /** @var \AppserverIo\Appserver\Core\Api\ConfigurationService $configurationService */
+            $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
+            $configurationService->validateFile($deploymentDescriptor, null, true);
+
+            // prepare and initialize the configuration node
+            $epbNode = new EpbNode();
+            $epbNode->initFromFile($deploymentDescriptor);
+
+            // query whether or not the deployment descriptor contains any beans
+            /** @var \AppserverIo\Appserver\Core\Api\Node\EnterpriseBeansNode $enterpriseBeans */
+            if ($enterpriseBeans = $epbNode->getEnterpriseBeans()) {
+                // parse the session beans of the deployment descriptor
+                /** @var \AppserverIo\Appserver\Core\Api\Node\SessionNode $sessionNode */
+                foreach ($enterpriseBeans->getSessions() as $sessionNode) {
+                    $this->processConfigurationNode($sessionNode);
+                }
+                // parse the message driven beans from the deployment descriptor
+                /** @var \AppserverIo\Appserver\Core\Api\Node\MessageDrivenNode $messageDrivenNode */
+                foreach ($enterpriseBeans->getMessageDrivens() as $messageDrivenNode) {
+                    $this->processConfigurationNode($messageDrivenNode);
+                }
             }
         }
     }
@@ -139,7 +99,7 @@ class DeploymentDescriptorParser
 
         // iterate over all configured descriptors and try to load object description
         /** \AppserverIo\Appserver\Core\Api\Node\DescriptorNode $descriptor */
-        foreach ($objectManager->getConfiguredDescriptors() as $descriptor) {
+        foreach ($this->getDescriptors() as $descriptor) {
             try {
                 // load the descriptor class
                 $descriptorClass = $descriptor->getNodeValue()->getValue();

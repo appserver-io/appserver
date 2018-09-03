@@ -29,8 +29,6 @@ use AppserverIo\Psr\Servlet\ServletInterface;
 use AppserverIo\Psr\Servlet\ServletContextInterface;
 use AppserverIo\Psr\Servlet\Http\HttpServletRequestInterface;
 use AppserverIo\Psr\Servlet\Description\ServletDescriptorInterface;
-use AppserverIo\Appserver\ServletEngine\DependencyInjection\DirectoryParser;
-use AppserverIo\Appserver\ServletEngine\DependencyInjection\DeploymentDescriptorParser;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 
@@ -43,7 +41,6 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property array                                                                  $directories       The additional directories to be parsed
  * @property \AppserverIo\Storage\StorageInterface                                  $initParameters    The container for the init parameters
  * @property \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface          $resourceLocator   The resource locator for requested servlets
  * @property \AppserverIo\Appserver\ServletEngine\ResourceLocatorInterface          $servletLocator    The resource locator for the servlets
@@ -54,18 +51,6 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
  */
 class ServletManager extends AbstractEpbManager implements ServletContextInterface, ManagerSettingsAwareInterface
 {
-
-    /**
-     * Injects the additional directories to be parsed when looking for servlets.
-     *
-     * @param array $directories The additional directories to be parsed
-     *
-     * @return void
-     */
-    public function injectDirectories(array $directories)
-    {
-        $this->directories = $directories;
-    }
 
     /**
      * Injects the resource locator that locates the requested servlet.
@@ -174,6 +159,14 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
      */
     public function initialize(ApplicationInterface $application)
     {
+
+        // register the annotation registries
+        $application->registerAnnotationRegistries();
+
+        // parse the object descriptors
+        $this->parseObjectDescriptors();
+
+        // register the servlets
         $this->registerServlets($application);
     }
 
@@ -188,24 +181,6 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
      */
     public function registerServlets(ApplicationInterface $application)
     {
-
-        // query whether or not the web application folder exists
-        if (is_dir($this->getWebappPath()) === false) {
-            return;
-        }
-
-        // register the annotation registries
-        $application->registerAnnotationRegistries();
-
-        // initialize the directory parser and parse the web application's base directory for annotated servlets
-        $directoryParser = new DirectoryParser();
-        $directoryParser->injectServletContext($this);
-        $directoryParser->parse();
-
-        // initialize the deployment descriptor parser and parse the web application's deployment descriptor for servlets
-        $deploymentDescriptorParser = new DeploymentDescriptorParser();
-        $deploymentDescriptorParser->injectServletContext($this);
-        $deploymentDescriptorParser->parse();
 
         // load the object manager instance
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
@@ -286,16 +261,6 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
                 $this->addServlet($servletName, $instance);
             }
         }
-    }
-
-    /**
-     * Returns all the additional directories to be parsed for servlets.
-     *
-     * @return array The additional directories
-     */
-    public function getDirectories()
-    {
-        return $this->directories;
     }
 
     /**

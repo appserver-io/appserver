@@ -45,7 +45,7 @@
                 <param name="environment" type="string">production</param>
                 <param name="enforcementLevel" type="integer">7</param>
                 <param name="typeSafety" type="boolean">1</param>
-                <param name="processing" type="string">logging</param>
+                <param name="processing" type="string">exception</param>
             </params>
             <directories>
                 <directory enforced="true">${webapp.dir}/common/classes</directory>
@@ -86,17 +86,28 @@
 
     <managers>
         <manager name="ObjectManagerInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManager" factory="AppserverIo\Appserver\DependencyInjectionContainer\ObjectManagerFactory">
-            <descriptors>
-                <descriptor>AppserverIo\Description\PreferenceDescriptor</descriptor>
-                <descriptor>AppserverIo\Description\BeanDescriptor</descriptor>
-                <descriptor>AppserverIo\Description\ServletDescriptor</descriptor>
-                <descriptor>AppserverIo\Description\FixtureDescriptor</descriptor>
-                <descriptor>AppserverIo\Description\MigrationDescriptor</descriptor>
-                <descriptor>AppserverIo\Description\MessageDrivenBeanDescriptor</descriptor>
-                <descriptor>AppserverIo\Description\StatefulSessionBeanDescriptor</descriptor>
-                <descriptor>AppserverIo\Description\SingletonSessionBeanDescriptor</descriptor>
-                <descriptor>AppserverIo\Description\StatelessSessionBeanDescriptor</descriptor>
-            </descriptors>
+            <objectDescription>
+                <descriptors>
+                    <descriptor>AppserverIo\Description\PreferenceDescriptor</descriptor>
+                    <descriptor>AppserverIo\Description\BeanDescriptor</descriptor>
+                </descriptors>
+                <parsers>
+                    <parser name="directory" type="AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser" factory="AppserverIo\Appserver\DependencyInjectionContainer\ParserFactory">
+                        <directories>
+                            <directory>${webapp.dir}/common/classes</directory>
+                            <directory>${webapp.dir}/WEB-INF/classes</directory>
+                            <directory>${webapp.dir}/META-INF/classes</directory>
+                        </directories>
+                    </parser>
+                    <parser name="deploymentDescriptor" type="AppserverIo\Appserver\DependencyInjectionContainer\DeploymentDescriptorParser" factory="AppserverIo\Appserver\DependencyInjectionContainer\ParserFactory" descriptorName="di">
+                        <directories>
+                            <directory>${webapp.dir}/common</directory>
+                            <directory>${webapp.dir}/WEB-INF</directory>
+                            <directory>${webapp.dir}/META-INF</directory>
+                        </directories>
+                    </parser>
+                </parsers>
+            </objectDescription>
         </manager>
         <manager name="ConsoleContextInterface" type="AppserverIo\Appserver\Console\ConsoleManager" factory="AppserverIo\Appserver\Console\ConsoleManagerFactory"/>
         <manager name="ProviderInterface" type="AppserverIo\Appserver\DependencyInjectionContainer\Provider" factory="AppserverIo\Appserver\DependencyInjectionContainer\ProviderFactory"/>
@@ -107,25 +118,72 @@
                 <param name="lifetime" type="integer">1440</param>
                 <param name="garbageCollectionProbability" type="float">0.1</param>
             </params>
-            <directories>
-                <directory>${webapp.dir}/common/classes</directory>
-                <directory>${webapp.dir}/WEB-INF/classes</directory>
-                <directory>${webapp.dir}/META-INF/classes</directory>
-            </directories>
+            <objectDescription>
+                <descriptors>
+                    <descriptor>AppserverIo\Description\FixtureDescriptor</descriptor>
+                    <descriptor>AppserverIo\Description\MigrationDescriptor</descriptor>
+                    <descriptor>AppserverIo\Description\StatefulSessionBeanDescriptor</descriptor>
+                    <descriptor>AppserverIo\Description\SingletonSessionBeanDescriptor</descriptor>
+                    <descriptor>AppserverIo\Description\StatelessSessionBeanDescriptor</descriptor>
+                </descriptors>
+                <parsers>
+                    <parser name="directory" type="AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser" factory="AppserverIo\Appserver\DependencyInjectionContainer\ParserFactory">
+                        <directories>
+                            <directory>${webapp.dir}/META-INF/classes</directory>
+                        </directories>
+                    </parser>
+                    <parser name="deploymentDescriptor" type="AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser" factory="AppserverIo\Appserver\DependencyInjectionContainer\ParserFactory" descriptorName="epb">
+                        <directories>
+                            <directory>${webapp.dir}/META-INF</directory>
+                        </directories>
+                    </parser>
+                </parsers>
+            </objectDescription>
         </manager>
         <manager name="QueueContextInterface" type="AppserverIo\Appserver\MessageQueue\QueueManager" factory="AppserverIo\Appserver\MessageQueue\QueueManagerFactory">
             <params>
                 <param name="baseDirectory" type="string">META-INF</param>
                 <param name="maximumJobsToProcess" type="integer">200</param>
             </params>
+            <objectDescription>
+                <descriptors>
+                    <descriptor>AppserverIo\Description\MessageDrivenBeanDescriptor</descriptor>
+                </descriptors>
+                <parsers>
+                    <parser name="directory" type="AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser" factory="AppserverIo\Appserver\DependencyInjectionContainer\ParserFactory">
+                        <directories>
+                            <directory>${webapp.dir}/META-INF/classes</directory>
+                        </directories>
+                    </parser>
+                    <parser name="deploymentDescriptor" type="AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser" factory="AppserverIo\Appserver\DependencyInjectionContainer\ParserFactory" descriptorName="epb">
+                        <directories>
+                            <directory>${webapp.dir}/META-INF</directory>
+                        </directories>
+                    </parser>
+                </parsers>
+            </objectDescription>
         </manager>
         <manager name="ServletContextInterface" type="AppserverIo\Appserver\ServletEngine\ServletManager" factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory" contextFactory="AppserverIo\Appserver\Naming\NamingContextFactory">
             <params>
                 <param name="baseDirectory" type="string">WEB-INF</param>
             </params>
-            <directories>
-                <directory>${webapp.dir}/WEB-INF/classes</directory>
-            </directories>
+            <objectDescription>
+                <descriptors>
+                    <descriptor>AppserverIo\Description\ServletDescriptor</descriptor>
+                </descriptors>
+                <parsers>
+                    <parser name="directory" type="AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser" factory="AppserverIo\Appserver\DependencyInjectionContainer\ParserFactory">
+                        <directories>
+                            <directory>${webapp.dir}/WEB-INF/classes</directory>
+                        </directories>
+                    </parser>
+                    <parser name="deploymentDescriptor" type="AppserverIo\Appserver\ServletEngine\DependencyInjection\DeploymentDescriptorParser" factory="AppserverIo\Appserver\DependencyInjectionContainer\ParserFactory" descriptorName="web">
+                        <directories>
+                            <directory>${webapp.dir}/WEB-INF</directory>
+                        </directories>
+                    </parser>
+                </parsers>
+            </objectDescription>
         </manager>
         <manager name="SessionManagerInterface" type="AppserverIo\Appserver\ServletEngine\StandardSessionManager" factory="AppserverIo\Appserver\ServletEngine\StandardSessionManagerFactory">
             <sessionHandlers>

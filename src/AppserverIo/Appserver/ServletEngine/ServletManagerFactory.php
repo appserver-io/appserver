@@ -78,7 +78,7 @@ class ServletManagerFactory implements ManagerFactoryInterface
         $servletManager->injectSecuredUrlConfigs($securedUrlConfigs);
         $servletManager->injectSessionParameters($sessionParameters);
         $servletManager->injectManagerSettings($servletManagerSettings);
-        $servletManager->injectDirectories($managerConfiguration->getDirectories());
+        $servletManager->injectManagerConfiguration($managerConfiguration);
 
         // create the naming context and add it the manager
         $contextFactory = $managerConfiguration->getContextFactory();

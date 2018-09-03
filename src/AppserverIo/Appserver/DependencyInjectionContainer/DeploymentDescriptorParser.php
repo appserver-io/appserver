@@ -22,7 +22,6 @@ namespace AppserverIo\Appserver\DependencyInjectionContainer;
 
 use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Appserver\Core\Api\Node\DiNode;
-use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Configuration\Interfaces\NodeInterface;
 
 /**
@@ -34,47 +33,8 @@ use AppserverIo\Configuration\Interfaces\NodeInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class DeploymentDescriptorParser
+class DeploymentDescriptorParser extends AbstractDeploymentDescriptorParser
 {
-
-    /**
-     * The object manager we want to parse the deployment descriptor for.
-     *
-     * @var \AppserverIo\Psr\Di\ObjectManagerInterface
-     */
-    protected $objectManager;
-
-    /**
-     * Inject the object manager instance.
-     *
-     * @param \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager The object manager instance
-     *
-     * @return void
-     */
-    public function injectObjectManager(ObjectManagerInterface $objectManager)
-    {
-        $this->objectManager = $objectManager;
-    }
-
-    /**
-     * Returns the object manager instance.
-     *
-     * @return \AppserverIo\Psr\Di\ObjectManagerInterface The object manager instance
-     */
-    public function getObjectManager()
-    {
-        return $this->objectManager;
-    }
-
-    /**
-     * Returns the application context instance the bean context is bound to.
-     *
-     * @return \AppserverIo\Psr\Application\ApplicationInterface The application context instance
-     */
-    public function getApplication()
-    {
-        return $this->getObjectManager()->getApplication();
-    }
 
     /**
      * Parses the bean context's deployment descriptor file for beans
@@ -85,33 +45,14 @@ class DeploymentDescriptorParser
     public function parse()
     {
 
-        // load the web application base directory
-        $webappPath = $this->getApplication()->getWebappPath();
-
-        // load the deployment service
-        /** @var \AppserverIo\Appserver\Core\Api\DeploymentService $deploymentService */
-        $deploymentService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\DeploymentService');
-
-        // prepare the array with the deployment descriptor with the fallback deployment descriptor
-        $deploymentDescriptors = array($deploymentService->getConfdDir('di.xml'));
-
-        // try to locate deployment descriptors in the configured directories
-        foreach ($this->getObjectManager()->getDirectories() as $directory) {
-            array_push($deploymentDescriptors, sprintf('%s/di.xml', $directory));
-        }
-
-        // finally append the deployment descriptor of the application
-        // (this allows to overwrite all other deployment descriptors)
-        array_push(
-            $deploymentDescriptors,
-            AppEnvironmentHelper::getEnvironmentAwareGlobPattern($webappPath, 'META-INF' . DIRECTORY_SEPARATOR . 'di')
-        );
+        // load the deployment descriptors that has to be parsed
+        $deploymentDescriptors = $this->loadDeploymentDescriptors();
 
         // parse the deployment descriptors from the conf.d and the application's META-INF directory
         foreach ($deploymentDescriptors as $deploymentDescriptor) {
             // query whether we found epb.xml deployment descriptor file
             if (file_exists($deploymentDescriptor) === false) {
-                return;
+                continue;
             }
 
             // validate the passed configuration file
@@ -160,7 +101,7 @@ class DeploymentDescriptorParser
 
         // iterate over all configured descriptors and try to load object description
         /** \AppserverIo\Appserver\Core\Api\Node\DescriptorNode $descriptor */
-        foreach ($objectManager->getConfiguredDescriptors() as $descriptor) {
+        foreach ($this->getDescriptors() as $descriptor) {
             try {
                 // load the descriptor class
                 $descriptorClass = $descriptor->getNodeValue()->getValue();
@@ -202,7 +143,7 @@ class DeploymentDescriptorParser
 
         // iterate over all configured descriptors and try to load object description
         /** \AppserverIo\Appserver\Core\Api\Node\DescriptorNode $descriptor */
-        foreach ($objectManager->getConfiguredDescriptors() as $descriptor) {
+        foreach ($this->getDescriptors() as $descriptor) {
             try {
                 // load the descriptor class
                 $descriptorClass = $descriptor->getNodeValue()->getValue();
