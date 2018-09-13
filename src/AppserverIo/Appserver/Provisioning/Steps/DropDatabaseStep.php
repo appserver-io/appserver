@@ -38,7 +38,7 @@ class DropDatabaseStep extends AbstractDatabaseStep
      *
      * @return void
      * @throws \Exception Is thrown if the script can't be executed
-     * @see \AppserverIo\Appserver\Provisioning\Steps\StepInterface::execute()
+     * @see \AppserverIo\Provisioning\Steps\StepInterface::execute()
      */
     public function execute()
     {

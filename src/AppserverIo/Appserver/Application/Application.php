@@ -32,7 +32,6 @@ use AppserverIo\Appserver\Core\Interfaces\ClassLoaderInterface;
 use AppserverIo\Appserver\Core\Api\Node\ContextNode;
 use AppserverIo\Appserver\Core\Api\Node\LoggerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
-use AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface;
 use AppserverIo\Appserver\Core\Api\Node\ClassLoaderNodeInterface;
 use AppserverIo\Psr\Application\ManagerInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
@@ -46,6 +45,9 @@ use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Appserver\Core\Api\ConfigurationService;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
+use AppserverIo\Provisioning\Configuration\ProvisionerConfigurationInterface;
+use AppserverIo\Properties\PropertiesUtil;
 
 /**
  * The application instance holds all information about the deployed application
@@ -424,6 +426,18 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
+     * Replaces the variablies in the passed file.
+     *
+     * @param string $pathname The filename with the variables that has to be replaced
+     *
+     * @return string The content of the file with the replaced variables
+     */
+    public function replaceSystemProperties($pathname)
+    {
+       return PropertiesUtil::singleton()->replacePropertiesInString($this->getSystemProperties(), file_get_contents($pathname));
+    }
+
+    /**
      * Return's the application's UUID.
      *
      * @return string The application's UUID
@@ -603,12 +617,12 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     /**
      * Injects the provisioner instance and the configuration.
      *
-     * @param \AppserverIo\Psr\Application\ProvisionerInterface             $provisioner   A provisioner instance
-     * @param \AppserverIo\Appserver\Core\Api\Node\ProvisionerNodeInterface $configuration The provisioner configuration
+     * @param \AppserverIo\Psr\Application\ProvisionerInterface                         $provisioner   A provisioner instance
+     * @param \AppserverIo\Provisioning\Configuration\ProvisionerConfigurationInterface $configuration The provisioner configuration
      *
      * @return void
      */
-    public function addProvisioner(ProvisionerInterface $provisioner, ProvisionerNodeInterface $configuration)
+    public function addProvisioner(ProvisionerInterface $provisioner, ProvisionerConfigurationInterface $configuration)
     {
 
         // bind the provisioner callback to the naming directory => the application itself
@@ -693,6 +707,26 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
+     * Will take a segmented path to a file (which might contain glob type wildcards) and return it fixed to the currently
+     * active environment modifier, e. g.
+     *
+     * ```php
+     * AppEnvironmentHelper::getEnvironmentAwareFilePath('webapps/example', 'META-INF/*-ds') => 'webapps/example/META-INF/*-ds.dev.xml'
+     * ```
+     *
+     * @param string  $fileGlob      The intermediate path (or glob pattern) from app base path to file extension
+     * @param integer $flags         The flags passed to the glob function
+     * @param string  $fileExtension The extension of the file, will default to 'xml'
+     *
+     * @return string
+     * @see \AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper::getEnvironmentAwareGlobPattern()
+     */
+    public function getEnvironmentAwareGlobPattern($fileGlob, $flags = 0, $fileExtension = 'xml')
+    {
+        return AppEnvironmentHelper::getEnvironmentAwareGlobPattern($this->getWebappPath(), $fileGlob, $flags, $fileExtension);
+    }
+
+    /**
      * Cleanup the naming directory from the application entries.
      *
      * @return void
@@ -772,7 +806,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
     }
 
     /**
-     * Register's additional annotation registries defined in the configuration.
+     * Registers additional annotation registries defined in the configuration.
      *
      * @return void
      */
@@ -789,6 +823,22 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
             $registry = new $annotationRegistryType();
             $registry->register($annotationRegistry);
         }
+    }
+
+    /**
+     * Registers the the application in the environment.
+     *
+     * @return void
+     */
+    public function registerEnvironment()
+    {
+
+        // add the application instance to the environment
+        Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $this);
+
+        // create s simulated request/session ID whereas session equals request ID
+        Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
+        Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
     }
 
     /**

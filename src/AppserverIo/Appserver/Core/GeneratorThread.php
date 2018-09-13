@@ -35,6 +35,13 @@ class GeneratorThread extends \Thread
 {
 
     /**
+     * The default format for log messages.
+     *
+     * @var string
+     */
+    const LOG_FORMAT = '[%s] - %s (%s): %s [%s]';
+
+    /**
      * Generator instance to use for creation
      *
      * @var \AppserverIo\Doppelgaenger\Generator $generator
@@ -105,6 +112,16 @@ class GeneratorThread extends \Thread
                 $this->log(LogLevel::ERROR, $message);
             }
         }
+    }
+
+    /**
+     * Returns the default format for log messages.
+     *
+     * @return string The default log message format
+     */
+    public function getDefaultLogFormat()
+    {
+        return GeneratorThread::LOG_FORMAT;
     }
 
     /**

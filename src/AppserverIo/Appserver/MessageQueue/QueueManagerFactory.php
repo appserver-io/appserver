@@ -21,10 +21,10 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
-use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Storage\GenericStackable;
 use AppserverIo\Appserver\Core\Api\Node\ManagerNodeInterface;
+use AppserverIo\Appserver\Core\Interfaces\ManagerFactoryInterface;
 
 /**
  * A factory for the queue manager instances.

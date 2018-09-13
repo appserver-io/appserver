@@ -1,3 +1,15 @@
+# Version 1.1.15
+
+## Bugfixes
+
+* Add missing GeneratorThread::getDefaultLogFormat() method
+* Initialize environment before invoking QueueManager::initialize() method
+* Register annotation regitries before invoking the servlet managers postStartup() method
+
+## Features
+
+* Separate provisioning functionality mainly to appserver-io/provisioning library
+
 # Version 1.1.14
 
 ## Bugfixes

@@ -46,8 +46,6 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 use AppserverIo\Appserver\PersistenceContainer\Utils\SessionBeanUtil;
 use AppserverIo\Appserver\PersistenceContainer\Tasks\StartupBeanTask;
-use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DirectoryParser;
-use AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser;
 use AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StandardGarbageCollector;
 use AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface;
 use AppserverIo\Appserver\PersistenceContainer\GarbageCollectors\StartupBeanTaskGarbageCollector;
@@ -254,11 +252,6 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
      */
     public function registerBeans(ApplicationInterface $application)
     {
-
-        // query whether or not the web application folder exists
-        if (is_dir($this->getWebappPath()) === false) {
-            return;
-        }
 
         // parse the object descriptors
         $this->parseObjectDescriptors();

@@ -27,6 +27,7 @@ use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 use AppserverIo\Description\Api\Node\AnnotationRegistriesNodeTrait;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Provisioning\Api\Node\ProvisionersNodeTrait;
 
 /**
  * DTO to transfer server information.
@@ -65,7 +66,7 @@ class ContextNode extends AbstractNode
     /**
      * A managers node trait.
      *
-     * @var \AppserverIo\Appserver\Core\Api\Node\ProvisionersNodeTrait
+     * @var \AppserverIo\Provisioning\Api\Node\ProvisionersNodeTrait
      */
     use ProvisionersNodeTrait;
 

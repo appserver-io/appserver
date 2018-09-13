@@ -232,6 +232,9 @@ class ServletManager extends AbstractEpbManager implements ServletContextInterfa
     public function postStartup(ApplicationInterface $application)
     {
 
+        // register the annotation registries
+        $application->registerAnnotationRegistries();
+
         // load the object manager
         /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
         $objectManager = $application->search(ObjectManagerInterface::IDENTIFIER);

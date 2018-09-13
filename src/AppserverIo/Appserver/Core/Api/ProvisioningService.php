@@ -20,6 +20,8 @@
 
 namespace AppserverIo\Appserver\Core\Api;
 
+use AppserverIo\Provisioning\Api\ProvisioningServiceInterface;
+
 /**
  * A service that provides methods needed for application provisioning.
  *
@@ -29,6 +31,6 @@ namespace AppserverIo\Appserver\Core\Api;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  */
-class ProvisioningService extends DatasourceService
+class ProvisioningService extends DatasourceService implements ProvisioningServiceInterface
 {
 }
