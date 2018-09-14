@@ -122,6 +122,7 @@
                 <descriptors>
                     <descriptor>AppserverIo\Description\FixtureDescriptor</descriptor>
                     <descriptor>AppserverIo\Description\MigrationDescriptor</descriptor>
+                    <descriptor>AppserverIo\Description\MessageDrivenBeanDescriptor</descriptor>
                     <descriptor>AppserverIo\Description\StatefulSessionBeanDescriptor</descriptor>
                     <descriptor>AppserverIo\Description\SingletonSessionBeanDescriptor</descriptor>
                     <descriptor>AppserverIo\Description\StatelessSessionBeanDescriptor</descriptor>
@@ -145,23 +146,6 @@
                 <param name="baseDirectory" type="string">META-INF</param>
                 <param name="maximumJobsToProcess" type="integer">200</param>
             </params>
-            <objectDescription>
-                <descriptors>
-                    <descriptor>AppserverIo\Description\MessageDrivenBeanDescriptor</descriptor>
-                </descriptors>
-                <parsers>
-                    <parser name="directory" type="AppserverIo\Appserver\DependencyInjectionContainer\DirectoryParser" factory="AppserverIo\Appserver\DependencyInjectionContainer\ParserFactory">
-                        <directories>
-                            <directory>${webapp.dir}/META-INF/classes</directory>
-                        </directories>
-                    </parser>
-                    <parser name="deploymentDescriptor" type="AppserverIo\Appserver\PersistenceContainer\DependencyInjection\DeploymentDescriptorParser" factory="AppserverIo\Appserver\DependencyInjectionContainer\ParserFactory" descriptorName="epb">
-                        <directories>
-                            <directory>${webapp.dir}/META-INF</directory>
-                        </directories>
-                    </parser>
-                </parsers>
-            </objectDescription>
         </manager>
         <manager name="ServletContextInterface" type="AppserverIo\Appserver\ServletEngine\ServletManager" factory="AppserverIo\Appserver\ServletEngine\ServletManagerFactory" contextFactory="AppserverIo\Appserver\Naming\NamingContextFactory">
             <params>
@@ -230,7 +214,7 @@
     </managers>
 
     <provisioners>
-        <provisioner name="standard" factory="AppserverIo\Appserver\Provisioning\StandardProvisionerFactory" type="AppserverIo\Appserver\Provisioning\StandardProvisioner" />
+        <provisioner name="standard" factory="AppserverIo\Provisioning\StandardProvisionerFactory" type="AppserverIo\Provisioning\StandardProvisioner" />
     </provisioners>
 
 </context>

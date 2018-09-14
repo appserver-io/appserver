@@ -23,6 +23,7 @@ namespace AppserverIo\Appserver\Provisioning\Steps;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Doctrine\ORM\Tools\SchemaTool;
+use AppserverIo\Provisioning\Steps\AbstractStep;
 
 /**
  * An abstract database step implementation.
@@ -149,8 +150,7 @@ abstract class AbstractDatabaseStep extends AbstractStep
         // initialize the path to the database when we use sqlite for example
         if ($databaseNode->getPath()) {
             if ($path = $databaseNode->getPath()->getNodeValue()->__toString()) {
-                $connectionParameters[AbstractDatabaseStep::CONNECTION_PARAM_PATH] = $this->getWebappPath(
-                ) . DIRECTORY_SEPARATOR . $path;
+                $connectionParameters[AbstractDatabaseStep::CONNECTION_PARAM_PATH] = $this->getWebappPath() . DIRECTORY_SEPARATOR . $path;
             }
         }
 

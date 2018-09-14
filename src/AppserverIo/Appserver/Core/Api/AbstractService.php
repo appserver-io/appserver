@@ -28,6 +28,7 @@ use AppserverIo\Appserver\Core\Utilities\FileKeys;
 use AppserverIo\Appserver\Core\Utilities\FileSystem;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
+use AppserverIo\Psr\Application\ApplicationInterface;
 use AppserverIo\Psr\ApplicationServer\ServiceInterface;
 use AppserverIo\Psr\ApplicationServer\Configuration\SystemConfigurationInterface;
 use AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface;
@@ -452,10 +453,11 @@ abstract class AbstractService implements ServiceInterface
      * the container properties will also be appended.
      *
      * @param \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface|null $containerNode The container to return the system properties for
+     * @param \AppserverIo\Psr\Application\ApplicationInterface                                     $application   The application instance
      *
      * @return \AppserverIo\Properties\Properties The system properties
      */
-    public function getSystemProperties(ContainerConfigurationInterface $containerNode = null)
+    public function getSystemProperties(ContainerConfigurationInterface $containerNode = null, ApplicationInterface $application = null)
     {
 
         // initialize the properties
@@ -488,6 +490,16 @@ abstract class AbstractService implements ServiceInterface
                 $properties->add(SystemPropertyKeys::HOST_TMP_BASE, $host->getTmpBase());
                 $properties->add(SystemPropertyKeys::HOST_DEPLOY_BASE, $host->getDeployBase());
             }
+        }
+
+        // query whether or not an application instance has been passed
+        if ($application != null) {
+            // append the application specific properties
+            $properties->add(SystemPropertyKeys::WEBAPP, $webappPath = $application->getWebappPath());
+            $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+            $properties->add(SystemPropertyKeys::WEBAPP_DATA, $application->getDataDir());
+            $properties->add(SystemPropertyKeys::WEBAPP_CACHE, $application->getCacheDir());
+            $properties->add(SystemPropertyKeys::WEBAPP_SESSION, $application->getSessionDir());
         }
 
         // return the properties

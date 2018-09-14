@@ -22,22 +22,26 @@
 
 namespace AppserverIo\Appserver\MessageQueue;
 
-use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Properties\Properties;
 use AppserverIo\Storage\GenericStackable;
+use AppserverIo\Psr\Servlet\SessionUtils;
 use AppserverIo\Psr\Pms\QueueContextInterface;
 use AppserverIo\Psr\Pms\ResourceLocatorInterface;
 use AppserverIo\Psr\Pms\QueueInterface;
 use AppserverIo\Psr\Pms\MessageInterface;
 use AppserverIo\Psr\Application\ApplicationInterface;
+use AppserverIo\Appserver\Core\Environment;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\Core\Utilities\DirectoryKeys;
+use AppserverIo\Appserver\Core\Utilities\EnvironmentKeys;
 use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
+use AppserverIo\Appserver\Core\Utilities\AppEnvironmentHelper;
 use AppserverIo\Appserver\Core\Api\InvalidConfigurationException;
 use AppserverIo\Appserver\Core\Api\Node\MessageQueuesNode;
 use AppserverIo\Appserver\Core\Api\Node\MessageQueueNodeInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsAwareInterface;
 use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
+use AppserverIo\Appserver\PersistenceContainer\RemoteMethodInvocation\ProxyGeneratorInterface;
 
 /**
  * The queue manager handles the queues and message beans registered for the application.
@@ -50,11 +54,11 @@ use AppserverIo\Appserver\Application\Interfaces\ManagerSettingsInterface;
  * @link      https://github.com/appserver-io/appserver
  * @link      http://www.appserver.io
  *
- * @property \AppserverIo\Psr\Application\ApplicationInterface                 $application     The application to manage queues for
- * @property array                                                             $directories     Our directories
- * @property \AppserverIo\Psr\Pms\ResourceLocatorInterface                     $resourceLocator Locator for the requested queues
- * @property \AppserverIo\Storage\GenericStackable                             $queues          Queues to manage
- * @property \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface $managerSettings The queue settings
+ * @property \AppserverIo\Psr\Application\ApplicationInterface                                          $application          The application to manage queues for
+ * @property array                                                                                      $directories          Our directories
+ * @property \AppserverIo\Psr\Pms\ResourceLocatorInterface                                              $resourceLocator      Locator for the requested queues
+ * @property \AppserverIo\Storage\GenericStackable                                                      $queues               Queues to manage
+ * @property \AppserverIo\Appserver\MessageQueue\QueueManagerSettingsInterface                          $managerSettings      The queue settings
  */
 class QueueManager extends AbstractManager implements QueueContextInterface, ManagerSettingsAwareInterface
 {
@@ -131,8 +135,12 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
     public function initialize(ApplicationInterface $application)
     {
 
-        // parse the object descriptors
-        $this->parseObjectDescriptors();
+        // add the application instance to the environment
+        Environment::singleton()->setAttribute(EnvironmentKeys::APPLICATION, $application);
+
+        // create s simulated request/session ID whereas session equals request ID
+        Environment::singleton()->setAttribute(EnvironmentKeys::SESSION_ID, $sessionId = SessionUtils::generateRandomString());
+        Environment::singleton()->setAttribute(EnvironmentKeys::REQUEST_ID, $sessionId);
 
         // register the message queues
         $this->registerMessageQueues($application);
@@ -147,14 +155,6 @@ class QueueManager extends AbstractManager implements QueueContextInterface, Man
      */
     public function registerMessageQueues(ApplicationInterface $application)
     {
-
-        // build up META-INF directory var
-        $metaInfDir = $this->getWebappPath() . DIRECTORY_SEPARATOR .'META-INF';
-
-        // check if we've found a valid directory
-        if (is_dir($metaInfDir) === false) {
-            return;
-        }
 
         // initialize the array for the creating the subdirectories
         $this->directories = new GenericStackable();

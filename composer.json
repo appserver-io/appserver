@@ -37,6 +37,7 @@
         "appserver-io/dnsserver": "2.0.*",
         "appserver-io/single-app": "3.0.*",
         "appserver-io/properties": "2.1.*",
+        "appserver-io/provisioning": "1.0.*",
         "appserver-io/concurrency": "0.3.*",
         "appserver-io/robo-tasks": "0.2.*",
         "appserver-io/description": "12.0.*",
