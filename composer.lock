@@ -1551,25 +1551,25 @@
         },
         {
             "name": "appserver-io/provisioning",
-            "version": "1.0.0",
+            "version": "1.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/provisioning.git",
-                "reference": "ce3807a4280f323f551170b727ed8c28c409f9bd"
+                "reference": "d7888de0443cd3ba9d7c0c0c6ce4bc6e998aa384"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/provisioning/zipball/ce3807a4280f323f551170b727ed8c28c409f9bd",
-                "reference": "ce3807a4280f323f551170b727ed8c28c409f9bd",
+                "url": "https://api.github.com/repos/appserver-io/provisioning/zipball/d7888de0443cd3ba9d7c0c0c6ce4bc6e998aa384",
+                "reference": "d7888de0443cd3ba9d7c0c0c6ce4bc6e998aa384",
                 "shasum": ""
             },
             "require": {
                 "appserver-io/configuration": "3.0.*",
                 "appserver-io/description": "12.0.*",
-                "php": ">=5.6.0"
+                "php": ">=5.4.0"
             },
             "require-dev": {
-                "appserver-io/build": "~2.0"
+                "appserver-io/build": "~1.0"
             },
             "type": "library",
             "autoload": {
@@ -1594,7 +1594,7 @@
             ],
             "description": "Provisioning for appserver.io applications.",
             "homepage": "https://github.com/appserver-io/provisioning",
-            "time": "2018-09-13T14:51:49+00:00"
+            "time": "2018-09-14T06:26:54+00:00"
         },
         {
             "name": "appserver-io/rmi",
