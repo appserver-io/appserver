@@ -20,7 +20,7 @@
         "appserver-io-psr/cli": "1.0.*",
         "appserver-io-psr/auth": "2.0.*",
         "appserver-io-psr/naming": "1.1.*",
-        "appserver-io-psr/servlet": "4.0.*",
+        "appserver-io-psr/servlet": "4.1.*",
         "appserver-io-psr/security": "1.4.*",
         "appserver-io-psr/deployment": "2.0.*",
         "appserver-io-psr/application": "1.5.*",
