@@ -664,6 +664,7 @@ class BeanManager extends AbstractEpbManager implements BeanContextInterface, Ma
     public function stop()
     {
         $this->getGarbageCollector()->stop();
+        $this->getStartupBeanTaskGarbageCollector()->stop();
         $this->getObjectFactory()->stop();
     }
 }
