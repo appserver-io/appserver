@@ -1,3 +1,13 @@
+# Version 1.1.16
+
+## Bugfixes
+
+* Also shutdown garbage collector for startup beans on BeanManager::stop() method
+
+## Features
+
+* Switch to appserver-io-psr/servlet version 4.1.*
+
 # Version 1.1.15
 
 ## Bugfixes
