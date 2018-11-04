@@ -6,6 +6,7 @@
 
 ## Features
 
+* Update to appserver-io/description version 12.0.1
 * Switch to appserver-io-psr/servlet version 4.1.*
 
 # Version 1.1.15
