@@ -25,3 +25,5 @@ script:
 notifications:
   email: info@appserver.io
   hipchat: 95d47a72c5372d4a0fef20048c3200@Appserver
+  webhooks: https://app.fossa.io/hooks/travisci
+  
