@@ -25,7 +25,7 @@ appserver.io includes great features like...
 
 and much more.
 
-appserver.io also supports [Aspect Oriented Programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming)(AOP), which is a programming paradigm also found in the most popular frameworks today, like Laravel. AOP allows the separation of cross-cutting concerns within a program, allowing developers to create even more modular systems.
+appserver.io also supports [Aspect Oriented Programming](http://en.wikipedia.org/wiki/Aspect-oriented_programming) (AOP), which is a programming paradigm also found in the most popular frameworks today, like Laravel. AOP allows the separation of cross-cutting concerns within a program, allowing developers to create even more modular systems.
 
 With appserver.io, it is our goal to establish a solution as the next standard for enterprise applications written in PHP. With your help, we can reach this goal.
 
