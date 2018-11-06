@@ -434,7 +434,7 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
      */
     public function replaceSystemProperties($pathname)
     {
-       return PropertiesUtil::singleton()->replacePropertiesInString($this->getSystemProperties(), file_get_contents($pathname));
+        return PropertiesUtil::singleton()->replacePropertiesInString($this->getSystemProperties(), file_get_contents($pathname));
     }
 
     /**

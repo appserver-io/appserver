@@ -1,3 +1,13 @@
+# Version 1.1.17
+
+## Bugfixes
+
+* Make sure overriding an references from a deployment descriptors will be taken into account
+
+## Features
+
+* Update to appserver-io/description version 12.0.2
+
 # Version 1.1.16
 
 ## Bugfixes
