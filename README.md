@@ -1,6 +1,7 @@
 # appserver.io, a PHP application server
 
 [![Gitter chat](https://badges.gitter.im/appserver-io/appserver.png)](https://gitter.im/appserver-io/appserver)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fappserver-io%2Fappserver.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fappserver-io%2Fappserver?ref=badge_shield)
  [![Build Status](https://img.shields.io/travis/appserver-io/appserver/master.svg?style=flat-square)](http://travis-ci.org/appserver-io/appserver)
  [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/g/appserver-io/appserver/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
  [![Code Coverage](https://img.shields.io/scrutinizer/coverage/g/appserver-io/appserver/master.svg?style=flat-square)](https://scrutinizer-ci.com/g/appserver-io/appserver/?branch=master)
@@ -1903,3 +1904,7 @@ Under Mac OS X you can simply delete the `/opt/appserver` folder that containers
 # External Links
 
 * All about appserver.io at [appserver.io](http://www.appserver.io)
+
+
+## License
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fappserver-io%2Fappserver.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fappserver-io%2Fappserver?ref=badge_large)
