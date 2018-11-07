@@ -1,3 +1,13 @@
+# Version 1.1.18
+
+## Bugfixes
+
+* Update to appserver-io/description version 12.0.3 (reset to version 12.0.0)
+
+## Features
+
+* None
+
 # Version 1.1.17
 
 ## Bugfixes
