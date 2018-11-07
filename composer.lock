@@ -1003,16 +1003,16 @@
         },
         {
             "name": "appserver-io/description",
-            "version": "12.0.2",
+            "version": "12.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/description.git",
-                "reference": "ee62091d3b450f098ccef08a345eb59d5f35fadb"
+                "reference": "00981ef30a0db054fe1279c8ed4452abe500688d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/description/zipball/ee62091d3b450f098ccef08a345eb59d5f35fadb",
-                "reference": "ee62091d3b450f098ccef08a345eb59d5f35fadb",
+                "url": "https://api.github.com/repos/appserver-io/description/zipball/00981ef30a0db054fe1279c8ed4452abe500688d",
+                "reference": "00981ef30a0db054fe1279c8ed4452abe500688d",
                 "shasum": ""
             },
             "require": {
@@ -1055,7 +1055,7 @@
             "keywords": [
                 "deployment descriptor implementation"
             ],
-            "time": "2018-11-06T19:36:03+00:00"
+            "time": "2018-11-07T19:24:21+00:00"
         },
         {
             "name": "appserver-io/dnsserver",
