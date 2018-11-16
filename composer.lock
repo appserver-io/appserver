@@ -1003,16 +1003,16 @@
         },
         {
             "name": "appserver-io/description",
-            "version": "12.0.3",
+            "version": "12.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/description.git",
-                "reference": "00981ef30a0db054fe1279c8ed4452abe500688d"
+                "reference": "53ec20feb5e7d152166a81dc4ca36174cbefb1e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/description/zipball/00981ef30a0db054fe1279c8ed4452abe500688d",
-                "reference": "00981ef30a0db054fe1279c8ed4452abe500688d",
+                "url": "https://api.github.com/repos/appserver-io/description/zipball/53ec20feb5e7d152166a81dc4ca36174cbefb1e3",
+                "reference": "53ec20feb5e7d152166a81dc4ca36174cbefb1e3",
                 "shasum": ""
             },
             "require": {
@@ -1055,7 +1055,7 @@
             "keywords": [
                 "deployment descriptor implementation"
             ],
-            "time": "2018-11-07T19:24:21+00:00"
+            "time": "2018-11-16T14:23:51+00:00"
         },
         {
             "name": "appserver-io/dnsserver",
@@ -1977,20 +1977,20 @@
         },
         {
             "name": "consolidation/annotated-command",
-            "version": "2.9.1",
+            "version": "2.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/annotated-command.git",
-                "reference": "4bdbb8fa149e1cc1511bd77b0bc4729fd66bccac"
+                "reference": "8e7d1a05230dc1159c751809e98b74f2b7f71873"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/4bdbb8fa149e1cc1511bd77b0bc4729fd66bccac",
-                "reference": "4bdbb8fa149e1cc1511bd77b0bc4729fd66bccac",
+                "url": "https://api.github.com/repos/consolidation/annotated-command/zipball/8e7d1a05230dc1159c751809e98b74f2b7f71873",
+                "reference": "8e7d1a05230dc1159c751809e98b74f2b7f71873",
                 "shasum": ""
             },
             "require": {
-                "consolidation/output-formatters": "^3.1.12",
+                "consolidation/output-formatters": "^3.4",
                 "php": ">=5.4.0",
                 "psr/log": "^1",
                 "symfony/console": "^2.8|^3|^4",
@@ -2025,7 +2025,7 @@
                 }
             ],
             "description": "Initialize Symfony Console commands from annotated command class methods.",
-            "time": "2018-09-19T17:47:18+00:00"
+            "time": "2018-11-15T01:46:18+00:00"
         },
         {
             "name": "consolidation/config",

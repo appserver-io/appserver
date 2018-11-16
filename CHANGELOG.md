@@ -1,3 +1,13 @@
+# Version 1.1.19
+
+## Bugfixes
+
+* Update to appserver-io/description version 12.0.4 to fix error when session inactivity timeout ingores session lifetime
+
+## Features
+
+* None
+
 # Version 1.1.18
 
 ## Bugfixes

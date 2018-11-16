@@ -184,9 +184,6 @@ class FilesystemSessionHandler extends AbstractSessionHandler
         // counter to store the number of removed sessions
         $sessionRemovalCount = 0;
 
-        // we want to know what inactivity timeout we've to check the sessions for
-        $inactivityTimeout = $this->getSessionSettings()->getInactivityTimeout();
-
         // prepare the expression to select the session files
         $globExpression = sprintf('%s*', $this->getSessionSavePath($this->getSessionSettings()->getSessionFilePrefix()));
 
@@ -195,11 +192,8 @@ class FilesystemSessionHandler extends AbstractSessionHandler
             // unpersist the session
             $session = $this->unpersist($pathname);
 
-            // load the sessions last activity timestamp
-            $lastActivitySecondsAgo = time() - $session->getLastActivityTimestamp();
-
             // query whether or not the session has been expired
-            if ($lastActivitySecondsAgo > $inactivityTimeout) {
+            if ($this->sessionTimedOut($session)) {
                 // if yes, delete the session + raise the session removal count
                 $this->delete($session->getId());
                 $sessionRemovalCount++;

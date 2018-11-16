@@ -115,9 +115,6 @@ class ApcSessionHandler extends AbstractSessionHandler
         // counter to store the number of removed sessions
         $sessionRemovalCount = 0;
 
-        // we want to know what inactivity timeout we've to check the sessions for
-        $inactivityTimeout = $this->getSessionSettings()->getInactivityTimeout();
-
         // iterate over the found session items
         foreach (new \ApcIterator(ApcSessionHandler::APCU_CACHE_TYPE_USER) as $item) {
             // initialize the key
@@ -126,11 +123,9 @@ class ApcSessionHandler extends AbstractSessionHandler
             extract($item);
             // unpersist the session
             $session = $this->unpersist($key);
-            // load the sessions last activity timestamp
-            $lastActivitySecondsAgo = time() - $session->getLastActivityTimestamp();
 
             // query whether or not the session has been expired
-            if ($lastActivitySecondsAgo > $inactivityTimeout) {
+            if ($this->sessionTimedOut($session)) {
                 // if yes, delete the file + raise the session removal count
                 $this->delete($key);
                 $sessionRemovalCount++;

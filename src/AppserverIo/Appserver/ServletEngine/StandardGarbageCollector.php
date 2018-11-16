@@ -173,42 +173,27 @@ class StandardGarbageCollector extends AbstractDaemonThread implements GarbageCo
 
         // if we can to collect the garbage, start collecting now
         if (rand(0, 100 * $factor) <= ($garbageCollectionProbability * $factor)) {
-            // we want to know what inactivity timeout we've to check the sessions for
-            $inactivityTimeout = $this->getSessionSettings()->getInactivityTimeout();
-            // debug log the inactivity timeout we collect the garbage for
-            if ($systemLogger = $this->getSystemLogger()) {
-                $systemLogger->debug(
-                    sprintf(
-                        'Now collect garbage for probability %f and inactivity timeout %d',
-                        $garbageCollectionProbability,
-                        $inactivityTimeout
-                    )
-                );
-            }
+            // load the session manager instance
+            /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $sessionManager */
+            $sessionManager = $this->getApplication()->search(SessionManagerInterface::IDENTIFIER);
+            // load the system logger instance
+            $systemLogger = $this->getSystemLogger();
+            // iterate over all session managers and remove the expired sessions
+            foreach ($sessionManager->getSessionHandlers() as $sessionHandlerName => $sessionHandler) {
+                try {
+                    if ($systemLogger && ($sessionRemovalCount = $sessionHandler->collectGarbage()) > 0) {
+                        $systemLogger->debug(
+                            sprintf(
+                                'Successfully removed %d session(s) by session handler \'%s\'',
+                                $sessionRemovalCount,
+                                $sessionHandlerName
+                            )
+                        );
+                    }
 
-            // iterate over all session and collect the session garbage
-            if ($inactivityTimeout !== 0) {
-                // load the session manager instance
-                /** @var \AppserverIo\Appserver\ServletEngine\SessionManagerInterface $sessionManager */
-                $sessionManager = $this->getApplication()->search(SessionManagerInterface::IDENTIFIER);
-
-                // iterate over all session managers and remove the expired sessions
-                foreach ($sessionManager->getSessionHandlers() as $sessionHandlerName => $sessionHandler) {
-                    try {
-                        if ($systemLogger && ($sessionRemovalCount = $sessionHandler->collectGarbage()) > 0) {
-                            $systemLogger->debug(
-                                sprintf(
-                                    'Successfully removed %d session(s) by session handler \'%s\'',
-                                    $sessionRemovalCount,
-                                    $sessionHandlerName
-                                )
-                            );
-                        }
-
-                    } catch (\Exception $e) {
-                        if ($systemLogger) {
-                            $systemLogger->error($e->__toString());
-                        }
+                } catch (\Exception $e) {
+                    if ($systemLogger) {
+                        $systemLogger->error($e->__toString());
                     }
                 }
             }
