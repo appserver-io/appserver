@@ -147,4 +147,31 @@ abstract class AbstractSessionHandler implements SessionHandlerInterface
         // returns the initialized servlet session instance
         return $servletSession;
     }
+
+    /**
+     * Querys whether or not the passed session has timed out.
+     *
+     * @param \AppserverIo\Psr\Servlet\ServletSessionInterface $session The session to query for
+     *
+     * @return boolean TRUE if the session has timed out, else FALSE
+     */
+    protected function sessionTimedOut(ServletSessionInterface $session)
+    {
+
+        // we want to know what inactivity timeout we've to check the sessions for
+        $inactivityTimeout = $this->getSessionSettings()->getInactivityTimeout();
+
+        // load the sessions last activity timestamp
+        $lastActivitySecondsAgo = time() - $session->getLastActivityTimestamp();
+
+        // query whether or not an inactivity timeout has been set
+        if ($inactivityTimeout < 1) {
+            // if NOT, the inactivity timeout has to be higher than
+            // the last activity timestamp to avoid session timeout
+            $inactivityTimeout = $lastActivitySecondsAgo + 1;
+        }
+
+        // return TRUE it the last ativity timeout OR the session lifetime has been reached
+        return $lastActivitySecondsAgo > $inactivityTimeout || $session->getLifetime() < time();
+    }
 }

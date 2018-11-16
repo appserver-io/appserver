@@ -358,47 +358,47 @@ class DefaultSessionSettings extends GenericStackable implements SessionSettings
 
         // check if the context has his own session parameters
         if ($context->hasSessionParameters() === true) {
-            if (($garbageCollectionProbability = $context->getSessionParameter(ServletSessionInterface::GARBAGE_COLLECTION_PROBABILITY)) != null) {
+            if (($garbageCollectionProbability = $context->getSessionParameter(ServletSessionInterface::GARBAGE_COLLECTION_PROBABILITY)) !== null) {
                 $this->setGarbageCollectionProbability((float) $garbageCollectionProbability);
             }
 
-            if (($sessionName = $context->getSessionParameter(ServletSessionInterface::SESSION_NAME)) != null) {
+            if (($sessionName = $context->getSessionParameter(ServletSessionInterface::SESSION_NAME)) !== null) {
                 $this->setSessionName($sessionName);
             }
 
-            if (($sessionFilePrefix = $context->getSessionParameter(ServletSessionInterface::SESSION_FILE_PREFIX)) != null) {
+            if (($sessionFilePrefix = $context->getSessionParameter(ServletSessionInterface::SESSION_FILE_PREFIX)) !== null) {
                 $this->setSessionFilePrefix($sessionFilePrefix);
             }
 
-            if (($sessionSavePath = $context->getSessionParameter(ServletSessionInterface::SESSION_SAVE_PATH)) != null) {
+            if (($sessionSavePath = $context->getSessionParameter(ServletSessionInterface::SESSION_SAVE_PATH)) !== null) {
                 $this->setSessionSavePath($sessionSavePath);
             }
 
-            if (($sessionMaximumAge = $context->getSessionParameter(ServletSessionInterface::SESSION_MAXIMUM_AGE)) != null) {
+            if (($sessionMaximumAge = $context->getSessionParameter(ServletSessionInterface::SESSION_MAXIMUM_AGE)) !== null) {
                 $this->setSessionMaximumAge((integer) $sessionMaximumAge);
             }
 
-            if (($sessionInactivityTimeout = $context->getSessionParameter(ServletSessionInterface::SESSION_INACTIVITY_TIMEOUT)) != null) {
+            if (($sessionInactivityTimeout = $context->getSessionParameter(ServletSessionInterface::SESSION_INACTIVITY_TIMEOUT)) !== null) {
                 $this->setInactivityTimeout((integer) $sessionInactivityTimeout);
             }
 
-            if (($sessionCookieLifetime = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_LIFETIME)) != null) {
+            if (($sessionCookieLifetime = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_LIFETIME)) !== null) {
                 $this->setSessionCookieLifetime((integer) $sessionCookieLifetime);
             }
 
-            if (($sessionCookieDomain = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_DOMAIN)) != null) {
+            if (($sessionCookieDomain = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_DOMAIN)) !== null) {
                 $this->setSessionCookieDomain($sessionCookieDomain);
             }
 
-            if (($sessionCookiePath = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_PATH)) != null) {
+            if (($sessionCookiePath = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_PATH)) !== null) {
                 $this->setSessionCookiePath($sessionCookiePath);
             }
 
-            if (($sessionCookieSecure = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_SECURE)) != null) {
+            if (($sessionCookieSecure = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_SECURE)) !== null) {
                 $this->setSessionCookieSecure((boolean) $sessionCookieSecure);
             }
 
-            if (($sessionCookieHttpOnly = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_HTTP_ONLY)) != null) {
+            if (($sessionCookieHttpOnly = $context->getSessionParameter(ServletSessionInterface::SESSION_COOKIE_HTTP_ONLY)) !== null) {
                 $this->setSessionCookieHttpOnly((boolean) $sessionCookieHttpOnly);
             }
         }
