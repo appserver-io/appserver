@@ -998,6 +998,9 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
                 $profileLogger->appendThreadContext('application');
             }
 
+            // invoke the application's managers postStartup() lifecycle callbacks
+            $this->postStartupManagers();
+
             // the application has successfully been initialized
             $this->synchronized(function ($self) {
                 $self->applicationState = ApplicationStateKeys::get(ApplicationStateKeys::INITIALIZATION_SUCCESSFUL);
@@ -1005,9 +1008,6 @@ class Application extends \Thread implements ApplicationInterface, DirectoryAwar
 
             // log a message that we has successfully been connected now
             \info(sprintf('%s has successfully been connected', $this->getName()));
-
-            // invoke the application's managers postStartup() lifecycle callbacks
-            $this->postStartupManagers();
 
             // initialize the flag to keep the application running
             $keepRunning = true;
