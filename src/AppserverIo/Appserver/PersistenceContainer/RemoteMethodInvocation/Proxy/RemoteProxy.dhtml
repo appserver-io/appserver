@@ -8,7 +8,7 @@ echo '<?php';
 namespace <?php echo $reflectionClass->getNamespaceName() ?>;
 
 class <?php echo $this->generateRemoteProxyClassName($reflectionClass); ?> extends \AppserverIo\RemoteMethodInvocation\RemoteProxy<?php if ($reflectionClass->getInterfaceNames()) { ?> implements <?php echo $this->generateImplements($reflectionClass); } ?> {
-    <?php foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) { ?>public function <?php echo $reflectionMethod->getName() ?>(<?php echo $this->generateMethodSignature($reflectionMethod) ?>) {
+    <?php foreach ($reflectionClass->getMethods(\ReflectionMethod::IS_PUBLIC) as $reflectionMethod) { ?><?php if ($reflectionMethod->isConstructor()) { continue; } ?>public function <?php echo $reflectionMethod->getName() ?>(<?php echo $this->generateMethodSignature($reflectionMethod) ?>) {
         return $this->__call('<?php echo $reflectionMethod->getName() ?>', array(<?php echo $this->generateMethodParams($reflectionMethod) ?>));
     }<?php } ?>
 }
