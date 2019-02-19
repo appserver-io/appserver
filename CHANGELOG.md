@@ -1,3 +1,14 @@
+# Version 1.1.20
+
+## Bugfixes
+
+* Fixed issue with invald constructor generation for bean proxies
+* Fixed invalid order of hook invocation when initializing application
+
+## Features
+
+* None
+
 # Version 1.1.19
 
 ## Bugfixes
