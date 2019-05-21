@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\Ldap\Symfony;
 
 use Symfony\Component\Ldap\LdapInterface;
 use AppserverIo\Ldap\LdapClientInterface;
+use Symfony\Component\Ldap\Entry;
 
 /**
  * Symfony based LDAP client implementation.
@@ -58,6 +59,7 @@ class LdapClient implements LdapClientInterface, LdapInterface
      * @param string $dn       A LDAP dn
      * @param string $password A password
      *
+     * @return void
      * @throws \Symfony\Component\Ldap\Exception\ConnectionException if dn / password could not be bound
      */
     public function bind($dn = null, $password = null)
@@ -68,10 +70,11 @@ class LdapClient implements LdapClientInterface, LdapInterface
     /**
      * Queries a ldap server for entries matching the given criteria.
      *
-     * @param string $dn
-     * @param string $query
-     * @param array  $options
+     * @param string $dn      The DN to query
+     * @param string $query   The query itself
+     * @param array  $options The query options
      *
+     * @return \Symfony\Component\Ldap\Adapter\CollectionInterface|\Symfony\Component\Ldap\Entry[] The query result
      * @throws \Symfony\Component\Ldap\Exception\ConnectionException
      */
     public function query($dn, $query, array $options = array())
@@ -90,11 +93,11 @@ class LdapClient implements LdapClientInterface, LdapInterface
     /**
      * Escape a string for use in an LDAP filter or DN.
      *
-     * @param string $subject
-     * @param string $ignore
-     * @param int    $flags
+     * @param string $subject The subject to escape
+     * @param string $ignore  Do not ignore
+     * @param int    $flags   The flags
      *
-     * @return string
+     * @return string The escaped string
      */
     public function escape($subject, $ignore = '', $flags = 0)
     {
