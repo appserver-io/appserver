@@ -337,6 +337,7 @@ class Provider extends GenericStackable implements ProviderInterface
      * @param \AppserverIo\Lang\Reflection\ReflectionMethod $reflectionMethod The reflection method to load the dependencies for
      *
      * @return array The array with the initialized dependencies
+     * @throws \Exception Is thrown, if no DI type definition for the passed reference is available
      */
     public function loadDependenciesByReflectionMethod(ReflectionMethod $reflectionMethod)
     {
@@ -353,7 +354,14 @@ class Provider extends GenericStackable implements ProviderInterface
         // iterate over the constructor parameters
         /** @var \AppserverIo\Lang\Reflection\ParameterInterface $reflectionParameter */
         foreach ($reflectionMethod->getParameters() as $reflectionParameter) {
-            $dependencies[] = $this->get($objectManager->getPreference($reflectionParameter->getType()));
+            // try to lookup the beans for the parameters
+            if ($this->has($id = $objectManager->getPreference($reflectionParameter->getType()))) {
+                $dependencies[] = $this->get($id);
+            } elseif ($reflectionParameter->toPhpReflectionParameter()->allowsNull()) {
+                continue;
+            } else {
+                throw new \Exception(sprintf('Can\'t lookup bean "%s" nor find a DI type definition', $id));
+            }
         }
 
         // return the initialized dependencies

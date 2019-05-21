@@ -227,6 +227,16 @@ class PersistenceManager extends AbstractManager implements PersistenceContextIn
                         $persistenceUnitNode
                     );
 
+        // load the datasource name
+        $datasourceName = $persistenceUnitNode->getDatasource()->getName();
+
+        // create a refrence on the datasource name in the application scope
+        $application->getNamingDirectory()
+                     ->bindReference(
+                         sprintf('php:global/%s/ds/%s', $application->getUniqueName(), $datasourceName),
+                         sprintf('php:env/%s/ds/%s', $application->getContainerName(), $datasourceName)
+                     );
+
         // register the entity manager's configuration in the persistence manager
         $this->addEntityManagerName($lookupName);
 
