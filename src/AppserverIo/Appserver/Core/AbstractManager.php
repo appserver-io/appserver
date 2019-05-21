@@ -199,6 +199,16 @@ abstract class AbstractManager extends GenericStackable implements ManagerInterf
     }
 
     /**
+     * Returns the manager's data container.
+     *
+     * @return \AppserverIo\Storage\StorageInterface The data container
+     */
+    public function getAttributes()
+    {
+        return $this->data;
+    }
+
+    /**
      * Returns a new reflection class intance for the passed class name.
      *
      * @param string $className The class name to return the reflection class instance for

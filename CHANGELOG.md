@@ -1,3 +1,13 @@
+# Version 1.1.21
+
+## Bugfixes
+
+* Fixed #1120
+
+## Features
+
+* Add Doctrine like LDAP integration (see https://github.com/appserver-io/ldap)
+
 # Version 1.1.20
 
 ## Bugfixes
