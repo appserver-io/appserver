@@ -3,6 +3,7 @@
 ## Bugfixes
 
 * Fixed concurrent session errors
+* Update to appserver-io/ldap version 2.0.1
 
 ## Features
 
