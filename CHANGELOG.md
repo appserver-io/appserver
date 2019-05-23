@@ -1,3 +1,13 @@
+# Version 1.1.22
+
+## Bugfixes
+
+* Fixed concurrent session errors
+
+## Features
+
+* None
+
 # Version 1.1.21
 
 ## Bugfixes

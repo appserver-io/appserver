@@ -109,21 +109,57 @@ class FilesystemSessionHandler extends AbstractSessionHandler
         $marshalledSession = $this->marshall($session);
 
         // decode the session from the filesystem
-        $fh = fopen($sessionFilename, 'w+');
+        $fh = fopen($sessionFilename, 'c');
 
         // try to lock the session file
         if (flock($fh, LOCK_EX) === false) {
-            throw new SessionCanNotBeSavedException(sprintf('Can\'t get lock to save session data to file "%s"', $sessionFilename));
+            throw new SessionCanNotBeSavedException(
+                sprintf(
+                    'Can\'t get lock to save session data to file "%s"',
+                    $sessionFilename
+                )
+            );
+        }
+
+        // try to truncate the session file
+        if (ftruncate($fh, 0) === false) {
+            throw new SessionCanNotBeSavedException(
+                sprintf(
+                    'Can\'t truncate session file "%s"',
+                    $sessionFilename
+                )
+            );
         }
 
         // finally try to write the session data to the file
         if (fwrite($fh, $marshalledSession) === false) {
-            throw new SessionCanNotBeSavedException(sprintf('Session with ID "%s" can\'t be saved', $session->getId()));
+            throw new SessionCanNotBeSavedException(
+                sprintf(
+                    'Session with ID "%s" can\'t be saved to file "%s"',
+                    $session->getId(),
+                    $sessionFilename
+                )
+            );
         }
 
         // try to unlock the session file
         if (flock($fh, LOCK_UN) === false) {
-            throw new SessionCanNotBeSavedException(sprintf('Can\'t unlock session file "%s" after saving data', $sessionFilename));
+            throw new SessionCanNotBeSavedException(
+                sprintf(
+                    'Can\'t unlock session file "%s" after saving data',
+                    $sessionFilename
+                )
+            );
+        }
+
+        // try to close the session file
+        if (fclose($fh) === false) {
+            throw new SessionCanNotBeSavedException(
+                sprintf(
+                    'Can\'t close session file "%s" after saving data',
+                    $sessionFilename
+                )
+            );
         }
     }
 
@@ -151,7 +187,12 @@ class FilesystemSessionHandler extends AbstractSessionHandler
 
         // try to lock the session file
         if (flock($fh, LOCK_EX) === false) {
-            throw new SessionDataNotReadableException(sprintf('Can\'t get lock to load session data from file "%s"', $pathname));
+            throw new SessionDataNotReadableException(
+                sprintf(
+                    'Can\'t get lock to load session data from file "%s"',
+                    $pathname
+                )
+            );
         }
 
         // read the marshalled session data from the file
@@ -161,12 +202,22 @@ class FilesystemSessionHandler extends AbstractSessionHandler
 
         // try to unlock the session file
         if (flock($fh, LOCK_UN) === false) {
-            throw new SessionDataNotReadableException(sprintf('Can\'t unlock session file "%s" after reading data', $pathname));
+            throw new SessionDataNotReadableException(
+                sprintf(
+                    'Can\'t unlock session file "%s" after reading data',
+                    $pathname
+                )
+            );
         }
 
         // query whether or not the session has been unmarshalled successfully
         if ($marshalled === null) {
-            throw new SessionDataNotReadableException(sprintf('Can\'t load any session data from file %s', $pathname));
+            throw new SessionDataNotReadableException(
+                sprintf(
+                    'Can\'t load any session data from file %s',
+                    $pathname
+                )
+            );
         }
 
         // unmarshall and return the session data
