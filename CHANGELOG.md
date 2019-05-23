@@ -1,3 +1,14 @@
+# Version 1.1.22
+
+## Bugfixes
+
+* Fixed concurrent session errors
+* Update to appserver-io/ldap version 2.0.1
+
+## Features
+
+* None
+
 # Version 1.1.21
 
 ## Bugfixes

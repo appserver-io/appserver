@@ -1353,16 +1353,16 @@
         },
         {
             "name": "appserver-io/ldap",
-            "version": "2.0.0",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/ldap.git",
-                "reference": "8122d321021cef5a167ca334d019ad3712592df1"
+                "reference": "f6d5ce3577ce565d36d4e675e5f2699630d239bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/ldap/zipball/8122d321021cef5a167ca334d019ad3712592df1",
-                "reference": "8122d321021cef5a167ca334d019ad3712592df1",
+                "url": "https://api.github.com/repos/appserver-io/ldap/zipball/f6d5ce3577ce565d36d4e675e5f2699630d239bf",
+                "reference": "f6d5ce3577ce565d36d4e675e5f2699630d239bf",
                 "shasum": ""
             },
             "require": {
@@ -1370,7 +1370,7 @@
                 "appserver-io-psr/di": "3.0.*",
                 "appserver-io-psr/epb": "7.0.*",
                 "appserver-io/description": "12.0.*",
-                "php": ">=5.6.0 < 7.0.0"
+                "php": ">=5.5.0 < 7.0.0"
             },
             "require-dev": {
                 "appserver-io/build": "~2.0",
@@ -1402,7 +1402,7 @@
             "keywords": [
                 "ldap php application server"
             ],
-            "time": "2019-05-21T19:02:09+00:00"
+            "time": "2019-05-21T20:44:13+00:00"
         },
         {
             "name": "appserver-io/logger",
