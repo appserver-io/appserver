@@ -134,6 +134,11 @@ class ConnectionUtil
         if ($databasePortNode = $databaseNode->getDatabasePort()) {
             $connectionParameters['port'] = $databasePortNode->getNodeValue()->__toString();
         }
+        
+	// adds the optional encryption option
+        if ($encryptionNode = $databaseNode->getEncryption()) {
+            $connectionParameters['encryption'] = $encryptionNode->getNodeValue()->__toString();
+        }
 
         // add charset, if specified
         if ($charsetNode = $databaseNode->getCharset()) {
