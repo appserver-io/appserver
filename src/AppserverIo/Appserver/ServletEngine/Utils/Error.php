@@ -40,15 +40,23 @@ class Error extends \AppserverIo\Appserver\Core\Utilities\Error implements Error
     protected $statusCode;
 
     /**
+     * The original exception instance.
+     *
+     * @var \Exception|null
+     */
+    protected $exception;
+
+    /**
      * Initializes the error with the passed values.
      *
-     * @param integer $type       The error type
-     * @param string  $message    The error message
-     * @param string  $file       The name of the file where the error has been triggered
-     * @param integer $line       The line in the file where the error has been triggered
-     * @param integer $statusCode The HTTP status code that has to be send back with the response
+     * @param integer         $type       The error type
+     * @param string          $message    The error message
+     * @param string          $file       The name of the file where the error has been triggered
+     * @param integer         $line       The line in the file where the error has been triggered
+     * @param integer         $statusCode The HTTP status code that has to be send back with the response
+     * @param \Exception|null $exception  The original exception instance
      */
-    public function __construct($type, $message, $file, $line, $statusCode = 0)
+    public function __construct($type, $message, $file, $line, $statusCode = 0, $exception = null)
     {
 
         // invoke the parent method
@@ -56,6 +64,9 @@ class Error extends \AppserverIo\Appserver\Core\Utilities\Error implements Error
 
         // initialize the status code
         $this->statusCode = $statusCode;
+
+        // initialize the exception
+        $this->exception = $exception;
     }
 
     /**
@@ -66,5 +77,15 @@ class Error extends \AppserverIo\Appserver\Core\Utilities\Error implements Error
     public function getStatusCode()
     {
         return $this->statusCode;
+    }
+
+    /**
+     * Returns the exception instance.
+     *
+     * @return \Exception|null
+     */
+    public function getException()
+    {
+        return $this->exception;
     }
 }
