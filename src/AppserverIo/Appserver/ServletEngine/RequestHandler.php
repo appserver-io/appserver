@@ -186,6 +186,7 @@ class RequestHandler extends \Thread
             }
 
         } catch (\Exception $e) {
+            ErrorUtil::singleton()->flattenExceptionBacktrace($e);
             $this->addError(ErrorUtil::singleton()->fromException($e));
         }
 

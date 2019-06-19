@@ -178,4 +178,50 @@ class ErrorUtil extends \AppserverIo\Appserver\Core\Utilities\ErrorUtil
             }
         }
     }
+
+    /**
+     * Flattens an exception in order to enable serialization.
+     *
+     * @param \Exception $exception The exception to flatten
+     *
+     * @return void
+     * @throws \ReflectionException
+     */
+    public function flattenExceptionBacktrace(\Exception $exception)
+    {
+        $traceProperty = (new \ReflectionClass('Exception'))->getProperty('trace');
+        $traceProperty->setAccessible(true);
+        do {
+            $trace = $traceProperty->getValue($exception);
+            foreach ($trace as &$call) {
+                array_walk_recursive($call['args'], array($this, 'flatten'));
+            }
+            $traceProperty->setValue($exception, $trace);
+        } while ($exception = $exception->getPrevious());
+        $traceProperty->setAccessible(false);
+    }
+
+    /**
+     * Flattens a value reference.
+     *
+     * @param mixed $value The reference of the value to flatten
+     * @param mixed $key   The key parameter
+     *
+     * @return void
+     * @throws \ReflectionException
+     */
+    public function flatten(&$value, $key) {
+        if ($value instanceof \Closure) {
+            $closureReflection = new \ReflectionFunction($value);
+            $value = sprintf(
+                '(Closure at %s:%s)',
+                $closureReflection->getFileName(),
+                $closureReflection->getStartLine()
+            );
+        } elseif (is_object($value)) {
+            $value = sprintf('object(%s)', get_class($value));
+        } elseif (is_resource($value)) {
+            $value = sprintf('resource(%s)', get_resource_type($value));
+        }
+    }
 }
