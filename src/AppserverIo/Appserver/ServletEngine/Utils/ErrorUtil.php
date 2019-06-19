@@ -51,6 +51,7 @@ class ErrorUtil extends \AppserverIo\Appserver\Core\Utilities\ErrorUtil
      */
     public function fromException(\Exception $e)
     {
+        ErrorUtil::singleton()->flattenExceptionBacktrace($e);
         return new Error(E_EXCEPTION, $e->__toString(), $e->getFile(), $e->getLine(), $e->getCode() ? $e->getCode() : 500, $e);
     }
 
