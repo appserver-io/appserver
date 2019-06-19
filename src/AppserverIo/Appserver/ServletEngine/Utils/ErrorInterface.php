@@ -38,4 +38,11 @@ interface ErrorInterface extends \AppserverIo\Appserver\Core\Utilities\ErrorInte
      * @return integer The HTTP status code
      */
     public function getStatusCode();
+
+    /**
+     * Returns the exception instance.
+     *
+     * @return \Exception|null
+     */
+    public function getException();
 }
