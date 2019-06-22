@@ -1,3 +1,19 @@
+# Version 1.1.23
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Extend error handling with exception support
+* Add encryption support for LDAP functionality
+* Update to appserver-io/ldap version 3.0.*
+* Update to appserver-io/description version 33.0.*
+* Update to appserver-io/provisioning version 2.0.*
+* Update to appserver-io-psr/cli version 2.0.*
+* Update to appserver-io-psr/application-server version 2.0.*
+
 # Version 1.1.22
 
 ## Bugfixes

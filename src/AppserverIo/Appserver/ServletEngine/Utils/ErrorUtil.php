@@ -211,7 +211,8 @@ class ErrorUtil extends \AppserverIo\Appserver\Core\Utilities\ErrorUtil
      * @return void
      * @throws \ReflectionException
      */
-    public function flatten(&$value, $key) {
+    public function flatten(&$value, $key)
+    {
         if ($value instanceof \Closure) {
             $closureReflection = new \ReflectionFunction($value);
             $value = sprintf(

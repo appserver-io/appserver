@@ -82,7 +82,7 @@ class Error extends \AppserverIo\Appserver\Core\Utilities\Error implements Error
     /**
      * Returns the exception instance.
      *
-     * @return \Exception|null
+     * @return \Exception|null The exception instance
      */
     public function getException()
     {
