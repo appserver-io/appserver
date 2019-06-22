@@ -42,7 +42,7 @@ interface ErrorInterface extends \AppserverIo\Appserver\Core\Utilities\ErrorInte
     /**
      * Returns the exception instance.
      *
-     * @return \Exception|null
+     * @return \Exception|null The exception instance
      */
     public function getException();
 }

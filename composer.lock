@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d02991b61f32fe8c9c4247c0046fdbb",
+    "content-hash": "b47693de1dfe5a44faa8a25896bb8817",
     "packages": [
         {
             "name": "appserver-io-psr/application",
@@ -57,16 +57,16 @@
         },
         {
             "name": "appserver-io-psr/application-server",
-            "version": "1.0.0",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io-psr/application-server.git",
-                "reference": "70cc99f408cccc8a05250635fe8c6da36b46cfea"
+                "reference": "fe0e8118603552bf2df848de15b035465103c04a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io-psr/application-server/zipball/70cc99f408cccc8a05250635fe8c6da36b46cfea",
-                "reference": "70cc99f408cccc8a05250635fe8c6da36b46cfea",
+                "url": "https://api.github.com/repos/appserver-io-psr/application-server/zipball/fe0e8118603552bf2df848de15b035465103c04a",
+                "reference": "fe0e8118603552bf2df848de15b035465103c04a",
                 "shasum": ""
             },
             "require": {
@@ -110,7 +110,7 @@
                 "php",
                 "server"
             ],
-            "time": "2018-05-17T20:12:13+00:00"
+            "time": "2019-06-21T15:02:00+00:00"
         },
         {
             "name": "appserver-io-psr/auth",
@@ -170,21 +170,21 @@
         },
         {
             "name": "appserver-io-psr/cli",
-            "version": "1.0.0",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io-psr/cli.git",
-                "reference": "e6cb9c2d808982da85e23744f1c76f683c4c1655"
+                "reference": "de663f1e5a1e69a9af50b25479648ad7ad0e9b55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io-psr/cli/zipball/e6cb9c2d808982da85e23744f1c76f683c4c1655",
-                "reference": "e6cb9c2d808982da85e23744f1c76f683c4c1655",
+                "url": "https://api.github.com/repos/appserver-io-psr/cli/zipball/de663f1e5a1e69a9af50b25479648ad7ad0e9b55",
+                "reference": "de663f1e5a1e69a9af50b25479648ad7ad0e9b55",
                 "shasum": ""
             },
             "require": {
                 "appserver-io-psr/application": "~1.0",
-                "appserver-io-psr/application-server": "~1.0",
+                "appserver-io-psr/application-server": "~2.0",
                 "php": ">=5.4.0"
             },
             "require-dev": {
@@ -219,7 +219,7 @@
                 "interface",
                 "php"
             ],
-            "time": "2018-05-17T20:42:00+00:00"
+            "time": "2019-06-21T15:37:27+00:00"
         },
         {
             "name": "appserver-io-psr/context",
@@ -1003,20 +1003,20 @@
         },
         {
             "name": "appserver-io/description",
-            "version": "12.0.4",
+            "version": "13.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/description.git",
-                "reference": "53ec20feb5e7d152166a81dc4ca36174cbefb1e3"
+                "reference": "6d922cdd2a22c42ba267646e199b68e1aa83ac9f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/description/zipball/53ec20feb5e7d152166a81dc4ca36174cbefb1e3",
-                "reference": "53ec20feb5e7d152166a81dc4ca36174cbefb1e3",
+                "url": "https://api.github.com/repos/appserver-io/description/zipball/6d922cdd2a22c42ba267646e199b68e1aa83ac9f",
+                "reference": "6d922cdd2a22c42ba267646e199b68e1aa83ac9f",
                 "shasum": ""
             },
             "require": {
-                "appserver-io-psr/application-server": "1.0.*",
+                "appserver-io-psr/application-server": "2.0.*",
                 "appserver-io-psr/deployment": "~2.0",
                 "appserver-io-psr/epb": "~7.0",
                 "appserver-io-psr/servlet": "~4.0",
@@ -1055,7 +1055,7 @@
             "keywords": [
                 "deployment descriptor implementation"
             ],
-            "time": "2018-11-16T14:23:51+00:00"
+            "time": "2019-06-21T15:24:31+00:00"
         },
         {
             "name": "appserver-io/dnsserver",
@@ -1353,23 +1353,23 @@
         },
         {
             "name": "appserver-io/ldap",
-            "version": "2.0.1",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/ldap.git",
-                "reference": "f6d5ce3577ce565d36d4e675e5f2699630d239bf"
+                "reference": "d53ee865665376278bd33122090b8ef6b26b5c57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/ldap/zipball/f6d5ce3577ce565d36d4e675e5f2699630d239bf",
-                "reference": "f6d5ce3577ce565d36d4e675e5f2699630d239bf",
+                "url": "https://api.github.com/repos/appserver-io/ldap/zipball/d53ee865665376278bd33122090b8ef6b26b5c57",
+                "reference": "d53ee865665376278bd33122090b8ef6b26b5c57",
                 "shasum": ""
             },
             "require": {
                 "appserver-io-psr/application": "1.5.*",
                 "appserver-io-psr/di": "3.0.*",
                 "appserver-io-psr/epb": "7.0.*",
-                "appserver-io/description": "12.0.*",
+                "appserver-io/description": "13.0.*",
                 "php": ">=5.5.0 < 7.0.0"
             },
             "require-dev": {
@@ -1402,7 +1402,7 @@
             "keywords": [
                 "ldap php application server"
             ],
-            "time": "2019-05-21T20:44:13+00:00"
+            "time": "2019-06-21T16:02:10+00:00"
         },
         {
             "name": "appserver-io/logger",
@@ -1604,21 +1604,21 @@
         },
         {
             "name": "appserver-io/provisioning",
-            "version": "1.0.1",
+            "version": "2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/provisioning.git",
-                "reference": "d7888de0443cd3ba9d7c0c0c6ce4bc6e998aa384"
+                "reference": "ee099816ded1af73ce09e922113233952f55fee3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/provisioning/zipball/d7888de0443cd3ba9d7c0c0c6ce4bc6e998aa384",
-                "reference": "d7888de0443cd3ba9d7c0c0c6ce4bc6e998aa384",
+                "url": "https://api.github.com/repos/appserver-io/provisioning/zipball/ee099816ded1af73ce09e922113233952f55fee3",
+                "reference": "ee099816ded1af73ce09e922113233952f55fee3",
                 "shasum": ""
             },
             "require": {
                 "appserver-io/configuration": "3.0.*",
-                "appserver-io/description": "12.0.*",
+                "appserver-io/description": "13.0.*",
                 "php": ">=5.4.0"
             },
             "require-dev": {
@@ -1647,7 +1647,7 @@
             ],
             "description": "Provisioning for appserver.io applications.",
             "homepage": "https://github.com/appserver-io/provisioning",
-            "time": "2018-09-14T06:26:54+00:00"
+            "time": "2019-06-21T15:53:00+00:00"
         },
         {
             "name": "appserver-io/rmi",
@@ -2297,16 +2297,16 @@
         },
         {
             "name": "consolidation/output-formatters",
-            "version": "3.4.1",
+            "version": "3.5.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/consolidation/output-formatters.git",
-                "reference": "0881112642ad9059071f13f397f571035b527cb9"
+                "reference": "99ec998ffb697e0eada5aacf81feebfb13023605"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/0881112642ad9059071f13f397f571035b527cb9",
-                "reference": "0881112642ad9059071f13f397f571035b527cb9",
+                "url": "https://api.github.com/repos/consolidation/output-formatters/zipball/99ec998ffb697e0eada5aacf81feebfb13023605",
+                "reference": "99ec998ffb697e0eada5aacf81feebfb13023605",
                 "shasum": ""
             },
             "require": {
@@ -2394,7 +2394,7 @@
                 }
             ],
             "description": "Format text by applying transformations provided by plug-in formatters.",
-            "time": "2019-03-14T03:45:44+00:00"
+            "time": "2019-05-30T23:16:01+00:00"
         },
         {
             "name": "consolidation/robo",
@@ -3116,20 +3116,23 @@
         },
         {
             "name": "doctrine/lexer",
-            "version": "v1.0.1",
+            "version": "1.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/lexer.git",
-                "reference": "83893c552fd2045dd78aef794c31e694c37c0b8c"
+                "reference": "1febd6c3ef84253d7c815bed85fc622ad207a9f8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/lexer/zipball/83893c552fd2045dd78aef794c31e694c37c0b8c",
-                "reference": "83893c552fd2045dd78aef794c31e694c37c0b8c",
+                "url": "https://api.github.com/repos/doctrine/lexer/zipball/1febd6c3ef84253d7c815bed85fc622ad207a9f8",
+                "reference": "1febd6c3ef84253d7c815bed85fc622ad207a9f8",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^4.5"
             },
             "type": "library",
             "extra": {
@@ -3138,8 +3141,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Doctrine\\Common\\Lexer\\": "lib/"
+                "psr-4": {
+                    "Doctrine\\Common\\Lexer\\": "lib/Doctrine/Common/Lexer"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -3160,13 +3163,16 @@
                     "email": "schmittjoh@gmail.com"
                 }
             ],
-            "description": "Base library for a lexer that can be used in Top-Down, Recursive Descent Parsers.",
-            "homepage": "http://www.doctrine-project.org",
+            "description": "PHP Doctrine Lexer parser library that can be used in Top-Down, Recursive Descent Parsers.",
+            "homepage": "https://www.doctrine-project.org/projects/lexer.html",
             "keywords": [
+                "annotations",
+                "docblock",
                 "lexer",
-                "parser"
+                "parser",
+                "php"
             ],
-            "time": "2014-09-09T13:34:57+00:00"
+            "time": "2019-06-08T11:03:04+00:00"
         },
         {
             "name": "doctrine/orm",
@@ -4805,7 +4811,7 @@
         },
         {
             "name": "symfony/options-resolver",
-            "version": "v3.4.27",
+            "version": "v3.4.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/options-resolver.git",
@@ -6568,16 +6574,16 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "1.8.0",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "4ba436b55987b4bf311cb7c6ba82aa528aac0a06"
+                "reference": "1927e75f4ed19131ec9bcc3b002e07fb1173ee76"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/4ba436b55987b4bf311cb7c6ba82aa528aac0a06",
-                "reference": "4ba436b55987b4bf311cb7c6ba82aa528aac0a06",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/1927e75f4ed19131ec9bcc3b002e07fb1173ee76",
+                "reference": "1927e75f4ed19131ec9bcc3b002e07fb1173ee76",
                 "shasum": ""
             },
             "require": {
@@ -6598,8 +6604,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Prophecy\\": "src/"
+                "psr-4": {
+                    "Prophecy\\": "src/Prophecy"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -6627,7 +6633,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2018-08-05T17:53:17+00:00"
+            "time": "2019-06-13T12:50:23+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -8063,16 +8069,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.41.0",
+            "version": "v1.42.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "575cd5028362da591facde1ef5d7b94553c375c9"
+                "reference": "21707d6ebd05476854805e4f91b836531941bcd4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/575cd5028362da591facde1ef5d7b94553c375c9",
-                "reference": "575cd5028362da591facde1ef5d7b94553c375c9",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/21707d6ebd05476854805e4f91b836531941bcd4",
+                "reference": "21707d6ebd05476854805e4f91b836531941bcd4",
                 "shasum": ""
             },
             "require": {
@@ -8082,12 +8088,12 @@
             "require-dev": {
                 "psr/container": "^1.0",
                 "symfony/debug": "^2.7",
-                "symfony/phpunit-bridge": "^3.4.19|^4.1.8"
+                "symfony/phpunit-bridge": "^3.4.19|^4.1.8|^5.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.41-dev"
+                    "dev-master": "1.42-dev"
                 }
             },
             "autoload": {
@@ -8125,7 +8131,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2019-05-14T11:59:08+00:00"
+            "time": "2019-06-18T15:35:16+00:00"
         },
         {
             "name": "zendframework/zend-cache",
@@ -8513,16 +8519,16 @@
         },
         {
             "name": "zendframework/zend-json",
-            "version": "3.1.0",
+            "version": "3.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendframework/zend-json.git",
-                "reference": "4dd940e8e6f32f1d36ea6b0677ea57c540c7c19c"
+                "reference": "21c6027f3c4a5177cbef8ed08d1037b17188a0d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zendframework/zend-json/zipball/4dd940e8e6f32f1d36ea6b0677ea57c540c7c19c",
-                "reference": "4dd940e8e6f32f1d36ea6b0677ea57c540c7c19c",
+                "url": "https://api.github.com/repos/zendframework/zend-json/zipball/21c6027f3c4a5177cbef8ed08d1037b17188a0d8",
+                "reference": "21c6027f3c4a5177cbef8ed08d1037b17188a0d8",
                 "shasum": ""
             },
             "require": {
@@ -8559,7 +8565,7 @@
                 "json",
                 "zf"
             ],
-            "time": "2018-01-04T17:51:34+00:00"
+            "time": "2019-06-18T10:54:52+00:00"
         },
         {
             "name": "zendframework/zend-serializer",
