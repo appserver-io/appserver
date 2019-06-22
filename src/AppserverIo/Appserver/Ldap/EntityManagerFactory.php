@@ -143,7 +143,8 @@ class EntityManagerFactory
             $ldapClient = new LdapClient(
                 Ldap::create($connectionParameters['driver'], [
                     'host' => $connectionParameters['host'],
-                    'port' => $connectionParameters['port']
+                    'port' => $connectionParameters['port'],
+                    'encryption' => $connectionParameters['encryption']
                 ])
             );
 
