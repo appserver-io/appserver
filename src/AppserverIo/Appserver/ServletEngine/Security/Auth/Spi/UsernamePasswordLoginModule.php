@@ -154,6 +154,14 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
     abstract protected function getUsersPassword();
 
     /**
+     * Returns the salt for the user from the sharedMap data.
+     *
+     * @return \AppserverIo\Lang\String The user's salt
+     * @throws \AppserverIo\Psr\Security\Auth\Login\LoginException Is thrown if salt can't be loaded
+     */
+    abstract protected function getUsersSalt();
+
+    /**
      * Perform the authentication of username and password.
      *
      * @return boolean TRUE when login has been successfull, else FALSE
@@ -255,6 +263,9 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
         // initialize the callback
         $callback = null;
 
+        //get users salt
+        $hashSalt = $this->getUsersSalt();
+
         // query whether or not we've a callback configured
         if ($this->params->exists(ParamKeys::DIGEST_CALLBACK)) {
             try {
@@ -267,14 +278,13 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
                 $tmp->add(SharedStateKeys::LOGIN_NAME, $name);
                 $tmp->add(SharedStateKeys::LOGIN_PASSWORD, $password);
                 $callback->init($tmp);
-
             } catch (\Exception $e) {
                 throw new SecurityException("Failed to load DigestCallback");
             }
         }
 
         // hash and return the password
-        return Util::createPasswordHash($this->hashAlgorithm, $this->hashEncoding, $this->hashCharset, $name, $password, $callback);
+        return Util::createPasswordHash($this->hashAlgorithm, $this->hashEncoding, $this->hashCharset, $name, $password, $callback, $hashSalt);
     }
 
     /**
@@ -304,6 +314,10 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
             $valid = $inputPassword->equalsIgnoreCase($expectedPassword);
         } else {
             $valid = $inputPassword->equals($expectedPassword);
+        }
+
+        if ($this->hashAlgorithm == "PASSWORD_BCRYPT" || $this->hashAlgorithm == "PASSWORD_DEFAULT") {
+            $valid = password_verify($inputPassword, $expectedPassword);
         }
 
         // return the flag

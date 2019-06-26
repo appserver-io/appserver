@@ -54,6 +54,13 @@ class ParamKeys
     const ROLES_QUERY = 'rolesQuery';
 
     /**
+     * The key for the "saltQuery" parameter.
+     *
+     * @var string
+     */
+    const SALT_QUERY = 'saltQuery';
+
+    /**
      * The key for the "passwordStacking" parameter.
      *
      * @var string
@@ -80,6 +87,13 @@ class ParamKeys
      * @var string
      */
     const HASH_CHARSET = 'hashCharset';
+
+    /**
+     * the key for the "salt" parameter.
+     *
+     * @var string
+     */
+    const HASH_SALT = 'hashSalt';
 
     /**
      * The key for the "ignorePasswordCase" parameter.
