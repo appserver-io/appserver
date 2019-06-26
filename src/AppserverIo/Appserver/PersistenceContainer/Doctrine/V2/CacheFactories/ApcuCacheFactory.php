@@ -1,6 +1,7 @@
 <?php
+
 /**
- * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\CacheKeys
+ * AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories\ApcuCacheFactory
  *
  * NOTICE OF LICENSE
  *
@@ -13,35 +14,38 @@
  * @author    Tim Wagner <tw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/appserver-io/appserver
+ * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
 
 namespace AppserverIo\Appserver\PersistenceContainer\Doctrine\V2\CacheFactories;
 
+use Doctrine\Common\Cache\ApcuCache;
+
 /**
- * Utility class with the cache key.
+ * The factory implementation for an ApcuCache cache instance.
  *
  * @author    Tim Wagner <tw@appserver.io>
+ * @author    Bernhard Wick <bw@appserver.io>
  * @copyright 2015 TechDivision GmbH <info@appserver.io>
  * @license   http://opensource.org/licenses/osl-3.0.php Open Software License (OSL 3.0)
- * @link      https://github.com/appserver-io/appserver
+ * @link      https://github.com/appserver-io/rmi
  * @link      http://www.appserver.io
  */
-class CacheKeys
+class ApcuCacheFactory implements CacheFactoryInterface
 {
 
     /**
-     * The key for the host value.
+     * Return's the new cache instance.
      *
-     * @var string
-     */
-    const HOST = 'host';
-
-    /**
-     * The key for the directory value.
+     * @param array $configuration The cache configuration
      *
-     * @var string
+     * @return \Doctrine\Common\Cache\CacheProvider The cache instance
      */
-    const DIRECTORY = 'directory';
+    public static function get(array $configuration = array())
+    {
+        if (extension_loaded('apcu')) {
+            return new ApcuCache();
+        }
+    }
 }
