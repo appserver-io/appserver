@@ -1,3 +1,14 @@
+# Version 1.1.24
+
+## Bugfixes
+
+* Pre-Initialize LDAP configuration encryption parameter
+
+## Features
+
+* Add Doctrine cache factories for APCu and Filesystem
+* Update to appserver-io/description version 13.0.1
+
 # Version 1.1.23
 
 ## Bugfixes
@@ -9,7 +20,7 @@
 * Extend error handling with exception support
 * Add encryption support for LDAP functionality
 * Update to appserver-io/ldap version 3.0.*
-* Update to appserver-io/description version 33.0.*
+* Update to appserver-io/description version 13.0.*
 * Update to appserver-io/provisioning version 2.0.*
 * Update to appserver-io-psr/cli version 2.0.*
 * Update to appserver-io-psr/application-server version 2.0.*

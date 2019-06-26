@@ -98,7 +98,8 @@ class ConnectionUtil
 
         // initialize the connection parameters with the mandatory driver
         $connectionParameters = array(
-            'driver' => $databaseNode->getDriver()->getNodeValue()->__toString()
+            'driver' => $databaseNode->getDriver()->getNodeValue()->__toString(),
+            'encryption' => 'none'
         );
 
         // initialize the path/memory to the database when we use sqlite for example
