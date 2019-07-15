@@ -5321,12 +5321,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wick-ed/debian.git",
-                "reference": "1b9d483ad7943e5ac3c9a8e61920fdc620cf82dd"
+                "reference": "d4f092b9a27eb7b32cf8be7af2c73754edb3bf04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wick-ed/debian/zipball/1b9d483ad7943e5ac3c9a8e61920fdc620cf82dd",
-                "reference": "1b9d483ad7943e5ac3c9a8e61920fdc620cf82dd",
+                "url": "https://api.github.com/repos/wick-ed/debian/zipball/d4f092b9a27eb7b32cf8be7af2c73754edb3bf04",
+                "reference": "d4f092b9a27eb7b32cf8be7af2c73754edb3bf04",
                 "shasum": ""
             },
             "type": "library",
@@ -5363,7 +5363,7 @@
                 "issues": "https://github.com/appserver-io/appserver/issues",
                 "source": "https://github.com/appserver-io-dist/debian"
             },
-            "time": "2019-07-15T12:51:37+00:00"
+            "time": "2019-07-15T13:13:05+00:00"
         },
         {
             "name": "appserver-io-dist/osx",
