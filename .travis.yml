@@ -28,11 +28,7 @@ matrix:
         - sudo apt-get update;
         - sudo apt-get install -y ant git;
       script:
-        - composer install
-        - ant dependencies-init -f vendor/appserver-io-dist/osx/build.xml
-        - ant local-build -Dos.family=mac -f vendor/appserver-io-dist/osx/build.xml
-        - mv vendor/appserver-io-dist/osx/build/* build/
-        - if [[ "$TRAVIS_TAG" ]]; then echo "TAGGED"; fi
+        - echo "macos"
     - os: linux
       dist: xenial
       php: 5.6
@@ -40,7 +36,10 @@ matrix:
       services:
         - docker
       script:
-        - echo "debian"
+        - composer install
+        - docker run --rm -v `pwd`:/build -w /build debian:9 bash -c "apt-get update; apt-get install -y ant git; ant dependencies-init -f vendor/appserver-io-dist/debian/build.xml; ant create-appserver-dist-deb -Dbuild.number=$BUILD_NUMBER -Dtarget-os.major.version=9 -Dtarget-os.minor.version=9 -f vendor/appserver-io-dist/debian/build.xml; ant create-appserver-runtime-deb -Dbuild.number=$BUILD_NUMBER -Dtarget-os.major.version=9 -Dtarget-os.minor.version=9 -f vendor/appserver-io-dist/debian/build.xml"
+        - mv vendor/appserver-io-dist/debian/build/* build/
+        - if [[ "$TRAVIS_TAG" ]]; then echo "TAGGED"; fi
   allow_failures:
     - php: 7.0
 
@@ -55,7 +54,3 @@ deploy:
     tags: true
     branch: '1.1'
     repo: wick-ed/appserver
-
-notifications:
-  email: info@appserver.io
-  webhooks: https://app.fossa.io/hooks/travisci

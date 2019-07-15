@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d45be7dfe47842187137be5f5ed63292",
+    "content-hash": "674e4ad77f079a71d3b3c3a2a455d8e7",
     "packages": [
         {
             "name": "appserver-io-psr/application",
@@ -5316,6 +5316,52 @@
     ],
     "packages-dev": [
         {
+            "name": "appserver-io-dist/debian",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/appserver-io-dist/debian.git",
+                "reference": "6ff30775c07d8a666729c28c03fc8cebf9565083"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/appserver-io-dist/debian/zipball/6ff30775c07d8a666729c28c03fc8cebf9565083",
+                "reference": "6ff30775c07d8a666729c28c03fc8cebf9565083",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Tim Wagner",
+                    "email": "tw@appserver.io",
+                    "homepage": "https://github.com/wagnert",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Johann Zelger",
+                    "email": "jz@appserver.io",
+                    "homepage": "https://github.com/zelgerj",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Bernhard Wick",
+                    "email": "bw@appserver.io",
+                    "homepage": "https://github.com/wick-ed",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Debian build files used for builds",
+            "homepage": "https://github.com/appserver-io-dist/debian",
+            "keywords": [
+                "php application server linux debian build"
+            ],
+            "time": "2019-07-15T11:34:47+00:00"
+        },
+        {
             "name": "appserver-io-dist/osx",
             "version": "dev-master",
             "source": {
@@ -7055,6 +7101,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2015-10-02T06:51:40+00:00"
         },
         {
@@ -8899,7 +8946,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "appserver-io-dist/osx": 20
+        "appserver-io-dist/osx": 20,
+        "appserver-io-dist/debian": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
