@@ -24,9 +24,9 @@ matrix:
     - os: linux
       php: 5.6
       env: OS_FAMILY = mac
-      before_install:
-        - apt-get update;
-        - apt-get install -y ant git;
+      before_script:
+        - sudo apt-get update;
+        - sudo apt-get install -y ant git;
       script:
         - composer install
         - ant dependencies-init -f vendor/appserver-io-dist/osx/build.xml
