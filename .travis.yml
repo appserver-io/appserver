@@ -27,8 +27,9 @@ matrix:
       before_install:
         - brew update
         - brew install ant
-        - composer install
+        - wget https://getcomposer.org/composer.phar
       script:
+        - php -d memory_limit=-1 composer.phar install
         - sudo chown $USER /opt
         - ant dependencies-init -f vendor/appserver-io-dist/osx/build.xml
         - ant local-build -Dos.family=mac -f vendor/appserver-io-dist/osx/build.xml
