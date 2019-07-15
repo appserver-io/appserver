@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b47693de1dfe5a44faa8a25896bb8817",
+    "content-hash": "d45be7dfe47842187137be5f5ed63292",
     "packages": [
         {
             "name": "appserver-io-psr/application",
@@ -4811,7 +4811,7 @@
         },
         {
             "name": "symfony/options-resolver",
-            "version": "v3.4.28",
+            "version": "v3.4.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/options-resolver.git",
@@ -5315,6 +5315,52 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "appserver-io-dist/osx",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/appserver-io-dist/osx.git",
+                "reference": "e74b0675c2eb0aa9d6aaa68a282b4f5d61a9f81a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/appserver-io-dist/osx/zipball/e74b0675c2eb0aa9d6aaa68a282b4f5d61a9f81a",
+                "reference": "e74b0675c2eb0aa9d6aaa68a282b4f5d61a9f81a",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Tim Wagner",
+                    "email": "tw@appserver.io",
+                    "homepage": "https://github.com/wagnert",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Johann Zelger",
+                    "email": "jz@appserver.io",
+                    "homepage": "https://github.com/zelgerj",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Bernhard Wick",
+                    "email": "bw@appserver.io",
+                    "homepage": "https://github.com/wick-ed",
+                    "role": "Developer"
+                }
+            ],
+            "description": "macos build files used for Apple infrastructure",
+            "homepage": "https://github.com/appserver-io/appserver",
+            "keywords": [
+                "php application server macos build"
+            ],
+            "time": "2019-07-12T12:40:11+00:00"
+        },
         {
             "name": "appserver-io/build",
             "version": "1.0.5",
@@ -7009,7 +7055,6 @@
                 "mock",
                 "xunit"
             ],
-            "abandoned": true,
             "time": "2015-10-02T06:51:40+00:00"
         },
         {
@@ -8853,7 +8898,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "appserver-io-dist/osx": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

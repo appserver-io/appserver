@@ -3,11 +3,6 @@ language: php
 php:
   - 7.0
   - 5.6
-  - 5.5
-
-matrix:
-  allow_failures:
-    - php: 7.0
 
 before_install:
   - if [[ "$TRAVIS_PHP_VERSION" < "7.0" ]]; then pecl install pthreads-2.0.10; fi
@@ -21,8 +16,44 @@ script:
   - vendor/bin/robo build
   - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/target/reports/unit/clover.xml
 
+env:
+  global:
+    - BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
+
+matrix:
+  allow_failures:
+    - php: 7.0
+  include:
+    - os: osx
+      osx_image: xcode6.4
+      before_install:
+        - brew update
+        - brew install ant
+      script:
+        - sudo chown $USER /opt
+        - ant dependencies-init -f vendor/appserver-io-dist/osx/build.xml
+        - ant local-build -Dos.family=mac -f vendor/appserver-io-dist/osx/build.xml
+        - mv vendor/appserver-io-dist/osx/build/* build/
+        - if [[ "$TRAVIS_TAG" ]]; then echo "TAGGED"; fi
+    - os: linux
+      dist: xenial
+      services:
+        - docker
+      script:
+        - echo "debian"
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "T/+tptqFVgBCPgVPQqEL7ciWg5N4hp4bWdq9jG7AIB3K1inu1LL4HzggOfyeSktUOW63SZdEoWqrXaYk0d4+4f811Dzign3Eqi/m/yw2Opwh0jbpOTvaQBZfN8/xBAB9/TfsPyFWq4buF8fI5Njew7wbxs/n1c701L2zFtzmxEM="
+  file_glob: true
+  file: "build/*"
+  skip_cleanup: true
+  on:
+    tags: true
+    branch: '1.1'
+    repo: wick-ed/appserver
+
 notifications:
   email: info@appserver.io
-  hipchat: 95d47a72c5372d4a0fef20048c3200@Appserver
   webhooks: https://app.fossa.io/hooks/travisci
-  
