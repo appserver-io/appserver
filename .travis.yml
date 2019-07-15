@@ -1,8 +1,8 @@
 language: php
 
 php:
-  - 7.0
   - 5.6
+  - 7.0
 
 before_install:
   - if [[ "$TRAVIS_PHP_VERSION" < "7.0" ]]; then pecl install pthreads-2.0.10; fi
@@ -20,8 +20,6 @@ env:
     - BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
 
 matrix:
-  allow_failures:
-    - php: 7.0
   include:
     - os: osx
       osx_image: xcode6.4
@@ -29,6 +27,7 @@ matrix:
       before_install:
         - brew update
         - brew install ant
+        - composer install
       script:
         - sudo chown $USER /opt
         - ant dependencies-init -f vendor/appserver-io-dist/osx/build.xml
@@ -42,6 +41,8 @@ matrix:
         - docker
       script:
         - echo "debian"
+  allow_failures:
+    - php: 7.0
 
 deploy:
   provider: releases
