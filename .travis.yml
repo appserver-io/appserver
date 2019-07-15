@@ -14,7 +14,6 @@ before_install:
 script:
   - php -d memory_limit=-1 composer.phar update
   - vendor/bin/robo build
-  - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/target/reports/unit/clover.xml
 
 env:
   global:
@@ -26,6 +25,7 @@ matrix:
   include:
     - os: osx
       osx_image: xcode6.4
+      php: 5.6
       before_install:
         - brew update
         - brew install ant
@@ -37,6 +37,7 @@ matrix:
         - if [[ "$TRAVIS_TAG" ]]; then echo "TAGGED"; fi
     - os: linux
       dist: xenial
+      php: 5.6
       services:
         - docker
       script:
