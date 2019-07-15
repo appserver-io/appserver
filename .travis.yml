@@ -28,6 +28,7 @@ matrix:
         - brew update
         - brew install ant
         - wget https://getcomposer.org/composer.phar
+        - sudo curl -s http://php-osx.liip.ch/install.sh | bash -s 5.6
       script:
         - php -d memory_limit=-1 composer.phar install
         - sudo chown $USER /opt
