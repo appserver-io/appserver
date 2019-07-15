@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "674e4ad77f079a71d3b3c3a2a455d8e7",
+    "content-hash": "70bac62660950739776c57255f569e1f",
     "packages": [
         {
             "name": "appserver-io-psr/application",
@@ -5317,20 +5317,19 @@
     "packages-dev": [
         {
             "name": "appserver-io-dist/debian",
-            "version": "dev-master",
+            "version": "dev-travis-debian-build",
             "source": {
                 "type": "git",
-                "url": "https://github.com/appserver-io-dist/debian.git",
-                "reference": "6ff30775c07d8a666729c28c03fc8cebf9565083"
+                "url": "https://github.com/wick-ed/debian.git",
+                "reference": "024ba0f15c9e183f7f05e82cb32cce500215c7e8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io-dist/debian/zipball/6ff30775c07d8a666729c28c03fc8cebf9565083",
-                "reference": "6ff30775c07d8a666729c28c03fc8cebf9565083",
+                "url": "https://api.github.com/repos/wick-ed/debian/zipball/024ba0f15c9e183f7f05e82cb32cce500215c7e8",
+                "reference": "024ba0f15c9e183f7f05e82cb32cce500215c7e8",
                 "shasum": ""
             },
             "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "OSL-3.0"
             ],
@@ -5359,7 +5358,12 @@
             "keywords": [
                 "php application server linux debian build"
             ],
-            "time": "2019-07-15T11:34:47+00:00"
+            "support": {
+                "email": "tw@appserver.io",
+                "issues": "https://github.com/appserver-io/appserver/issues",
+                "source": "https://github.com/appserver-io-dist/debian"
+            },
+            "time": "2019-07-15T12:37:00+00:00"
         },
         {
             "name": "appserver-io-dist/osx",

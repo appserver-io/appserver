@@ -51,7 +51,7 @@
     "require-dev": {
         "appserver-io/build": "~1.0",
         "appserver-io-dist/osx": "dev-master",
-        "appserver-io-dist/debian": "dev-master"
+        "appserver-io-dist/debian": "dev-travis-debian-build"
     },
     "autoload": {
         "psr-0": {
@@ -96,5 +96,11 @@
         "post-update-cmd": [
             "AppserverIo\\Appserver\\Meta\\Composer\\Script\\Setup::postUpdate"
         ]
-    }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/wick-ed/debian"
+        }
+    ]
 }
