@@ -37,7 +37,7 @@ matrix:
         - docker
       script:
         - composer install
-        - docker run --rm -v `pwd`:/build -w /build debian:9 bash -c "apt-get update; apt-get install -y ant git php; ant dependencies-init -f vendor/appserver-io-dist/debian/build.xml; ant local-build -Dbuild.number=$BUILD_NUMBER -Dtarget-os.major.version=9 -Dtarget-os.minor.version=9 -Dtarget.dir='target' -f vendor/appserver-io-dist/debian/build.xml;"
+        - docker run --rm -v `pwd`:/build -w /build debian:9 bash -c "apt-get update; apt-get install -y ant git php; ant dependencies-init -f vendor/appserver-io-dist/debian/build.xml; ant local-build -Dbuild.number=$BUILD_NUMBER -Dtarget-os.major.version=9 -Dtarget-os.minor.version=9 -f vendor/appserver-io-dist/debian/build.xml;"
         - mv vendor/appserver-io-dist/debian/build/* build/
         - if [[ "$TRAVIS_TAG" ]]; then echo "TAGGED"; fi
   allow_failures:
