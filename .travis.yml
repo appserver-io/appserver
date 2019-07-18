@@ -5,9 +5,6 @@ before_install:
   - if [[ "$TRAVIS_PHP_VERSION" = "7.0" ]] || [[ "$TRAVIS_PHP_VERSION" > "7.0" ]]; then pecl install pthreads-3.1.6; fi
   - phpenv rehash
   - wget https://scrutinizer-ci.com/ocular.phar
-  - wget https://getcomposer.org/composer.phar
-  - php -d memory_limit=-1 composer.phar update
-  - vendor/bin/robo build
 
 env:
   global:
@@ -15,13 +12,6 @@ env:
 
 matrix:
   include:
-    - os: osx
-      osx_image: xcode8.3
-      php: 5.6
-      env: OS_FAMILY = mac
-      script:
-        - echo "macos"
-        - php -v
     - os: linux
       dist: xenial
       php: 5.6
@@ -33,6 +23,7 @@ matrix:
       script:
         - mkdir -p build
         - composer install
+        - vendor/bin/robo build
         - docker run --rm -v `pwd`:/build -w /build debian:9 bash -c "apt-get update; apt-get install -y ant git php; ant dependencies-init -f vendor/appserver-io-dist/debian/build.xml; ant local-build -Dbuild.number=$BUILD_NUMBER -Dtarget-os.major.version=9 -Dtarget-os.minor.version=9 -f vendor/appserver-io-dist/debian/build.xml; chmod -R 777 vendor/appserver-io-dist/debian/build"
         - mv vendor/appserver-io-dist/debian/build/* build/
         - if [[ "$TRAVIS_TAG" ]]; then echo "TAGGED"; fi
@@ -54,4 +45,8 @@ deploy:
   on:
     tags: true
     branch: '1.1'
-    repo: wick-ed/appserver
+    repo: appserver-io/appserver
+
+notifications:
+  email: info@appserver.io
+  webhooks: https://app.fossa.io/hooks/travisci

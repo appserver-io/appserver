@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "70bac62660950739776c57255f569e1f",
+    "content-hash": "ec382477a5693b59f94de42b374fbb7c",
     "packages": [
         {
             "name": "appserver-io-psr/application",
@@ -5317,66 +5317,16 @@
     "packages-dev": [
         {
             "name": "appserver-io-dist/debian",
-            "version": "dev-travis-debian-build",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/wick-ed/debian.git",
-                "reference": "ee318536f84491f96c30df8159f8b5055b357683"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/wick-ed/debian/zipball/ee318536f84491f96c30df8159f8b5055b357683",
-                "reference": "ee318536f84491f96c30df8159f8b5055b357683",
-                "shasum": ""
-            },
-            "type": "library",
-            "license": [
-                "OSL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Tim Wagner",
-                    "email": "tw@appserver.io",
-                    "homepage": "https://github.com/wagnert",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Johann Zelger",
-                    "email": "jz@appserver.io",
-                    "homepage": "https://github.com/zelgerj",
-                    "role": "Developer"
-                },
-                {
-                    "name": "Bernhard Wick",
-                    "email": "bw@appserver.io",
-                    "homepage": "https://github.com/wick-ed",
-                    "role": "Developer"
-                }
-            ],
-            "description": "Debian build files used for builds",
-            "homepage": "https://github.com/appserver-io-dist/debian",
-            "keywords": [
-                "php application server linux debian build"
-            ],
-            "support": {
-                "email": "tw@appserver.io",
-                "issues": "https://github.com/appserver-io/appserver/issues",
-                "source": "https://github.com/appserver-io-dist/debian"
-            },
-            "time": "2019-07-15T13:33:11+00:00"
-        },
-        {
-            "name": "appserver-io-dist/osx",
             "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/appserver-io-dist/osx.git",
-                "reference": "e74b0675c2eb0aa9d6aaa68a282b4f5d61a9f81a"
+                "url": "https://github.com/appserver-io-dist/debian.git",
+                "reference": "6ff30775c07d8a666729c28c03fc8cebf9565083"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io-dist/osx/zipball/e74b0675c2eb0aa9d6aaa68a282b4f5d61a9f81a",
-                "reference": "e74b0675c2eb0aa9d6aaa68a282b4f5d61a9f81a",
+                "url": "https://api.github.com/repos/appserver-io-dist/debian/zipball/6ff30775c07d8a666729c28c03fc8cebf9565083",
+                "reference": "6ff30775c07d8a666729c28c03fc8cebf9565083",
                 "shasum": ""
             },
             "type": "library",
@@ -5387,29 +5337,29 @@
             "authors": [
                 {
                     "name": "Tim Wagner",
+                    "role": "Developer",
                     "email": "tw@appserver.io",
-                    "homepage": "https://github.com/wagnert",
-                    "role": "Developer"
+                    "homepage": "https://github.com/wagnert"
                 },
                 {
                     "name": "Johann Zelger",
+                    "role": "Developer",
                     "email": "jz@appserver.io",
-                    "homepage": "https://github.com/zelgerj",
-                    "role": "Developer"
+                    "homepage": "https://github.com/zelgerj"
                 },
                 {
                     "name": "Bernhard Wick",
+                    "role": "Developer",
                     "email": "bw@appserver.io",
-                    "homepage": "https://github.com/wick-ed",
-                    "role": "Developer"
+                    "homepage": "https://github.com/wick-ed"
                 }
             ],
-            "description": "macos build files used for Apple infrastructure",
-            "homepage": "https://github.com/appserver-io/appserver",
+            "description": "Debian build files used for builds",
+            "homepage": "https://github.com/appserver-io-dist/debian",
             "keywords": [
-                "php application server macos build"
+                "php application server linux debian build"
             ],
-            "time": "2019-07-12T12:40:11+00:00"
+            "time": "2019-07-15T11:34:47+00:00"
         },
         {
             "name": "appserver-io/build",
@@ -8950,7 +8900,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "appserver-io-dist/osx": 20,
         "appserver-io-dist/debian": 20
     },
     "prefer-stable": false,
