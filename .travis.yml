@@ -16,7 +16,8 @@ env:
 matrix:
   include:
     - os: osx
-      osx_image: xcode8
+      osx_image: xcode8.3
+      php: 5.6
       env: OS_FAMILY = mac
       script:
         - echo "macos"
