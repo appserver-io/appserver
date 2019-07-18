@@ -1,8 +1,3 @@
-language: php
-
-php:
-  - 5.6
-  - 7.0
 
 before_install:
   - if [[ "$TRAVIS_PHP_VERSION" < "7.0" ]]; then pecl install pthreads-2.0.10; fi
@@ -29,6 +24,7 @@ matrix:
         - php -v
     - os: linux
       dist: xenial
+      language: php
       php: 5.6
       env:
         - OS_FAMILY = linux
@@ -41,8 +37,13 @@ matrix:
         - docker run --rm -v `pwd`:/build -w /build debian:9 bash -c "apt-get update; apt-get install -y ant git php; ant dependencies-init -f vendor/appserver-io-dist/debian/build.xml; ant local-build -Dbuild.number=$BUILD_NUMBER -Dtarget-os.major.version=9 -Dtarget-os.minor.version=9 -f vendor/appserver-io-dist/debian/build.xml; chmod -R 777 vendor/appserver-io-dist/debian/build"
         - mv vendor/appserver-io-dist/debian/build/* build/
         - if [[ "$TRAVIS_TAG" ]]; then echo "TAGGED"; fi
+    - os: linux
+      dist: xenial
+      language: php
+      php: 7.0
   allow_failures:
     - php: 7.0
+    - os: osx
 
 deploy:
   provider: releases
