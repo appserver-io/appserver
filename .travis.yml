@@ -1,5 +1,9 @@
 language: php
 
+cache:
+  directories:
+    - $HOME/.composer/cache/files
+
 before_install:
   - if [[ "$TRAVIS_PHP_VERSION" < "7.0" ]]; then pecl install pthreads-2.0.10; fi
   - if [[ "$TRAVIS_PHP_VERSION" = "7.0" ]] || [[ "$TRAVIS_PHP_VERSION" > "7.0" ]]; then pecl install pthreads-3.1.6; fi
@@ -26,6 +30,7 @@ matrix:
         - vendor/bin/robo build
         - docker run --rm -v `pwd`:/build -w /build debian:9 bash -c "apt-get update; apt-get install -y ant git php; ant dependencies-init -f vendor/appserver-io-dist/debian/build.xml; ant local-build -Dbuild.number=$BUILD_NUMBER -Dtarget-os.major.version=9 -Dtarget-os.minor.version=9 -f vendor/appserver-io-dist/debian/build.xml; chmod -R 777 vendor/appserver-io-dist/debian/build"
         - mv vendor/appserver-io-dist/debian/build/* build/
+        - echo "Prepared the following artefacts:"; ls -lh build/
         - if [[ "$TRAVIS_TAG" ]]; then echo "TAGGED"; fi
     - os: linux
       dist: xenial

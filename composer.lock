@@ -4,8 +4,54 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ec382477a5693b59f94de42b374fbb7c",
+    "content-hash": "232b78c0be0196216036ca7428c810d0",
     "packages": [
+        {
+            "name": "appserver-io-dist/debian",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/appserver-io-dist/debian.git",
+                "reference": "dec998c9848fb565d2de4422d1052a7c8e4d8243"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/appserver-io-dist/debian/zipball/dec998c9848fb565d2de4422d1052a7c8e4d8243",
+                "reference": "dec998c9848fb565d2de4422d1052a7c8e4d8243",
+                "shasum": ""
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "OSL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Tim Wagner",
+                    "role": "Developer",
+                    "email": "tw@appserver.io",
+                    "homepage": "https://github.com/wagnert"
+                },
+                {
+                    "name": "Johann Zelger",
+                    "role": "Developer",
+                    "email": "jz@appserver.io",
+                    "homepage": "https://github.com/zelgerj"
+                },
+                {
+                    "name": "Bernhard Wick",
+                    "role": "Developer",
+                    "email": "bw@appserver.io",
+                    "homepage": "https://github.com/wick-ed"
+                }
+            ],
+            "description": "Debian build files used for builds",
+            "homepage": "https://github.com/appserver-io-dist/debian",
+            "keywords": [
+                "php application server linux debian build"
+            ],
+            "time": "2019-08-26T13:21:11+00:00"
+        },
         {
             "name": "appserver-io-psr/application",
             "version": "1.5.0",
@@ -5315,52 +5361,6 @@
         }
     ],
     "packages-dev": [
-        {
-            "name": "appserver-io-dist/debian",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/appserver-io-dist/debian.git",
-                "reference": "38e9eb5b99514eb9b14615d4323ee6bd6a25b69a"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io-dist/debian/zipball/38e9eb5b99514eb9b14615d4323ee6bd6a25b69a",
-                "reference": "38e9eb5b99514eb9b14615d4323ee6bd6a25b69a",
-                "shasum": ""
-            },
-            "type": "library",
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "OSL-3.0"
-            ],
-            "authors": [
-                {
-                    "name": "Tim Wagner",
-                    "role": "Developer",
-                    "email": "tw@appserver.io",
-                    "homepage": "https://github.com/wagnert"
-                },
-                {
-                    "name": "Johann Zelger",
-                    "role": "Developer",
-                    "email": "jz@appserver.io",
-                    "homepage": "https://github.com/zelgerj"
-                },
-                {
-                    "name": "Bernhard Wick",
-                    "role": "Developer",
-                    "email": "bw@appserver.io",
-                    "homepage": "https://github.com/wick-ed"
-                }
-            ],
-            "description": "Debian build files used for builds",
-            "homepage": "https://github.com/appserver-io-dist/debian",
-            "keywords": [
-                "php application server linux debian build"
-            ],
-            "time": "2019-07-15T11:34:47+00:00"
-        },
         {
             "name": "appserver-io/build",
             "version": "1.0.5",
