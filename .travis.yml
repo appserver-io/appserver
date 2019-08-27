@@ -28,10 +28,9 @@ matrix:
         - mkdir -p build
         - composer install
         - vendor/bin/robo build
-        - docker run --rm -v `pwd`:/build -w /build debian:9 bash -c "apt-get update && apt-get install -y ant git php && ant dependencies-init -f vendor/appserver-io-dist/debian/build.xml && ant local-build -Dbuild.number=$BUILD_NUMBER -Dtarget-os.major.version=9 -Dtarget-os.minor.version=9 -f vendor/appserver-io-dist/debian/build.xml && chmod -R 777 vendor/appserver-io-dist/debian/build"
-        - mv vendor/appserver-io-dist/debian/build/* build/
-        - echo "Prepared the following artefacts:"; ls -lh build/
-        - if [[ "$TRAVIS_TAG" ]]; then echo "TAGGED"; fi
+        - if [[ "$TRAVIS_TAG" ]]; then docker run --rm -v `pwd`:/build -w /build debian:9 bash -c "apt-get update && apt-get install -y ant git php && ant dependencies-init -f vendor/appserver-io-dist/debian/build.xml && ant local-build -Dbuild.number=$BUILD_NUMBER -Dtarget-os.major.version=9 -Dtarget-os.minor.version=9 -f vendor/appserver-io-dist/debian/build.xml && chmod -R 777 vendor/appserver-io-dist/debian/build"; fi
+        - if [[ "$TRAVIS_TAG" ]]; then mv vendor/appserver-io-dist/debian/build/* build/; fi
+        - if [[ "$TRAVIS_TAG" ]]; then echo "Prepared the following artefacts:"; ls -lh build/; fi
     - os: linux
       dist: xenial
       language: php
