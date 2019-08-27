@@ -1,28 +1,56 @@
 language: php
 
-php:
-  - 7.0
-  - 5.6
-  - 5.5
-
-matrix:
-  allow_failures:
-    - php: 7.0
+cache:
+  directories:
+    - $HOME/.composer/cache/files
 
 before_install:
   - if [[ "$TRAVIS_PHP_VERSION" < "7.0" ]]; then pecl install pthreads-2.0.10; fi
   - if [[ "$TRAVIS_PHP_VERSION" = "7.0" ]] || [[ "$TRAVIS_PHP_VERSION" > "7.0" ]]; then pecl install pthreads-3.1.6; fi
   - phpenv rehash
   - wget https://scrutinizer-ci.com/ocular.phar
-  - wget https://getcomposer.org/composer.phar
 
-script:
-  - php -d memory_limit=-1 composer.phar update
-  - vendor/bin/robo build
-  - php ocular.phar code-coverage:upload --format=php-clover $TRAVIS_BUILD_DIR/target/reports/unit/clover.xml
+env:
+  global:
+    - BUILD_NUMBER=${TRAVIS_BUILD_NUMBER}
+
+matrix:
+  include:
+    - os: linux
+      dist: xenial
+      php: 5.6
+      env:
+        - OS_FAMILY = linux
+        - OS_DISTRO = debian
+      services:
+        - docker
+      script:
+        - mkdir -p build
+        - composer install
+        - vendor/bin/robo build
+        - if [[ "$TRAVIS_TAG" ]]; then docker run --rm -v `pwd`:/build -w /build debian:9 bash -c "apt-get update && apt-get install -y ant git php && ant dependencies-init -f vendor/appserver-io-dist/debian/build.xml && ant local-build -Dbuild.number=$BUILD_NUMBER -Dtarget-os.major.version=9 -Dtarget-os.minor.version=9 -f vendor/appserver-io-dist/debian/build.xml && chmod -R 777 vendor/appserver-io-dist/debian/build"; fi
+        - if [[ "$TRAVIS_TAG" ]]; then mv vendor/appserver-io-dist/debian/build/* build/; fi
+        - if [[ "$TRAVIS_TAG" ]]; then echo "Prepared the following artefacts:"; ls -lh build/; fi
+    - os: linux
+      dist: xenial
+      language: php
+      php: 7.0
+  allow_failures:
+    - php: 7.0
+    - os: osx
+
+deploy:
+  provider: releases
+  api_key:
+    secure: "T/+tptqFVgBCPgVPQqEL7ciWg5N4hp4bWdq9jG7AIB3K1inu1LL4HzggOfyeSktUOW63SZdEoWqrXaYk0d4+4f811Dzign3Eqi/m/yw2Opwh0jbpOTvaQBZfN8/xBAB9/TfsPyFWq4buF8fI5Njew7wbxs/n1c701L2zFtzmxEM="
+  file_glob: true
+  file: "build/*"
+  skip_cleanup: true
+  on:
+    tags: true
+    branch: '1.1'
+    repo: appserver-io/appserver
 
 notifications:
   email: info@appserver.io
-  hipchat: 95d47a72c5372d4a0fef20048c3200@Appserver
   webhooks: https://app.fossa.io/hooks/travisci
-  

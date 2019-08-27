@@ -44,3 +44,5 @@
 .README.md.html
 .ROADMAP.md.html
 .CHANGELOG.md.html
+node_modules
+yarn.lock
