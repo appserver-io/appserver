@@ -1,3 +1,13 @@
+# Version 1.1.25
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Introduced Travis-CI based builds
+
 # Version 1.1.24
 
 ## Bugfixes
