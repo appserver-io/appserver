@@ -1,3 +1,13 @@
+# Version 1.1.26
+
+## Bugfixes
+
+* Bug in build artifact upload to github
+
+## Features
+
+* None
+
 # Version 1.1.25
 
 ## Bugfixes
