@@ -949,7 +949,6 @@ class Request implements HttpServletRequestInterface, ContextInterface
 
         // if we can't find a session or session has been expired and we want to create a new one
         if ($session == null && $create === true) {
-
             // always generate a unique identifier
             $id = SessionUtils::generateRandomString();
 
