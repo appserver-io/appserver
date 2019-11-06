@@ -944,8 +944,14 @@ class Request implements HttpServletRequestInterface, ContextInterface
             return;
         }
 
-        // find or create a new session (if flag has been set)
-        $session = $manager->find($id);
+        // initialize empty session variable
+        $session = null;
+
+        // verify that the session id has a valid format
+        if (preg_match('/^[A-z0-9]+$/', $id)) {
+            // attempt to retrieve existing session
+            $session = $manager->find($id);
+        }
 
         // if we can't find a session or session has been expired and we want to create a new one
         if ($session == null && $create === true) {
