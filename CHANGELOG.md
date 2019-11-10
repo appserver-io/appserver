@@ -1,3 +1,14 @@
+# Version 1.1.27
+
+## Bugfixes
+
+* Validate session identifier before lookup in filesystem
+* Generate cryptographically safe pseudo random bytes when creating a new session identifier
+
+## Features
+
+* None
+
 # Version 1.1.26
 
 ## Bugfixes
