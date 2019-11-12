@@ -278,7 +278,11 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         $ldapConnection = $this->ldapConnect();
 
         // replace the placeholder  with the actual username of the user
-        $this->baseFilter = preg_replace('/\{0\}/', "$this->username", $this->baseFilter);
+        $this->baseFilter = preg_replace(
+            '/\{0\}/',
+            ldap_escape($this->username, '', LDAP_ESCAPE_FILTER),
+            $this->baseFilter
+        );
 
         // try to load the user from the LDAP server
         $search = ldap_search($ldapConnection, $this->baseDN, $this->baseFilter);
@@ -473,7 +477,11 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         $ldapConnection = $this->ldapConnect();
 
         // replace the {0} placeholder with the username of the user
-        $this->roleFilter = preg_replace("/\{0\}/", "$user", $this->roleFilter);
+        $this->roleFilter = preg_replace(
+            "/\{0\}/",
+            ldap_escape($user, '', LDAP_ESCAPE_FILTER),
+            $this->roleFilter
+        );
 
         // replace the {1} placeholder with the distiniguished name of the user
         $this->roleFilter = preg_replace("/\{1\}/", "$userDN", $this->roleFilter);
