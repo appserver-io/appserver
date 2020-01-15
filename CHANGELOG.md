@@ -1,3 +1,14 @@
+# Version 1.1.28
+
+## Bugfixes
+
+* Retrieve session manager via current request
+* Update to appserver-io/authenticator v1.0.3 to fix mitigate session fixation during login
+
+## Features
+
+* None
+
 # Version 1.1.27
 
 ## Bugfixes
