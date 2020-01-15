@@ -163,7 +163,7 @@ class SessionWrapper extends HttpSessionWrapper
         $this->setId(SessionUtils::generateRandomString());
 
         // load the session manager
-        $sessionManager = $this->getContext()->search(SessionManagerInterface::IDENTIFIER);
+        $sessionManager = $this->getRequest()->getSessionManager();
 
         // attach this session with the new ID
         $sessionManager->attach($this->getSession());
