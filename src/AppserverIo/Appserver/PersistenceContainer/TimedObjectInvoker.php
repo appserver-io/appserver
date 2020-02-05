@@ -214,6 +214,8 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
 
             // check if the timeout method has been passed
             if ($timeoutMethod != null) {
+                \info(sprintf('Now invoke timed method "%s"', $timeoutMethod->getMethodName()));
+
                 // if yes, invoke it on the proxy
                 $callback = array($instance, $timeoutMethod->getMethodName());
                 call_user_func_array($callback, array($timer));
@@ -222,6 +224,7 @@ class TimedObjectInvoker extends GenericStackable implements TimedObjectInvokerI
 
             // check if we've a default timeout method
             if ($this->defaultTimeoutMethod != null) {
+                \info(sprintf('Now invoke default method "%s"', $this->defaultTimeoutMethod->getMethodName()));
                 // if yes, invoke it on the proxy
                 $callback = array($instance, $this->defaultTimeoutMethod->getMethodName());
                 call_user_func_array($callback, array($timer));
