@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\ServletEngine\DependencyInjection;
 
 use AppserverIo\Psr\Di\ObjectManagerInterface;
 use AppserverIo\Appserver\Core\Api\Node\WebAppNode;
+use AppserverIo\Appserver\Core\Utilities\SystemPropertyKeys;
 use AppserverIo\Appserver\DependencyInjectionContainer\AbstractDeploymentDescriptorParser;
 
 /**
@@ -45,6 +46,14 @@ class DeploymentDescriptorParser extends AbstractDeploymentDescriptorParser
     public function parse()
     {
 
+        // load the application instance
+        /** @var \AppserverIo\Psr\Application\ApplicationInterface $application */
+        $application = $this->getApplication();
+
+        // load the container node to initialize the system properties
+        /** @var \AppserverIo\Psr\ApplicationServer\Configuration\ContainerConfigurationInterface $containerNode */
+        $containerNode = $application->getContainer()->getContainerNode();
+
         // load the deployment descriptors that has to be parsed
         $deploymentDescriptors = $this->loadDeploymentDescriptors();
 
@@ -60,13 +69,24 @@ class DeploymentDescriptorParser extends AbstractDeploymentDescriptorParser
             $configurationService = $this->getApplication()->newService('AppserverIo\Appserver\Core\Api\ConfigurationService');
             $configurationService->validateFile($deploymentDescriptor, null, true);
 
-            // load the object manager instance
-            /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
-            $objectManager = $this->getApplication()->search(ObjectManagerInterface::IDENTIFIER);
+            // load the system properties
+            $properties = $configurationService->getSystemProperties($containerNode);
+
+            // append the application specific properties
+            $properties->add(SystemPropertyKeys::WEBAPP, $webappPath = $application->getWebappPath());
+            $properties->add(SystemPropertyKeys::WEBAPP_NAME, basename($webappPath));
+            $properties->add(SystemPropertyKeys::WEBAPP_DATA, $application->getDataDir());
+            $properties->add(SystemPropertyKeys::WEBAPP_CACHE, $application->getCacheDir());
+            $properties->add(SystemPropertyKeys::WEBAPP_SESSION, $application->getSessionDir());
 
             // prepare and initialize the configuration node
             $webAppNode = new WebAppNode();
             $webAppNode->initFromFile($deploymentDescriptor);
+            $webAppNode->replaceProperties($properties);
+
+            // load the object manager instance
+            /** @var \AppserverIo\Psr\Di\ObjectManagerInterface $objectManager */
+            $objectManager = $application->search(ObjectManagerInterface::IDENTIFIER);
 
             /** @var \AppserverIo\Appserver\Core\Api\Node\ServletNode $servletNode */
             foreach ($webAppNode->getServlets() as $servletNode) {

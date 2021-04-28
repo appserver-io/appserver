@@ -1,3 +1,14 @@
+# Version 1.1.29
+
+## Bugfixes
+
+* Allow options request method for authentication
+
+## Features
+
+* Update to appserver-io/authenticator v1.0.4 to register user principal when invoking login
+* Allow usage of variables in servlet deployment descriptor
+
 # Version 1.1.28
 
 ## Bugfixes
