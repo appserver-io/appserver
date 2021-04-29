@@ -49,7 +49,7 @@
         "appserver-io/routlt-project": "1.2.*"
     },
     "require-dev": {
-        "appserver-io/build": "~1.0",
+        "appserver-io/build": "~3.0",
         "appserver-io-dist/debian": "dev-master"
     },
     "autoload": {

@@ -139,7 +139,10 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
         $webResourceName = new WebResourceNameNode(new NodeValue('Security Check'));
         $description = new DescriptionNode(new NodeValue('Default Security Check Configuration'));
         $urlPatterns = array(new UrlPatternNode(new NodeValue(sprintf('/%s.*', FormKeys::FORM_ACTION))));
-        $httpMethods = array(new HttpMethodNode(new NodeValue(Protocol::METHOD_POST)));
+        $httpMethods = array(
+            new HttpMethodNode(new NodeValue(Protocol::METHOD_POST)),
+            new HttpMethodNode(new NodeValue(Protocol::METHOD_OPTIONS))
+        );
 
         // prepare the web collection configuration
         $webResourceCollections = array(
