@@ -3,7 +3,7 @@
 ################################################################################
 
 # base image
-FROM debian:jessie
+FROM debian:stretch
 
 # author
 MAINTAINER Tim Wagner <tw@appserver.io>
@@ -12,23 +12,45 @@ MAINTAINER Tim Wagner <tw@appserver.io>
 
 # define versions
 ENV APPSERVER_DIST_VERSION 1.1.29
-ENV APPSERVER_RUNTIME_VERSION 1.1.13
-ENV APPSERVER_RUNTIME_BUILD 178
+ENV APPSERVER_RUNTIME_VERSION 1.1.12
+ENV APPSERVER_RUNTIME_BUILD 172
 
 # update the sources list
 RUN apt-get update \
 
     # install the necessary packages
-    && DEBIAN_FRONTEND=noninteractive apt-get install supervisor wget git vim -y python-pip \
+    && DEBIAN_FRONTEND=noninteractive apt-get install supervisor wget git vim curl libxml2-dev libssl-dev pkg-config libbz2-dev libjpeg62-turbo-dev libfreetype6-dev libmcrypt-dev git-core libxpm-dev libc-client2007e-dev libpcre3-dev libcurl4-openssl-dev libsystemd-dev libpng-dev libevent-dev libev-dev libldap2-dev libicu-dev libxslt1-dev -y python-pip \
 
     # install the Python package to redirect the supervisord output
     && pip install supervisor-stdout
+
+# install the custom Open SSL version 1.0.1
+RUN cd /tmp \
+    && curl https://www.openssl.org/source/old/1.0.1/openssl-1.0.1t.tar.gz -o openssl-1.0.1t.tar.gz \
+    && tar -xzf openssl-1.0.1t.tar.gz \
+    && cd openssl-1.0.1t \
+    && ./config shared --prefix=/opt/openssl \
+    && make depend \
+    && bash -c 'make -j $(nproc)' \
+    && make install \
+    && curl -o /opt/openssl/ssl/cert.pem http://curl.haxx.se/ca/cacert.pem
+
+# create the symbolic links
+RUN cd /usr/lib \
+    && ln -sf x86_64-linux-gnu/libldap.so \
+    && ln -sf /usr/include/x86_64-linux-gnu/curl /usr/local/include/curl \
+    && ln -sf /lib/x86_64-linux-gnu/libsystemd-daemon.so.0 /lib/x86_64-linux-gnu/libsystemd-daemon.so \
+    && ldconfig \
+    && ln -sf /opt/openssl/lib /opt/openssl/lib/x86_64-linux-gnu \
+    && ln -sf /opt/openssl/lib/libcrypto.so.1.0.0 /usr/lib/x86_64-linux-gnu/ \
+    && ln -sf /opt/openssl/lib/libssl.so.1.0.0 /usr/lib/x86_64-linux-gnu/ \
+    && ln -sf /opt/openssl /usr/local/ssl
 
 ################################################################################
 
 # download runtime in specific version
 RUN wget -O /tmp/appserver-runtime.deb \
-    https://github.com/appserver-io/appserver/releases/download/${APPSERVER_DIST_VERSION}/appserver-runtime_${APPSERVER_RUNTIME_VERSION}-${APPSERVER_RUNTIME_BUILD}.deb9_amd64.deb 
+    https://github.com/appserver-io/appserver/releases/download/${APPSERVER_DIST_VERSION}/appserver-runtime_${APPSERVER_RUNTIME_VERSION}-${APPSERVER_RUNTIME_BUILD}.deb9_amd64.deb \
 
     # install runtime
     && dpkg -i /tmp/appserver-runtime.deb; exit 0
