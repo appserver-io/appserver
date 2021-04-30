@@ -12,8 +12,8 @@ MAINTAINER Tim Wagner <tw@appserver.io>
 
 # define versions
 ENV APPSERVER_DIST_VERSION 1.1.29
-ENV APPSERVER_RUNTIME_VERSION 1.1.12
-ENV APPSERVER_RUNTIME_BUILD 172
+ENV APPSERVER_RUNTIME_VERSION 1.1.13
+ENV APPSERVER_RUNTIME_BUILD 178
 
 # update the sources list
 RUN apt-get update \
@@ -28,7 +28,7 @@ RUN apt-get update \
 
 # download runtime in specific version
 RUN wget -O /tmp/appserver-runtime.deb \
-    https://github.com/appserver-io/appserver/releases/download/${APPSERVER_DIST_VERSION}/appserver-runtime_${APPSERVER_RUNTIME_VERSION}-${APPSERVER_RUNTIME_BUILD}.deb9_amd64.deb \
+    https://github.com/appserver-io/appserver/releases/download/${APPSERVER_DIST_VERSION}/appserver-runtime_${APPSERVER_RUNTIME_VERSION}-${APPSERVER_RUNTIME_BUILD}.deb9_amd64.deb 
 
     # install runtime
     && dpkg -i /tmp/appserver-runtime.deb; exit 0
