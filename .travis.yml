@@ -42,7 +42,7 @@ matrix:
 deploy:
   provider: releases
   api_key:
-    secure: "Zu3Ae25ObgcAc4PMjiHd9d/vgF9tFEHQHbKF3NcUV4/BJHXJtgxO5Jv+jxM5ANl8X2aPrJrTfDKVo2YxeFYdT2fvQg485y6d6QHIl0cJ3DdSDptF0SP9rPPabv1zjX8OVsR5hu9fXzVf/FelGnZrmcy4lCtiIEzp5ZFkBZQtNdA="
+    secure: "fDjFJMc3Rt312Da6LpBgH4SK7JhCppgRJZYiqHu1zkjLlCUi10rougJuA3BL+c531Udb0Ko1bjGrcRZVHmg1Grtn8lDwKAfSGC8x7Dc1gC788gA9hAHVIJ95WVgUOfALWFQ1e3re9cUhlCrRz0Pc6ZxgOaI9Krg9TwaisuXu/Lg="
   file_glob: true
   file: "build/*"
   skip_cleanup: true
