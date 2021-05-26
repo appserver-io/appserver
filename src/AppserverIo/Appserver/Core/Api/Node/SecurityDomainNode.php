@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Appserver\ServletEngine\Security\Realm;
 
 /**
  * DTO to transfer a security domain configuration.
@@ -42,6 +43,23 @@ class SecurityDomainNode extends AbstractNode implements SecurityDomainNodeInter
      * @DI\Mapping(nodeType="string")
      */
     protected $name;
+
+    /**
+     * The manager class name.
+     *
+     * @var string
+     * @DI\Mapping(nodeType="string")
+     */
+    protected $type;
+
+    /**
+     * The managers factory class name.
+     *
+     * @var string
+     * @DI\Mapping(nodeType="string")
+     */
+    protected $factory;
+
     /**
      * The display name information.
      *
@@ -51,6 +69,20 @@ class SecurityDomainNode extends AbstractNode implements SecurityDomainNodeInter
     protected $authConfig;
 
     /**
+     * Initializes the configuration with the passed values.
+     *
+     * @param string $name    The realm name
+     * @param string $type    The realm type to use
+     * @param string $factory The factory that has to be used to create the realm instance
+     */
+    public function __construct($name = '', $type = '', $factory = '')
+    {
+        $this->type = $type ? $type : Realm::class;
+        $this->name = $name;
+        $this->factory = $factory;
+    }
+
+    /**
      * Return's the security domain name.
      *
      * @return string The security domain name
@@ -58,6 +90,26 @@ class SecurityDomainNode extends AbstractNode implements SecurityDomainNodeInter
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Returns the class name.
+     *
+     * @return string The class name
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * Returns the factory class name.
+     *
+     * @return string The factory class name
+     */
+    public function getFactory()
+    {
+        return $this->factory;
     }
 
     /**

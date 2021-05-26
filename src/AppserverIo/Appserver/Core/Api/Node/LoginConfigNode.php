@@ -52,6 +52,14 @@ class LoginConfigNode extends AbstractNode implements LoginConfigNodeInterface
     protected $realmName;
 
     /**
+     * The flag to query whether or not it is the default authenticator.
+     *
+     * @var \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     * @DI\Mapping(nodeName="default-authenticator", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     */
+    protected $defaultAuthenticator;
+
+    /**
      * The login form configuration information.
      *
      * @var \AppserverIo\Appserver\Core\Api\Node\FormLoginConfigNode
@@ -87,5 +95,15 @@ class LoginConfigNode extends AbstractNode implements LoginConfigNodeInterface
     public function getFormLoginConfig()
     {
         return $this->formLoginConfig;
+    }
+
+    /**
+     * Return's the flag to query whether or not this is the default authenticator.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The flag
+     */
+    public function getDefaultAuthenticator()
+    {
+        return $this->defaultAuthenticator;
     }
 }

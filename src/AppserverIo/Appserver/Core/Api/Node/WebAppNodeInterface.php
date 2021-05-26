@@ -63,9 +63,9 @@ interface WebAppNodeInterface extends NodeInterface
     public function getServlets();
 
     /**
-     * Return's the login configuration information.
+     * Return's the array with the login configuration information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\LoginConfigNode The login configuration information
+     * @return array The array with the login configuration information
      */
     public function getLoginConfig();
 

@@ -255,8 +255,20 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         // initialize the flag for the successfull login
         $this->loginOk = false;
 
-        // array containing the username and password from the user's input
-        list ($this->username, $password) = $this->getUsernameAndPassword();
+        // query whether or not we should use the shared state
+        if ($this->getUseFirstPass()) {
+            // query whether or not the username is available in the shared state
+            if ($this->sharedState->exists(SharedStateKeys::LOGIN_NAME)) {
+                $this->username = $this->sharedState->get(SharedStateKeys::LOGIN_NAME);
+            }
+            // query whether or not the password is available in the shared state
+            if ($this->sharedState->exists(SharedStateKeys::LOGIN_PASSWORD)) {
+                $password = $this->sharedState->get(SharedStateKeys::LOGIN_PASSWORD);
+            }
+        } else {
+            // array containing the username and password from the user's input
+            list ($this->username, $password) = $this->getUsernameAndPassword();
+        }
 
         // query whether or not password AND username are set
         if ($this->username === null && $password === null) {
@@ -303,7 +315,7 @@ class LdapLoginmodule extends UsernamePasswordLoginModule
         if ($this->getUseFirstPass()) {
             // add the username and password to the shared state map
             $this->sharedState->add(SharedStateKeys::LOGIN_NAME, $this->username);
-            $this->sharedState->add(SharedStateKeys::LOGIN_PASSWORD, $this->credential);
+            $this->sharedState->add(SharedStateKeys::LOGIN_PASSWORD, $password);
         }
 
         // set the login flag to TRUE and return

@@ -43,11 +43,11 @@ class Mapping implements MappingInterface
     protected $urlPattern;
 
     /**
-     * The authenticator serial.
+     * The realm name the security constraint is bound to.
      *
      * @var string
      */
-    protected $authenticatorSerial;
+    protected $realmName;
 
     /**
      * The array with the role names.
@@ -74,20 +74,20 @@ class Mapping implements MappingInterface
      * Initialize the mapping with the passed values.
      *
      * @param string $urlPattern          The URL pattern
-     * @param string $authenticatorSerial The authenticator serial
+     * @param string $realmName           The realm name the mapping is bound to
      * @param array  $roleNames           The array with the role names
      * @param array  $httpMethods         The array with the HTTP methods that has to be authenticated
      * @param array  $httpMethodOmissions The array with the HTTP methods that has to be omissed from authentication
      */
     public function __construct(
         $urlPattern,
-        $authenticatorSerial,
+        $realmName,
         array $roleNames = array(),
         array $httpMethods = array(),
         array $httpMethodOmissions = array()
     ) {
         $this->urlPattern = $urlPattern;
-        $this->authenticatorSerial = $authenticatorSerial;
+        $this->realmName = $realmName;
         $this->roleNames = $roleNames;
         $this->httpMethods = $httpMethods;
         $this->httpMethodOmissions = $httpMethodOmissions;
@@ -107,10 +107,12 @@ class Mapping implements MappingInterface
      * Return's the authenticator serial.
      *
      * @return string The authenticator serial
+     * @deprecated Since 1.1.29
+     * @use \AppserverIo\Appserver\ServletEngine\Security\Mapping::getRealmNamme()
      */
     public function getAuthenticatorSerial()
     {
-        return $this->authenticatorSerial;
+        return $this->getRealmName();
     }
 
     /**
@@ -141,6 +143,16 @@ class Mapping implements MappingInterface
     public function getHttpMethodOmissions()
     {
         return $this->httpMethodOmissions;
+    }
+
+    /**
+     * Return's the realm name the mapping is bound to.
+     *
+     * @return string the realm name
+     */
+    public function getRealmName()
+    {
+        return $this->realmName;
     }
 
     /**

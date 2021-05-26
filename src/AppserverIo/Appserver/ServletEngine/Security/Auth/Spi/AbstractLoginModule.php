@@ -146,7 +146,7 @@ abstract class AbstractLoginModule implements LoginModuleInterface
 
         // check for unauthenticatedIdentity option.
         if ($params->exists(ParamKeys::UNAUTHENTICATED_IDENTITY)) {
-            $this->unauthenticatedIdentity = $this->createIdentity($params->get(ParamKeys::UNAUTHENTICATED_IDENTITY));
+            $this->unauthenticatedIdentity = $this->createIdentity(new String($params->get(ParamKeys::UNAUTHENTICATED_IDENTITY)));
         }
     }
 
@@ -249,13 +249,6 @@ abstract class AbstractLoginModule implements LoginModuleInterface
             $group = $roleSets[$g];
             $name = $group->getName();
             $subjectGroup = $this->createGroup($name, $principals);
-
-            /* if ($subjectGroup instanceof NestableGroup) {
-                // a NestableGroup only allows Groups to be added to it so we need to add a SimpleGroup to subjectRoles to contain the roles
-                $tmp = new SimpleGroup('Roles');
-                $subjectGroup->addMember($tmp);
-                $subjectGroup = $tmp;
-            } */
 
             // copy the group members to the Subject group
             foreach ($group->getMembers() as $member) {

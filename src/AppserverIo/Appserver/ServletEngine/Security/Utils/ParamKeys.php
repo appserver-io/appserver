@@ -191,7 +191,68 @@ class ParamKeys
      */
     const ALLOW_EMPTY_PASSWORDS = 'allowEmptyPasswords';
 
+    /**
+     * The key for the "identityUrl" parameter.
+     *
+     * @var string
+     */
+    const IDENTITY_URL = 'identityUrl';
 
+    /**
+     * The key for the "userInfoPath" parameter.
+     *
+     * @var string
+     */
+    const USER_INFO_PATH = 'userInfoPath';
+
+    /**
+     * The key for the "oauthTokenPath" parameter.
+     *
+     * @var string
+     */
+    const OAUTH_TOKEN_PATH = 'oauthTokenPath';
+
+    /**
+     * The key for the "validatePath" parameter.
+     *
+     * @var string
+     */
+    const VALIDATE_PATH = 'validatePath';
+
+    /**
+     * The key for the "accessTokenKey" parameter.
+     *
+     * @var string
+     */
+    const ACCESS_TOKEN_KEY = 'accessTokenKey';
+
+    /**
+     * The key for the "idTokenKey" parameter.
+     *
+     * @var string
+     */
+    const ID_TOKEN_KEY = 'idTokenKey';
+
+    /**
+     * The key for the "refreshTokenKey" parameter.
+     *
+     * @var string
+     */
+    const REFRESH_TOKEN_KEY = 'refreshTokenKey';
+
+    /**
+     * The key for the "tokenTypeKey" parameter.
+     *
+     * @var string
+     */
+    const TOKEN_TYPE_KEY = 'tokenTypeKey';
+
+    /**
+     * The key for the "expiresInKey" parameter.
+     *
+     * @var string
+     */
+    const EXPIRES_IN_KEY = 'expiresInKey';
 
     /**
      * This is a utility class, so protect it against direct instantiation.

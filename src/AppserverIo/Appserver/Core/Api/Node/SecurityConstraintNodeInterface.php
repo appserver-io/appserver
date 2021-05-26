@@ -54,4 +54,11 @@ interface SecurityConstraintNodeInterface extends NodeInterface
      * @return \AppserverIo\Appserver\Core\Api\Node\AuthConstraintNode The auth constraint information
      */
     public function getAuthConstraint();
+
+    /**
+     * Return's the realm name the security constraint is bound to.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The realm name
+     */
+    public function getRealmName();
 }

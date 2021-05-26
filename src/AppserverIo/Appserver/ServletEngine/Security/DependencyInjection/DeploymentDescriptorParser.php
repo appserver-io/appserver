@@ -26,6 +26,8 @@ use AppserverIo\Appserver\Core\Api\Node\WebAppNode;
 use AppserverIo\Appserver\ServletEngine\Security\Mapping;
 use AppserverIo\Psr\Auth\AuthenticationManagerInterface;
 use AppserverIo\Http\Authentication\AuthenticationException;
+use AppserverIo\Lang\String;
+use AppserverIo\Configuration\Interfaces\NodeValueInterface;
 
 /**
  * Parser implementation to parse a web application deployment descriptor (WEB-INF/web.xml).
@@ -83,7 +85,7 @@ class DeploymentDescriptorParser
      *
      * @param string $shortname The shortname of the requested authenticator class name
      *
-     * @return string The requested authenticator class name
+     * @return \AppserverIo\Appserver\Core\Api\Node\AuthenticatorNodeInterface The requested authenticator configuration
      * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown if no mapping for the requested authenticator is not available
      */
     public function mapAuthenticator($shortname)
@@ -97,7 +99,7 @@ class DeploymentDescriptorParser
             foreach ($managerNode->getAuthenticators() as $authenticatorNode) {
                 // query whether or not the shortname matches
                 if (strcasecmp($authenticatorNode->getName(), $shortname) === 0) {
-                    return $authenticatorNode->getType();
+                    return $authenticatorNode;
                 }
             }
         }
@@ -115,8 +117,11 @@ class DeploymentDescriptorParser
     public function parse()
     {
 
+        // load the authentication context
+        $authenticationContext = $this->getAuthenticationContext();
+
         // load the web application base directory
-        $webappPath = $this->getAuthenticationContext()->getWebappPath();
+        $webappPath = $authenticationContext->getWebappPath();
 
         // prepare the deployment descriptor
         $deploymentDescriptor = $webappPath . DIRECTORY_SEPARATOR . 'WEB-INF' . DIRECTORY_SEPARATOR . 'web.xml';
@@ -136,20 +141,27 @@ class DeploymentDescriptorParser
         $webAppNode->initFromFile($deploymentDescriptor);
 
         // query whether or not we've a login configuration
-            /** @var \AppserverIo\Appserver\Core\Api\Node\LoginConfigNode $loginConfig */
-        if ($loginConfig = $webAppNode->getLoginConfig()) {
+        /** @var \AppserverIo\Appserver\Core\Api\Node\LoginConfigNode $loginConfig */
+        foreach ($webAppNode->getLoginConfig() as $loginConfig) {
+            // try to load the authenticator configuration
+            $authenticatorConfiguration = $this->mapAuthenticator($loginConfig->getAuthMethod()->__toString());
             // create the authentication method instance
-            $reflectionClass = new ReflectionClass($this->mapAuthenticator($loginConfig->getAuthMethod()->__toString()));
-            $authenticator = $reflectionClass->newInstanceArgs(array($loginConfig, $this->getAuthenticationContext(), new Boolean(true)));
-
+            $reflectionClass = new ReflectionClass($authenticatorConfiguration->getType());
+            $authenticator = $reflectionClass->newInstanceArgs(array($loginConfig, $authenticationContext, $authenticatorConfiguration));
             // add the authentication method itself
-            $this->getAuthenticationContext()->addAuthenticator($authenticator);
+            $authenticationContext->addAuthenticator($authenticator);
+        }
 
+        // only process the security configuration if a login configuration is available
+        if (sizeof($webAppNode->getLoginConfig()) > 0) {
             // initialize the security roles, that are part of the new security subsystem
             /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityRoleNode $securityRoleNode */
             foreach ($webAppNode->getSecurityRoles() as $securityRoleNode) {
                 // do something here
             }
+
+            // load the default authenticator, because we need the default realm name
+            $defaultAuthenticator = $authenticationContext->getDefaultAuthenticator();
 
             // initialize the security roles, that are part of the new security subsystem
             /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityConstraintNode $securityContstraintNode */
@@ -159,6 +171,15 @@ class DeploymentDescriptorParser
                 if ($authConstraint = $securityContstraintNode->getAuthConstraint()) {
                     $roleNames = $authConstraint->getRoleNamesAsArray();
                 }
+
+                // load the default realm name from the default authenticator
+                $realmName = $defaultAuthenticator->getRealmName();
+
+                // override the realm name with the configured one, if available
+                if ($securityContstraintNode->getRealmName() instanceof NodeValueInterface) {
+                    $realmName = $securityContstraintNode->getRealmName()->__toString();
+                }
+
                 /** @var \AppserverIo\Appserver\Core\Api\Node\WebResourceCollectionNode $webResourceCollectionNode */
                 foreach ($securityContstraintNode->getWebResourceCollections() as $webResourceCollectionNode) {
                     // prepare the arrays for the HTTP methods and the method omissions
@@ -169,7 +190,7 @@ class DeploymentDescriptorParser
                         // prepare the URL pattern to authenticator mapping with the necessary data
                         $mapping = new Mapping(
                             $urlPatternNode->__toString(),
-                            $authenticator->getSerial(),
+                            $realmName,
                             $roleNames,
                             $httpMethods,
                             $httpMethodOmissions

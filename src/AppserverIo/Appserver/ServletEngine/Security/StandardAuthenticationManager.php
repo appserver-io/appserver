@@ -37,6 +37,7 @@ use AppserverIo\Storage\StorageInterface;
 use AppserverIo\Http\Authentication\AuthenticationException;
 use AppserverIo\Appserver\Core\AbstractManager;
 use AppserverIo\Appserver\ServletEngine\Security\DependencyInjection\DeploymentDescriptorParser;
+use AppserverIo\Lang\Reflection\ReflectionClass;
 
 /**
  * The authentication manager handles request which need Http authentication.
@@ -122,7 +123,7 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
      */
     public function addAuthenticator(AuthenticatorInterface $authenticator)
     {
-        $this->authenticators->set($authenticator->getSerial(), $authenticator);
+        $this->authenticators->set($authenticator->getConfigData()->getRealmName(), $authenticator);
     }
 
     /**
@@ -137,25 +138,17 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     {
 
         // query whether or not a mapping has been passed
-        if ($mapping != null) {
-            // query whether or not we've an authentication manager with the passed key
-            if (isset($this->authenticators[$authenticatorSerial = $mapping->getAuthenticatorSerial()])) {
-                return $this->authenticators[$authenticatorSerial];
+        if ($mapping instanceof MappingInterface) {
+            // query whether or not we've an authentication manager for the mappings realm name
+            if (isset($this->authenticators[$realmName = $mapping->getRealmName()])) {
+                return $this->authenticators[$realmName];
             }
-
             // throw an exception if not
-            throw new AuthenticationException(sprintf('Can\'t find authenticator serial %s', $authenticatorSerial));
+            throw new AuthenticationException(sprintf('Can\'t find authenticator for realm %s', $realmName));
         }
 
-        // try to find the default authenticator instead
-        foreach ($this->authenticators as $authenticator) {
-            if ($authenticator->isDefaultAuthenticator()) {
-                return $authenticator;
-            }
-        }
-
-        // throw an exception if we can't find a default authenticator also
-        throw new AuthenticationException('Can\'t find a default authenticator');
+        // try to load the default authenticator
+        return $this->getDefaultAuthenticator();
     }
 
     /**
@@ -166,6 +159,31 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
     public function getAuthenticators()
     {
         return $this->authenticators;
+    }
+
+    /**
+     * Return's the default authenticator instance.
+     *
+     * @return \AppserverIo\Psr\Auth\AuthenticatorInterface The default authenticator instance
+     * @throws \AppserverIo\Http\Authentication\AuthenticationException Is thrown, if no default authenticator is available
+     */
+    public function getDefaultAuthenticator()
+    {
+
+        // try to find the default authenticator instead
+        foreach ($this->authenticators as $authenticator) {
+            if ($authenticator->isDefaultAuthenticator()) {
+                return $authenticator;
+            }
+        }
+
+        // try to load the first authenticator
+        foreach ($this->authenticators as $authenticator) {
+            return $authenticator;
+        }
+
+        // throw an exception if we can't find a default authenticator also
+        throw new AuthenticationException('Can\'t find a default authenticator');
     }
 
     /**
@@ -306,9 +324,27 @@ class StandardAuthenticationManager extends AbstractManager implements Authentic
             // initialize the security domains found in the manager configuration
             /** @var \AppserverIo\Appserver\Core\Api\Node\SecurityDomainNodeInterface $securityDomainNode */
             foreach ($this->getManagerConfiguration()->getSecurityDomains() as $securityDomainNode) {
-                // create the realm instance
-                $realm = new Realm($this, $securityDomainNode->getName());
-                $realm->injectConfiguration($securityDomainNode);
+                // create the realm instance either by invoking
+                // the factory or direct initialization
+                if ($factoryClassName = $securityDomainNode->getFactory()) {
+                    // initialize a reflection class for the factory class
+                    $reflectionClass = new ReflectionClass($factoryClassName);
+                    if ($reflectionClass->implementsInterface(RealmFactoryInterface::class)) {
+                        $realmFactory = $reflectionClass->newInstanceArgs();
+                    } else {
+                        throw new \InvalidArgumentException(
+                            'Realm factory class has to implement approriate interface'
+                        );
+                    }
+                    // invoke the factory and create the realm instance
+                    $realm = $realmFactory->create($this, $securityDomainNode);
+                } else {
+                    // initialize a reflection class for the realm to use
+                    $reflectionClass = new ReflectionClass($securityDomainNode->getType());
+                    $realm = $reflectionClass->newInstanceArgs(array($this, $securityDomainNode->getName()));
+                    // inject the security domain configuration
+                    $realm->injectConfiguration($securityDomainNode);
+                }
                 // add the initialized security domain to the map
                 $realms->add($realm->getName(), $realm);
             }

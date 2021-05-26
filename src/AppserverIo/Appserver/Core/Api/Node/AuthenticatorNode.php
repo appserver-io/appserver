@@ -22,6 +22,7 @@ namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Annotations as DI;
 use AppserverIo\Description\Api\Node\AbstractNode;
+use AppserverIo\Description\Api\Node\ParamsNodeTrait;
 
 /**
  * DTO to transfer authenticator information.
@@ -34,6 +35,13 @@ use AppserverIo\Description\Api\Node\AbstractNode;
  */
 class AuthenticatorNode extends AbstractNode implements AuthenticatorNodeInterface
 {
+
+    /**
+     * A params node trait.
+     *
+     * @var \AppserverIo\Description\Api\Node\ParamsNodeTrait
+     */
+    use ParamsNodeTrait;
 
     /**
      * The authenticator name.

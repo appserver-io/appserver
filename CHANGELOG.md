@@ -1,3 +1,14 @@
+# Version 1.1.30
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Update to appserver-io/authenticator v2.0.4 for bearer token authentication
+* Update to appserver-io-psr/security v1.5.0 for bearer token authentication
+
 # Version 1.1.29
 
 ## Bugfixes

@@ -230,6 +230,7 @@
             <xs:all>
                 <xs:element ref="appserver:auth-method"/>
                 <xs:element ref="appserver:realm-name"/>
+                <xs:element ref="appserver:default-authenticator" minOccurs="0" />
                 <xs:element ref="appserver:form-login-config" minOccurs="0"/>
             </xs:all>
             <xs:attribute name="uuid" type="xs:string"/>
@@ -251,6 +252,16 @@
             <xs:simpleContent>
                 <xs:extension base="xs:string">
                     <xs:attribute name="uuid" type="xs:string"/>
+                    <xs:attribute ref="xml:base"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="default-authenticator">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="uuid" type="xs:boolean" />
                     <xs:attribute ref="xml:base"/>
                 </xs:extension>
             </xs:simpleContent>
@@ -341,6 +352,7 @@
             <xs:choice maxOccurs="unbounded">
                 <xs:element ref="appserver:web-resource-collection" minOccurs="1" maxOccurs="1"/>
                 <xs:element ref="appserver:display-name" minOccurs="0"/>
+                <xs:element ref="appserver:realm-name" minOccurs="0"/>
                 <xs:element ref="appserver:auth-constraint" minOccurs="0"/>
             </xs:choice>
             <xs:attribute name="uuid" type="xs:string"/>
@@ -769,6 +781,8 @@
                 <xs:element ref="appserver:authConfig" maxOccurs="unbounded"/>
             </xs:choice>
             <xs:attribute name="name" type="xs:string"/>
+            <xs:attribute name="type" type="xs:string"/>
+            <xs:attribute name="factory" type="xs:string"/>
             <xs:attribute name="uuid" type="xs:string"/>
             <xs:attribute ref="xml:base"/>
         </xs:complexType>
@@ -807,14 +821,13 @@
     </xs:element>
     <xs:element name="authenticator">
         <xs:complexType>
-            <xs:simpleContent>
-                <xs:extension base="xs:string">
-                    <xs:attribute name="name" type="xs:string"/>
-                    <xs:attribute name="type" type="xs:string"/>
-                    <xs:attribute name="uuid" type="xs:string"/>
-                    <xs:attribute ref="xml:base"/>
-                </xs:extension>
-            </xs:simpleContent>
+            <xs:choice minOccurs="0">
+                <xs:element ref="appserver:params" maxOccurs="1"/>
+            </xs:choice>
+            <xs:attribute name="name" type="xs:string"/>
+            <xs:attribute name="type" type="xs:string"/>
+            <xs:attribute name="uuid" type="xs:string"/>
+            <xs:attribute ref="xml:base"/>
         </xs:complexType>
     </xs:element>
     <xs:element name="sessionHandlers">

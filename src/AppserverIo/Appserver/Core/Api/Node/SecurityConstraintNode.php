@@ -21,6 +21,7 @@
 namespace AppserverIo\Appserver\Core\Api\Node;
 
 use AppserverIo\Description\Annotations as DI;
+use AppserverIo\Description\Api\Node\ValueNode;
 use AppserverIo\Description\Api\Node\AbstractNode;
 use AppserverIo\Configuration\Interfaces\NodeValueInterface;
 
@@ -45,6 +46,14 @@ class SecurityConstraintNode extends AbstractNode implements SecurityConstraintN
     protected $displayName;
 
     /**
+     * The realm name the security constraint is bound to.
+     *
+     * @var \AppserverIo\Configuration\Interfaces\NodeValueInterface
+     * @DI\Mapping(nodeName="realm-name", nodeType="AppserverIo\Description\Api\Node\ValueNode")
+     */
+    protected $realmName;
+
+    /**
      * The web resource collection information.
      *
      * @var array
@@ -66,15 +75,18 @@ class SecurityConstraintNode extends AbstractNode implements SecurityConstraintN
      * @param \AppserverIo\Configuration\Interfaces\NodeValueInterface         $displayName            The display name information
      * @param array                                                            $webResourceCollections The array with the web resource collection information
      * @param \AppserverIo\Appserver\Core\Api\Node\AuthConstraintNodeInterface $authConstraint         The auth constraint information
+     * @param \AppserverIo\Configuration\Interfaces\NodeValueInterface         $realmName              The realm name the security constraint is bound to
      */
     public function __construct(
         NodeValueInterface $displayName = null,
         array $webResourceCollections = array(),
-        AuthConstraintNodeInterface $authConstraint = null
+        AuthConstraintNodeInterface $authConstraint = null,
+        NodeValueInterface $realmName = null
     ) {
         $this->displayName = $displayName;
         $this->authConstraint = $authConstraint;
         $this->webResourceCollections = $webResourceCollections;
+        $this->realmName = $realmName;
     }
 
     /**
@@ -105,5 +117,15 @@ class SecurityConstraintNode extends AbstractNode implements SecurityConstraintN
     public function getAuthConstraint()
     {
         return $this->authConstraint;
+    }
+
+    /**
+     * Return's the realm name the security constraint is bound to.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The realm name
+     */
+    public function getRealmName()
+    {
+        return $this->realmName;
     }
 }

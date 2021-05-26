@@ -80,12 +80,12 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
     protected $servletMappings = array();
 
     /**
-     * The login configuration informations.
+     * The array with the login configuration informations.
      *
      * @var array
-     * @DI\Mapping(nodeName="login-config", nodeType="AppserverIo\Appserver\Core\Api\Node\LoginConfigNode")
+     * @DI\Mapping(nodeName="login-config", nodeType="array", elementType="AppserverIo\Appserver\Core\Api\Node\LoginConfigNode")
      */
-    protected $loginConfig;
+    protected $loginConfig = array();
 
     /**
      * The security informations (old format).
@@ -231,9 +231,9 @@ class WebAppNode extends AbstractNode implements WebAppNodeInterface
     }
 
     /**
-     * Return's the login configuration information.
+     * Return's the array with the login configuration information.
      *
-     * @return \AppserverIo\Appserver\Core\Api\Node\LoginConfigNode The login configuration information
+     * @return array The array with the login configuration information
      */
     public function getLoginConfig()
     {

@@ -55,4 +55,11 @@ interface LoginConfigNodeInterface extends NodeInterface, LoginConfigurationInte
      * @return \AppserverIo\Appserver\Core\Api\Node\FormLoginConfigNode The login form configuration information
      */
     public function getFormLoginConfig();
+
+    /**
+     * Return's the flag to query whether or not this is the default authenticator.
+     *
+     * @return \AppserverIo\Configuration\Interfaces\NodeValueInterface The flag
+     */
+    public function getDefaultAuthenticator();
 }

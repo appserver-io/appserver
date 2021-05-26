@@ -61,13 +61,6 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
     protected $unauthenticatedIdentity;
 
     /**
-     * The proof of login identity.
-     *
-     * @var \AppserverIo\Lang\String
-     */
-    protected $credential;
-
-    /**
      * The message digest algorithm used to hash passwords. If null then plain passwords will be used.
      *
      * @var string
@@ -216,7 +209,7 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
         if ($this->getUseFirstPass()) {
             // add the username and password to the shared state map
             $this->sharedState->add(SharedStateKeys::LOGIN_NAME, $name);
-            $this->sharedState->add(SharedStateKeys::LOGIN_PASSWORD, $this->credential);
+            $this->sharedState->add(SharedStateKeys::LOGIN_PASSWORD, $password);
         }
 
         $this->loginOk = true;
@@ -338,15 +331,5 @@ abstract class UsernamePasswordLoginModule extends AbstractLoginModule
 
         // return the name
         return $name;
-    }
-
-    /**
-     * Return's the proof of login identity.
-     *
-     * @return \AppserverIo\Lang\String The proof of login identity
-     */
-    protected function getCredentials()
-    {
-        return $this->credential;
     }
 }
