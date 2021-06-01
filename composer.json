@@ -43,7 +43,7 @@
         "appserver-io/concurrency": "0.3.*",
         "appserver-io/robo-tasks": "0.2.*",
         "appserver-io/description": "13.0.*",
-        "appserver-io/authenticator": "2.0.*",
+        "appserver-io/authenticator": "3.0.*",
         "appserver-io/configuration": "3.0.*",
         "appserver-io/doppelgaenger": "1.7.*",
         "appserver-io/routlt-project": "1.2.*"

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "723213b7a29972197eb5e19aafd52162",
+    "content-hash": "36695d0e19d8244b04368d15deda4f45",
     "packages": [
         {
             "name": "appserver-io-psr/application",
@@ -793,16 +793,16 @@
         },
         {
             "name": "appserver-io/authenticator",
-            "version": "2.0.0",
+            "version": "3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/appserver-io/authenticator.git",
-                "reference": "33fe5ffdf2f38df01d9460dbd8d5e62648d7c68e"
+                "reference": "4942911bb9a96a01c603f16a95635496b95d2ac5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/appserver-io/authenticator/zipball/33fe5ffdf2f38df01d9460dbd8d5e62648d7c68e",
-                "reference": "33fe5ffdf2f38df01d9460dbd8d5e62648d7c68e",
+                "url": "https://api.github.com/repos/appserver-io/authenticator/zipball/4942911bb9a96a01c603f16a95635496b95d2ac5",
+                "reference": "4942911bb9a96a01c603f16a95635496b95d2ac5",
                 "shasum": ""
             },
             "require": {
@@ -845,7 +845,7 @@
                 "interface",
                 "php"
             ],
-            "time": "2021-05-26T20:50:58+00:00"
+            "time": "2021-06-01T13:42:06+00:00"
         },
         {
             "name": "appserver-io/collections",
