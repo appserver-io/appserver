@@ -19,7 +19,7 @@ ENV APPSERVER_RUNTIME_BUILD 172
 RUN apt-get update \
 
     # install the necessary packages
-    && DEBIAN_FRONTEND=noninteractive apt-get install supervisor wget git vim curl libxml2-dev libssl-dev pkg-config libbz2-dev libjpeg62-turbo-dev libfreetype6-dev libmcrypt-dev git-core libxpm-dev libc-client2007e-dev libpcre3-dev libcurl4-openssl-dev libsystemd-dev libpng-dev libevent-dev libev-dev libldap2-dev libicu-dev libxslt1-dev -y python-pip \
+    && DEBIAN_FRONTEND=noninteractive apt-get install supervisor wget git vim curl libxml2-dev libssl-dev libssl1.0.2 libgnutls30 pkg-config libbz2-dev libjpeg62-turbo-dev libfreetype6-dev libmcrypt-dev git-core libxpm-dev libc-client2007e-dev libpcre3-dev libcurl4-openssl-dev libsystemd-dev libpng-dev libevent-dev libev-dev libldap2-dev libicu-dev libxslt1-dev -y python-pip \
 
     # install the Python package to redirect the supervisord output
     && pip install supervisor-stdout
