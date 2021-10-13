@@ -11,7 +11,7 @@ MAINTAINER Tim Wagner <tw@appserver.io>
 ################################################################################
 
 # define versions
-ENV APPSERVER_DIST_VERSION 1.1.29
+ENV APPSERVER_DIST_VERSION 1.1.32
 ENV APPSERVER_RUNTIME_VERSION 1.1.12
 ENV APPSERVER_RUNTIME_BUILD 172
 

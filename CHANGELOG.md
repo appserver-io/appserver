@@ -1,3 +1,13 @@
+# Version 1.1.32
+
+## Bugfixes
+
+* None
+
+## Features
+
+* Update SSL libraries in Docker container to 1.0.2
+
 # Version 1.1.31
 
 ## Bugfixes
