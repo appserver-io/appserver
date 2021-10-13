@@ -11,7 +11,7 @@ MAINTAINER Tim Wagner <tw@appserver.io>
 ################################################################################
 
 # define versions
-ENV APPSERVER_DIST_VERSION 1.1.32
+ENV APPSERVER_DIST_VERSION 1.1.29
 ENV APPSERVER_RUNTIME_VERSION 1.1.12
 ENV APPSERVER_RUNTIME_BUILD 172
 
@@ -80,7 +80,7 @@ WORKDIR /opt/appserver
 RUN ln -s /opt/appserver/bin/composer.phar /usr/local/bin/composer \
 
     # install composer dependencies
-    && composer install --prefer-dist --no-dev --no-interaction --optimize-autoloader \
+    && /opt/appserver/bin/composer.phar install --prefer-dist --no-dev --no-interaction --optimize-autoloader \
 
     # modify user-rights in configuration
     && sed -i "s/www-data/root/g" etc/appserver/appserver.xml \
