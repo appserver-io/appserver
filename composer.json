@@ -13,7 +13,7 @@
         "league/event": "2.1.*",
         "symfony/ldap": "3.4.7",
         "symfony/var-dumper": "3.4.7",
-        "zendframework/zend-diactoros" : "1.4.*",
+        "zendframework/zend-diactoros" : "1.8.*",
         "appserver-io-psr/di": "3.0.*",
         "appserver-io-psr/epb": "7.0.*",
         "appserver-io-psr/pms": "2.0.*",
